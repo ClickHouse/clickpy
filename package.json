@@ -1,0 +1,34 @@
+{
+  "name": "clickpy",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@clickhouse/client": "^0.2.1",
+    "@clickhouse/client-web": "^0.2.1",
+    "@headlessui/react": "^1.7.16",
+    "@heroicons/react": "^2.0.18",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.4",
+    "@tailwindcss/line-clamp": "^0.4.4",
+    "@tailwindcss/typography": "^0.5.9",
+    "@wojtekmaj/react-daterange-picker": "^5.4.2",
+    "autoprefixer": "10.4.14",
+    "echarts-countries-js": "^1.0.5",
+    "echarts-for-react": "^3.0.2",
+    "eslint": "8.46.0",
+    "eslint-config-next": "13.4.13",
+    "lodash": "^4.17.21",
+    "next": "13.4.13",
+    "postcss": "8.4.27",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "server-only": "^0.0.1",
+    "tailwindcss": "3.3.3"
+  }
+}

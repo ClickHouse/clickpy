@@ -1,0 +1,53 @@
+.date_picker button {
+    @apply text-white;
+}
+
+.date_picker {
+    @apply bg-chart rounded-xl font-inter border text-sm border-slate-500 p-2 w-full;
+}
+
+
+.date_picker > * > span {
+    @apply mr-2 ml-2;
+}
+
+.calendar {
+    @apply bg-chart rounded-lg font-inter text-sm text-white border-2 border-slate-500 mt-1 p-4;
+}
+
+.calendar div {
+    @apply bg-chart;
+}
+
+.react-daterange-picker__wrapper {
+    @apply border-0;
+}
+
+.react-calendar__tile--now {
+    @apply bg-chart;
+}
+
+.react-calendar button {
+    @apply border border-slate-100;
+}
+.react-calendar__tile--active {
+    @apply bg-slate-600;
+}
+
+.react-calendar__tile--hasActive {
+    @apply bg-slate-600;
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+    @apply bg-slate-600;
+}
+
+.react-calendar--selectRange .react-calendar__tile--hover {
+    @apply bg-slate-600;
+}
+
+.react-calendar__tile:hover {
+    @apply bg-slate-600;
+
+}
