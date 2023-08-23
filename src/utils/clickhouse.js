@@ -17,6 +17,13 @@ export async function getPackages(query_prefix) {
     return []
 }
 
+export async function getTotalDownloads() {
+    const results = await query(`SELECT
+        formatReadableQuantity(sum(count)) AS total, uniqExact(project) as projects
+    FROM pypi_downloads`)
+    return results[0]
+}
+
 export async function getDownloadSummary(package_name, version, min_date, max_date) {
     return query(`SELECT sumIf(count, date >= {min_date:String}::Date32 AND date >= {max_date:String}::Date32 - toIntervalDay(1) AND date <= {max_date:String}::Date32) AS last_day,
     sumIf(count, date >= {min_date:String}::Date32 AND date >= {max_date:String}::Date32 - toIntervalWeek(1) AND date <= {max_date:String}::Date32) AS last_week,
