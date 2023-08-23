@@ -1,9 +1,16 @@
 import Header from '@/components/header'
 import Search from '@/components/search'
 import Summary from '@/components/summary'
+import { getTotalDownloads } from "@/utils/clickhouse";
+
 import 'server-only'
 
-export default function Home() {
+
+
+export  default async function Home() {
+
+  const total_downloads = await getTotalDownloads()
+
   return (
     <div>
       {/* Header */}
@@ -17,7 +24,7 @@ export default function Home() {
                     Analytics for PyPI packages
                   </h1>
                   <p className="mt-6 text-lg leading-8 text-white">
-                    Browse through <span className="text-primary">486,632</span> Python packages from PyPI, updated daily.
+                    Browse through <span className="text-primary">{Number(total_downloads.projects).toLocaleString("en-US")}</span> Python packages from PyPI and over <span className="text-primary">{total_downloads.total}</span> downloads, updated daily.
                   </p>
                   <div className="mt-10 flex items-center justify-center gap-x-6">
                     <Search/>

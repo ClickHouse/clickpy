@@ -64,7 +64,7 @@ export default function Radar({ data, onClick }) {
           const values = data
             .filter((obj) => obj.y === y)
             .reduce((acc, obj) => {
-              acc[obj.name] = Number(obj.value);
+              acc[obj.name] = (obj.value);
               return acc;
             }, {});
           return {
