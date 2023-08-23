@@ -29,7 +29,7 @@ export default function Search() {
     return state;
   };
 
-  const debouncedQuery = useDebounce(query, 300);
+  const debouncedQuery = useDebounce(query, 100);
 
   const onClick = (package_name) => {
     setPackages([]);
