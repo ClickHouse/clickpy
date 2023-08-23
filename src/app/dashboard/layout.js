@@ -24,7 +24,7 @@ export default async function DashboardLayout({ children }) {
             <nav className="flex flex-1 flex-col">{/* maybe later nav  */}</nav>
           </div>
         </div>
-        <div className="flex flex-row justify-between p-6 lg:px-8">
+        <div className="flex flex-row justify-between items-center p-6 lg:px-8">
           <div className="xl:ml-28 ml-10">
             <Search />
           </div>

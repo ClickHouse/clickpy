@@ -44,7 +44,7 @@ export default function Search() {
 
   return (
     <div className="bg-neutral-725 lg:w-[400px] sm:w-[300px]">
-      <div className="mt-2 h-12 flex rounded-md shadow-sm ">
+      <div className="flex rounded-md shadow-sm">
         <div className="relative flex flex-grow flex-col items-stretch z-20">
           <div className="flex">
             <div className="pointer-events-none py-2 flex items-center pl-3">
@@ -57,7 +57,7 @@ export default function Search() {
               type="package"
               name="package"
               id="package"
-              className="rounded-md items-center outline-none bg-neutral-725 border-1 py-1.5 pl-3 placeholder:tracking-wide placeholder:font-light font-normal text-slate-400 placeholder:text-slate-400 text-normal "
+              className="rounded-md items-center outline-none bg-neutral-725 border-1 py-3 pl-3 placeholder:tracking-wide placeholder:font-light font-normal text-slate-400 placeholder:text-slate-400 text-normal "
               placeholder="Search for a package"
               onChange={(e) => {
                 setQuery(e.target.value);
