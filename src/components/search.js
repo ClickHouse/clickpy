@@ -65,7 +65,7 @@ export default function Search() {
             />
           </div>
           {packages.length > 0 && (
-            <div className="pr-3 pl-5 bg-neutral-725 font-normal rounded-b-xl shadow-sm border-1 w-full">
+            <div className="absolute top-12 pr-3 pl-5 bg-neutral-725 font-normal rounded-b-xl shadow-sm border-1 w-full">
               <ul role="list" className="divide-y divide-white/5 w-full">
                 {packages.map((p, i) => (
                   <li
