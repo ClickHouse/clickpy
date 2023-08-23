@@ -1,115 +1,132 @@
-'use client'
-import React, { useRef } from 'react';
-import ReactECharts from 'echarts-for-react';
+"use client";
+import React, { useRef } from "react";
+import ReactECharts from "echarts-for-react";
 
-export default function Bar ({data, stack, onSelect}) {
-
-    const xAxis = Array.from(new Set(data.map(p => p.x)))
-    const values = data.reduce((accumulator, val) => {
-        if (!(val.name in accumulator)) {
-            accumulator[val.name] = {
-                name: val.name,
-                data: new Array(xAxis.length).fill(0)
-            }
-        }
-        return accumulator
-    },{})
-
-    data.forEach(p => values[p.name].data[xAxis.indexOf(p.x)] = p.y)
-
-    const chartRef = useRef();
-    const colors = ['#74FF7A', '#74ACFF', '#FC74FF', '#FCFF74']
-    const series = Object.values(values).map((series, i) => {
-        return stack ? {
-            type: 'bar',
-            name: series.name,
-            data: series.data,
-            color: colors[i],
-            stack: 'series'
-        } : {
-            type: 'bar',
-            name: series.name,
-            data: series.data,
-            color: colors[i],
-        }
-    })
-
-    const options = {
-        grid: {
-            left: '80px',
-            right: '24px',
-        },
-        tooltip: {
-            trigger: 'item',
-            textStyle: {
-                  color: '#FCFF74',
-                  fontWeight: 'bold',
-                  fontSize: 16,
-                  lineHeight: 24
-              },
-            backgroundColor: '#181818',
-            borderWidth: 0,
-
-        },
-        xAxis: {
-          show: true,
-          type: 'category',
-          data: xAxis
-        },
-        legend: {
-            top: '5%',
-            left: '84px',
-            orient: 'vertical',
-            textStyle: {
-              color: '#FFFFFFF',
-              fontSize: 16
-            },
-            icon: 'circle',
-            backgroundColor: '#626262',
-            borderRadius: 5,
-            borderWidth: 1,
-            padding: 10,
-          },
-        yAxis: {
-            splitLine: {
-                show: true,
-                lineStyle: {
-                    color: '#808691'
-                }
-             },
-        },
-        series: series,
-        brush: {
-            toolbox: ['lineX', 'clear'],
-            brushType: 'lineX',
-            brushMode: 'single',
-            transformable: false,
-        },
+export default function Bar({ data, stack, onSelect }) {
+  const xAxis = Array.from(new Set(data.map((p) => p.x)));
+  const values = data.reduce((accumulator, val) => {
+    if (!(val.name in accumulator)) {
+      accumulator[val.name] = {
+        name: val.name,
+        data: new Array(xAxis.length).fill(0),
+      };
     }
+    return accumulator;
+  }, {});
 
-    const onMouseOver = () => {
-        const echartsInstance = chartRef.current.getEchartsInstance();
-        echartsInstance.dispatchAction({
-            type: 'takeGlobalCursor',
-            key: 'brush',
-            brushOption: {
-                brushType: 'lineX',
-            }
-        })
-    }
+  data.forEach((p) => (values[p.name].data[xAxis.indexOf(p.x)] = p.y));
 
-    const onBrushEnd = (params) => {
-        if (params.areas.length > 0) {
-            const echartsInstance = chartRef.current.getEchartsInstance();
-            const start = echartsInstance.convertFromPixel({xAxisIndex: 0}, params.areas[0].range[0])
-            const end = echartsInstance.convertFromPixel({xAxisIndex: 0}, params.areas[0].range[1])
-            onSelect && onSelect(xAxis[start], xAxis[end])
+  const chartRef = useRef();
+  const colors = ["#74FF7A", "#74ACFF", "#FC74FF", "#FCFF74"];
+  const series = Object.values(values).map((series, i) => {
+    return stack
+      ? {
+          type: "bar",
+          name: series.name,
+          data: series.data,
+          color: colors[i],
+          stack: "series",
         }
-    }
+      : {
+          type: "bar",
+          name: series.name,
+          data: series.data,
+          color: colors[i],
+        };
+  });
 
-    return <div className="rounded-lg bg-chart border-2 border-slate-500 h-full justify-between flex flex-col" onMouseOver={onMouseOver}>
-        <ReactECharts ref={chartRef} option={options} style={{ width: "100%", height: "100%" }} onEvents={{
-            'brushEnd': onBrushEnd
-        }}/>
-    </div>;
+  const options = {
+    animation: false,
+    grid: {
+      left: "80px",
+      right: "24px",
+    },
+    tooltip: {
+      trigger: "item",
+      textStyle: {
+        color: "#FCFF74",
+        fontWeight: "bold",
+        fontSize: 16,
+        lineHeight: 24,
+      },
+      backgroundColor: "#181818",
+      borderWidth: 0,
+    },
+    xAxis: {
+      show: true,
+      type: "category",
+      data: xAxis,
+    },
+    legend: {
+      top: "5%",
+      left: "84px",
+      orient: "vertical",
+      textStyle: {
+        color: "#FFFFFFF",
+        fontSize: 16,
+      },
+      icon: "circle",
+      backgroundColor: "#626262",
+      borderRadius: 5,
+      borderWidth: 1,
+      padding: 10,
+    },
+    yAxis: {
+      splitLine: {
+        show: true,
+        lineStyle: {
+          color: "#808691",
+        },
+      },
+    },
+    series: series,
+    brush: {
+      toolbox: ["lineX", "clear"],
+      brushType: "lineX",
+      brushMode: "single",
+      transformable: false,
+    },
+  };
+
+  const onMouseOver = () => {
+    const echartsInstance = chartRef.current.getEchartsInstance();
+    echartsInstance.dispatchAction({
+      type: "takeGlobalCursor",
+      key: "brush",
+      brushOption: {
+        brushType: "lineX",
+      },
+    });
+  };
+
+  const onBrushEnd = (params) => {
+    if (params.areas.length > 0) {
+      const echartsInstance = chartRef.current.getEchartsInstance();
+      const start = echartsInstance.convertFromPixel(
+        { xAxisIndex: 0 },
+        params.areas[0].range[0]
+      );
+      const end = echartsInstance.convertFromPixel(
+        { xAxisIndex: 0 },
+        params.areas[0].range[1]
+      );
+      onSelect && onSelect(xAxis[start], xAxis[end]);
+    }
+  };
+
+  return (
+    <div
+      className="rounded-lg bg-chart border border-slate-700 h-full justify-between flex flex-col"
+      onMouseOver={onMouseOver}
+    >
+      <ReactECharts
+        ref={chartRef}
+        option={options}
+        style={{ width: "100%", height: "100%" }}
+        onEvents={{
+          brushEnd: onBrushEnd,
+        }}
+      />
+    </div>
+  );
 }

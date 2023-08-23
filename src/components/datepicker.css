@@ -12,7 +12,7 @@
 }
 
 .calendar {
-    @apply bg-chart rounded-lg font-inter text-sm text-white border-2 border-slate-500 mt-1 p-4;
+    @apply bg-chart rounded-lg font-inter text-sm text-white border border-slate-700 mt-1 p-4;
 }
 
 .calendar div {
