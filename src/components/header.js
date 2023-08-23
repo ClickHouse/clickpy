@@ -1,6 +1,7 @@
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
 import QueryToggle from "./toggle";
 import Image from "next/image";
+import VisitClickHouseCloud from "./visit-clickhouse";
 
 export default function Header() {
   return (
@@ -26,18 +27,7 @@ export default function Header() {
           <div className="mr-2">
             <QueryToggle />
           </div>
-          <a href="https://clickhouse.com/cloud" target="_blank">
-            <button
-              type="button"
-              className="h-full inline-flex items-center gap-x-2 rounded-md bg-primary-300 px-3.5 py-2.5 text-sm font-inter text-black shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 "
-            >
-              Visit ClickHouse Cloud
-              <ArrowTopRightOnSquareIcon
-                className="-mr-0.5 h-5 w-5"
-                aria-hidden="true"
-              />
-            </button>
-          </a>
+          <VisitClickHouseCloud />
         </div>
       </nav>
     </header>
