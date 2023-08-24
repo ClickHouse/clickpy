@@ -2,10 +2,12 @@
 import React, { useRef, useState } from "react";
 import ReactECharts from "echarts-for-react";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
+import { useRouter } from 'next/navigation'
 import Link from "next/link";
 
 export default function SparkLine({ name, data, total, link }) {
   const chartRef = useRef();
+  const router = useRouter();
   const [selected, setSelected] = useState(false);
   const formatQuantity = (value) => {
     if (value > 1000) {
@@ -98,11 +100,16 @@ export default function SparkLine({ name, data, total, link }) {
     setSelected(false);
   };
 
+  const onClick = () => {
+    router.push(link)
+  }
+
   return (
     <div
-      className="rounded-lg bg-chart border border-slate-700 h-full justify-between flex flex-col"
+      className="cursor-pointer rounded-lg bg-chart border border-slate-700 h-full justify-between flex flex-col"
       onMouseMove={onMouseOver}
       onMouseOut={onMouseOut}
+      onClick={onClick}
     >
       <p
         className={`font-inter xl:text-xl lg:text-l text-right ml-2 mr-2 mt-3 ${
