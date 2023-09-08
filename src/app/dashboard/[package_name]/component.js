@@ -13,38 +13,37 @@ export default function ClientComponent ({type, data, options={}}) {
     const router = useRouter()
     const searchParams = useSearchParams()
     const pathname = usePathname()
+    const current = new URLSearchParams(searchParams.toString())
     return (
         {
             'bar': <Bar data={data} stack={options.stack} onSelect={(min_date, max_date) => {
-                const current = new URLSearchParams(searchParams.toString())
                 current.set('min_date', min_date)
                 current.set('max_date', max_date)
                 router.push(`${pathname}?${current.toString()}`, { scroll: false })
             }}/>,
             'pie': <Pie data={data} onClick={(value) => {
-                const current = new URLSearchParams(searchParams.toString())
                 current.set(options.filter_name, value)
                 router.push(`${pathname}?${current.toString()}`, { scroll: false })
                 
             }}/>,
             'line': <Line data={data} onSelect={(min_date, max_date) => {
-                const current = new URLSearchParams(searchParams.toString())
                 current.set('min_date', min_date)
                 current.set('max_date', max_date)
                 router.push(`${pathname}?${current.toString()}`, { scroll: false })
             }}/>,
             'date_picker': <DatePicker dates={data} clearable={true} onChange={(min_date, max_date) => {
-                const current = new URLSearchParams(searchParams.toString())
                 min_date ? current.set('min_date', min_date): current.delete('min_date')
                 max_date ? current.set('max_date', max_date): current.delete('max_date')
                 router.push(`${pathname}?${current.toString()}`, { scroll: false })
             }}/>,
             'filter': <Filter value={data} name={options.label} onRemove={() => {
-                const current = new URLSearchParams(searchParams.toString())
                 current.delete(options.label)
                 router.push(`${pathname}?${current.toString()}`, { scroll: false })
             }}/>,
-            'map': <CountryMap data={data}/>,
+            'map': <CountryMap data={data} onClick={ (country_code) => {
+                current.set('country_code', country_code)
+                router.push(`${pathname}?${current.toString()}`, { scroll: false })
+            }}/>,
             'radar': <Radar data={data}/>,
             'guage': <Guage data={data}/>,
         }[type]

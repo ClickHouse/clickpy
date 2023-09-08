@@ -2,11 +2,13 @@
 import ReactECharts from "echarts-for-react";
 import "echarts-countries-js/echarts-countries-js/world";
 export default function CountryMap({ data, onClick }) {
+
   const scaledValues = data.map((p) => {
     return {
       name: p.name,
       value: Math.sqrt(p.value),
       label: p.value,
+      code: p.country_code,
     };
   });
   const values = scaledValues.map((p) => Number(p.value));
@@ -73,7 +75,7 @@ export default function CountryMap({ data, onClick }) {
   };
 
   const select = (params) => {
-    console.log(params);
+    onClick && onClick(params.data.code);
   };
 
   return (
