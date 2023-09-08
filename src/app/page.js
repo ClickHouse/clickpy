@@ -5,7 +5,7 @@ import { getTotalDownloads } from "@/utils/clickhouse";
 
 import 'server-only'
 
-export default function Home() {
+export default async function Home() {
   
   const total_downloads = await getTotalDownloads()
   
