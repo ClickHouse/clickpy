@@ -21,7 +21,7 @@ CREATE TABLE pypi
     `tls_protocol` LowCardinality(String),
     `tls_cipher` LowCardinality(String),
     `version` String,
-    `python_minor` String MATERIALIZED arrayStringConcat(arraySlice(splitByChar('.', python), 1, 2), '.'),
+    `python_minor` String DEFAULT arrayStringConcat(arraySlice(splitByChar('.', python), 1, 2), '.'),
     `system_name` String,
     `_file` String
 )
@@ -33,14 +33,33 @@ ORDER BY (project, date, version, python_minor, country_code, system_name)
  INSERT INTO pypi SELECT timestamp, country_code, url, project, (ifNull(file.filename, ''), ifNull(file.project, ''), ifNull(file.version, ''), ifNull(file.type, '')) AS file, (ifNull(installer.name, ''), ifNull(installer.version, '')) AS installer, python AS python, (ifNull(implementation.name, ''), ifNull(implementation.version, '')) AS implementation, (ifNull(distro.name, ''), ifNull(distro.version, ''), ifNull(distro.id, ''), (ifNull(distro.libc.lib, ''), ifNull(distro.libc.version, ''))) AS distro, (ifNull(system.name, ''), ifNull(system.release, '')) AS system, cpu AS cpu, openssl_version AS openssl_version, setuptools_version AS setuptools_version, rustc_version AS rustc_version, tls_protocol, tls_cipher, file.version as version, system.name as system_name, _file FROM s3('https://storage.googleapis.com/clickhouse_public_datasets/pypi/file_downloads/file_downloads-000000000000.parquet', 'Parquet', 'timestamp DateTime64(6), country_code LowCardinality(String), url String, project String, `file.filename` String, `file.project` String, `file.version` String, `file.type` String, `installer.name` String, `installer.version` String, python String, `implementation.name` String, `implementation.version` String, `distro.name` String, `distro.version` String, `distro.id` String, `distro.libc.lib` String, `distro.libc.version` String, `system.name` String, `system.release` String, cpu String, openssl_version String, setuptools_version String, rustc_version String,tls_protocol String, tls_cipher String') SETTINGS input_format_null_as_default = 1, input_format_parquet_import_nested = 1, max_insert_block_size = 100000000, min_insert_block_size_rows = 100000000, min_insert_block_size_bytes = 500000000, parts_to_throw_insert = 50000, max_insert_threads = 16
 ```
 
-
-
 ## Materialized views
 
-### Downloads per day
-```sql
+### Downloads
 
+```sql
 CREATE TABLE pypi_downloads
+(
+    `project` String,
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY project
+
+CREATE MATERIALIZED VIEW pypi_downloads_mv TO pypi_downloads
+(
+    `project` String,
+    `count` Int64
+
+) AS SELECT project, count() AS count
+FROM pypi
+GROUP BY project
+```
+
+### Downloads by version
+
+```sql
+CREATE TABLE pypi_downloads_by_version
 (
     `project` String,
     `version` String,
@@ -50,8 +69,7 @@ CREATE TABLE pypi_downloads
 ENGINE = SummingMergeTree
 ORDER BY (project, version)
 
-
-CREATE MATERIALIZED VIEW pypi_downloads_mv TO pypi_downloads
+CREATE MATERIALIZED VIEW pypi_downloads_by_version_mv TO pypi_downloads_by_version
 (
     `project` String,
     `version` String,
@@ -68,36 +86,89 @@ FROM pypi
 GROUP BY
     project,
     version
-
-
 ```
 
+### Downloads per day
 
 ```sql
-CREATE TABLE pypi_downloads
+CREATE TABLE pypi_downloads_per_day
 (
+    `date` Date,
     `project` String,
-    `count` Int64,
-    `version` String
+    `count` Int64
 )
 ENGINE = SummingMergeTree
-ORDER BY (project, version)
-
+ORDER BY (project, date)
 
 INSERT INTO pypi_downloads SELECT
+    date,
     project,
-    version,
     count() AS count
 FROM pypi
 GROUP BY
-    project,
-    file.version AS version
-
+    date,
+    project
 ```
 
-```sql
+### Downloads per day by version
 
-CREATE TABLE default.pypi_downloads_per_day_by_file_type
+```sql
+CREATE TABLE pypi_downloads_per_day_by_version
+(
+    `date` Date,
+    `project` String,
+    `version` String,
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY (project, version, date)
+
+INSERT INTO pypi_downloads_per_day_by_version SELECT
+    date,
+    project,
+    file.version AS version,
+    count() AS count
+FROM pypi
+GROUP BY
+    date,
+    project,
+    version
+```
+
+
+### Downloads per day by version by country
+
+```sql
+CREATE TABLE pypi_downloads_per_day_by_version_by_country
+(
+    `date` Date,
+    `project` String,
+    `version` String,
+    `country_code` String,
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY (project, version, date, country_code)
+
+INSERT INTO pypi_downloads_per_day_by_version_by_country SELECT
+    date,
+    project,
+    file.version AS version,
+    country_code,
+    count() AS count
+FROM pypi
+GROUP BY
+    date,
+    project,
+    version,
+    country_code
+```
+
+
+### Downloads per day by version by file type
+
+```sql
+CREATE TABLE pypi_downloads_per_day_by_version_by_file_type
 (
     `date` Date,
     `project` String,
@@ -108,11 +179,71 @@ CREATE TABLE default.pypi_downloads_per_day_by_file_type
 ENGINE = SummingMergeTree
 ORDER BY (project, version, date, type)
 
-
-INSERT INTO pypi_downloads_per_day_by_file_type SELECT
+INSERT INTO pypi_downloads_per_day_by_version_by_file_type SELECT
     date,
     project,
     file.version AS version,
+    file.type as type,
+    count() AS count
+FROM pypi
+GROUP BY
+    date,
+    project,
+    version,
+    type
+```
+
+### Downloads per day by version by python minor
+
+```sql
+CREATE TABLE pypi_downloads_per_day_by_version_by_python
+(
+    `date` Date,
+    `project` String,
+    `version` String,
+    `python_minor` String,
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY (project, version, date, python_minor)
+
+
+INSERT INTO pypi_downloads_per_day_by_version_by_python SELECT
+    date,
+    project,
+    file.version AS version,
+    python_minor,
+    count() AS count
+FROM pypi
+GROUP BY
+    date,
+    project,
+    version,
+    python_minor
+```
+
+### Downloads per day by version by installer by type
+
+```sql
+
+CREATE OR REPLACE TABLE pypi_downloads_per_day_by_version_by_installer_by_type
+(
+    `project` String,
+    `version` String,
+    `date` Date,
+    `installer` String,
+    `type` Enum8('bdist_wheel' = 0, 'sdist' = 1, 'bdist_egg' = 2, 'bdist_wininst' = 3, 'bdist_dumb' = 4, 'bdist_msi' = 5, 'bdist_rpm' = 6, 'bdist_dmg' = 7),
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY (project, version, installer, date)
+
+
+INSERT INTO pypi_downloads_per_day_by_version_by_installer_by_type SELECT
+    project,
+    file.version AS version,
+    date,
+    installer.name AS installer,
     file.type AS type,
     count() AS count
 FROM pypi
@@ -120,38 +251,14 @@ GROUP BY
     project,
     version,
     date,
+    installer,
     type
 ```
 
+## Downloads per day by version by system
 
 ```sql
-CREATE TABLE default.pypi_downloads_per_day_by_python_version
-(
-    `date` Date,
-    `project` String,
-    `version` String,
-    `python` String,
-    `count` Int64
-)
-ENGINE = SummingMergeTree
-ORDER BY (project, version, date, python)
-
-INSERT INTO pypi_downloads_per_day_by_python_version SELECT
-    date,
-    project,
-    file.version AS version,
-    arrayStringConcat(arraySlice(splitByChar('.', python), 1, 2), '.') AS python,
-    count() AS count
-FROM pypi
-GROUP BY
-    project,
-    version,
-    date,
-    python
-
-```
-```sql
-CREATE TABLE default.pypi_downloads_per_day_by_system
+CREATE TABLE pypi_downloads_per_day_by_version_by_system
 (
     `date` Date,
     `project` String,
@@ -176,71 +283,28 @@ GROUP BY
     system
 ```
 
+### Downloads per day by version by installer by type by country
+
 ```sql
-CREATE OR REPLACE TABLE pypi_file_types_by_installer
-(
-    `project` String,
-    `version` String,
-    `date` Date,
-    `installer` String,
-    `type` Enum8('bdist_wheel' = 0, 'sdist' = 1, 'bdist_egg' = 2, 'bdist_wininst' = 3, 'bdist_dumb' = 4, 'bdist_msi' = 5, 'bdist_rpm' = 6, 'bdist_dmg' = 7),
-    `count` Int64
-)
-ENGINE = SummingMergeTree
-ORDER BY (project, version, installer, date)
-
-
-INSERT INTO pypi_file_types_by_installer SELECT
-    project,
-    file.version AS version,
-    date,
-    installer.name AS installer,
-    file.type AS type,
-    count() AS count
-FROM pypi
-GROUP BY
-    project,
-    version,
-    date,
-    installer,
-    type
+pypi_downloads_per_day_by_version_by_installer_by_type_by_country
 ```
 
+### Downloads per day by version by python minor by country
 
 ```sql
-
-CREATE TABLE default.pypi_downloads_per_day_by_country
-(
-    `date` Date,
-    `project` String,
-    `version` String,
-    `country_code` String,
-    `count` Int64
-)
-ENGINE = SummingMergeTree
-ORDER BY (project, version, date, country_code)
-
-
-INSERT INTO pypi_downloads_per_day_by_country SELECT
-    date,
-    project,
-    file.version AS version,
-    country_code,
-    count() AS count
-FROM pypi
-GROUP BY
-    project,
-    version,
-    date,
-    country_code
-
-
+pypi_downloads_per_day_by_version_by_python_by_country
 ```
 
+### Downloads per day by version by system by country
 
 
 ```sql
+pypi_downloads_per_day_by_version_by_system_by_country
+```
 
+## Dictionaries
+
+```sql
 CREATE TABLE countries
 (
     `name` String,
@@ -264,12 +328,11 @@ PRIMARY KEY code
 SOURCE(CLICKHOUSE(TABLE 'countries'))
 LIFETIME(MIN 0 MAX 300)
 LAYOUT(COMPLEX_KEY_HASHED())
-
 ```
 
+# Packages table
 
 ```sql
-
 CREATE TABLE packages
 (
     `metadata_version` String,
@@ -312,5 +375,4 @@ CREATE TABLE packages
 )
 ENGINE = MergeTree
 ORDER BY name
-
 ```
