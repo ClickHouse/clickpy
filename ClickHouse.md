@@ -32,6 +32,27 @@ ORDER BY (project, date, version, python_minor, country_code, system_name)
 
  INSERT INTO pypi SELECT timestamp, country_code, url, project, (ifNull(file.filename, ''), ifNull(file.project, ''), ifNull(file.version, ''), ifNull(file.type, '')) AS file, (ifNull(installer.name, ''), ifNull(installer.version, '')) AS installer, python AS python, (ifNull(implementation.name, ''), ifNull(implementation.version, '')) AS implementation, (ifNull(distro.name, ''), ifNull(distro.version, ''), ifNull(distro.id, ''), (ifNull(distro.libc.lib, ''), ifNull(distro.libc.version, ''))) AS distro, (ifNull(system.name, ''), ifNull(system.release, '')) AS system, cpu AS cpu, openssl_version AS openssl_version, setuptools_version AS setuptools_version, rustc_version AS rustc_version, tls_protocol, tls_cipher, file.version as version, system.name as system_name, _file FROM s3('https://storage.googleapis.com/clickhouse_public_datasets/pypi/file_downloads/file_downloads-000000000000.parquet', 'Parquet', 'timestamp DateTime64(6), country_code LowCardinality(String), url String, project String, `file.filename` String, `file.project` String, `file.version` String, `file.type` String, `installer.name` String, `installer.version` String, python String, `implementation.name` String, `implementation.version` String, `distro.name` String, `distro.version` String, `distro.id` String, `distro.libc.lib` String, `distro.libc.version` String, `system.name` String, `system.release` String, cpu String, openssl_version String, setuptools_version String, rustc_version String,tls_protocol String, tls_cipher String') SETTINGS input_format_null_as_default = 1, input_format_parquet_import_nested = 1, max_insert_block_size = 100000000, min_insert_block_size_rows = 100000000, min_insert_block_size_bytes = 500000000, parts_to_throw_insert = 50000, max_insert_threads = 16
 ```
+## Compact-table
+```sql
+
+CREATE TABLE pypi_compact
+(
+    `date` Date,
+    `country_code` LowCardinality(String),
+    `project` String,
+    `type` LowCardinality(String),
+    `installer` LowCardinality(String),
+    `python_minor` LowCardinality(String),
+    `system` LowCardinality(String),
+    `version` String
+)
+ENGINE = MergeTree
+ORDER BY (project, date, version, country_code, python_minor, system)
+
+
+INSERT INTO pypi_compact SELECT timestamp::Date as date, country_code, project, file.type as type, installer.name as installer, arrayStringConcat(arraySlice(splitByChar('.', python), 1, 2), '.') as python_minor, system.name as name, file.version as version FROM s3('https://storage.googleapis.com/clickhouse_public_datasets/pypi/file_downloads/2023_may_aug/file_downloads-*.parquet', 'Parquet', 'timestamp DateTime64(6), country_code LowCardinality(String), url String, project String, `file.filename` String, `file.project` String, `file.version` String, `file.type` String, `installer.name` String, `installer.version` String, python String, `implementation.name` String, `implementation.version` String, `distro.name` String, `distro.version` String, `distro.id` String, `distro.libc.lib` String, `distro.libc.version` String, `system.name` String, `system.release` String, cpu String, openssl_version String, setuptools_version String, rustc_version String,tls_protocol String, tls_cipher String') SETTINGS input_format_null_as_default = 1, input_format_parquet_import_nested = 1, max_insert_block_size = 100000000, min_insert_block_size_rows = 100000000, min_insert_block_size_bytes = 500000000, parts_to_throw_insert = 50000, max_insert_threads = 16
+
+```
 
 ## Materialized views
 
@@ -79,7 +100,7 @@ CREATE MATERIALIZED VIEW pypi_downloads_by_version_mv TO pypi_downloads_by_versi
 ) AS
 SELECT
     project,
-    file.version AS version,
+    version,
     any(_file) AS _file,
     count() AS count
 FROM pypi
@@ -126,7 +147,7 @@ ORDER BY (project, version, date)
 INSERT INTO pypi_downloads_per_day_by_version SELECT
     date,
     project,
-    file.version AS version,
+    version,
     count() AS count
 FROM pypi
 GROUP BY
@@ -153,7 +174,7 @@ ORDER BY (project, version, date, country_code)
 INSERT INTO pypi_downloads_per_day_by_version_by_country SELECT
     date,
     project,
-    file.version AS version,
+    version,
     country_code,
     count() AS count
 FROM pypi
@@ -182,7 +203,7 @@ ORDER BY (project, version, date, type)
 INSERT INTO pypi_downloads_per_day_by_version_by_file_type SELECT
     date,
     project,
-    file.version AS version,
+    version,
     file.type as type,
     count() AS count
 FROM pypi
@@ -211,7 +232,7 @@ ORDER BY (project, version, date, python_minor)
 INSERT INTO pypi_downloads_per_day_by_version_by_python SELECT
     date,
     project,
-    file.version AS version,
+    version,
     python_minor,
     count() AS count
 FROM pypi
@@ -236,15 +257,15 @@ CREATE OR REPLACE TABLE pypi_downloads_per_day_by_version_by_installer_by_type
     `count` Int64
 )
 ENGINE = SummingMergeTree
-ORDER BY (project, version, installer, date)
+ORDER BY (project, version, date, installer)
 
 
 INSERT INTO pypi_downloads_per_day_by_version_by_installer_by_type SELECT
     project,
-    file.version AS version,
+    version,
     date,
-    installer.name AS installer,
-    file.type AS type,
+    installer,
+    type AS type,
     count() AS count
 FROM pypi
 GROUP BY
@@ -272,34 +293,69 @@ ORDER BY (project, version, date, system)
 INSERT INTO pypi_downloads_per_day_by_system SELECT
     date,
     project,
-    file.version AS version,
+    version,
     system.name AS system,
     count() AS count
 FROM pypi
 GROUP BY
+    date,
     project,
     version,
-    date,
     system
 ```
 
 ### Downloads per day by version by installer by type by country
 
 ```sql
-pypi_downloads_per_day_by_version_by_installer_by_type_by_country
+CREATE TABLE pypi_downloads_per_day_by_version_by_installer_by_type_by_country
+(
+    `project` String,
+    `version` String,
+    `date` Date,
+    `installer` String,
+    `type` Enum8('bdist_wheel' = 0, 'sdist' = 1, 'bdist_egg' = 2, 'bdist_wininst' = 3, 'bdist_dumb' = 4, 'bdist_msi' = 5, 'bdist_rpm' = 6, 'bdist_dmg' = 7),
+    `country_code` LowCardinality(String),
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY (project, version, date, country_code, installer, type)
+
+INSERT INTO pypi_downloads_per_day_by_version_by_installer_by_type_by_country
+SELECT date, project, file.version as version, installer.name as installer, file.type as type, country_code, count() as count
+FROM pypi
+GROUP BY date, project, version, installer, type, country_code
 ```
 
 ### Downloads per day by version by python minor by country
 
 ```sql
-pypi_downloads_per_day_by_version_by_python_by_country
+CREATE TABLE pypi_downloads_per_day_by_version_by_python_by_country
+(
+    `date` Date,
+    `project` String,
+    `version` String,
+    `python_minor` String,
+    `country_code` LowCardinality(String),
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY (project, version, date, country_code, python_minor)
+
+INSERT INTO pypi_downloads_per_day_by_version_by_python_by_country 
+    SELECT 
+    date, project, file.version as version, python_minor, country_code, count() as count 
+    FROM pypi 
+    GROUP BY date, project, version, python_minor, country_code
+
+
+
 ```
 
 ### Downloads per day by version by system by country
 
 
 ```sql
-pypi_downloads_per_day_by_version_by_system_by_country
+
 ```
 
 ## Dictionaries
@@ -376,3 +432,30 @@ CREATE TABLE packages
 ENGINE = MergeTree
 ORDER BY name
 ```
+
+
+## Queries
+
+
+SELECT
+    python_minor as name,
+    toStartOfDay(date)::Date32 AS x,
+    sum(count) AS y
+FROM pypi_downloads_per_day_by_version_by_python_by_country
+WHERE (date >= '2023-05-21'::Date32) AND (date < '2023-08-21'::Date32) AND (project = 'urllib3')
+AND 1=1 AND python_minor != ''
+AND 1=1
+GROUP BY name, x
+ORDER BY x ASC, y DESC LIMIT 4 BY x
+
+
+SELECT
+    python_minor as name,
+    toStartOfDay(date)::Date32 AS x,
+    sum(count) AS y
+FROM pypi
+WHERE (date >= '2023-05-21'::Date32) AND (date < '2023-08-21'::Date32) AND (project = 'urllib3')
+AND 1=1 AND python_minor != ''
+AND 1=1
+GROUP BY name, x
+ORDER BY x ASC, y DESC LIMIT 4 BY x

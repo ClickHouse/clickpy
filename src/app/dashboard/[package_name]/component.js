@@ -40,7 +40,7 @@ export default function ClientComponent ({type, data, options={}}) {
                 current.delete(options.label)
                 router.push(`${pathname}?${current.toString()}`, { scroll: false })
             }}/>,
-            'map': <CountryMap data={data} onClick={ (country_code) => {
+            'map': <CountryMap data={data} selected={current.get('country_code')} onClick={ (country_code) => {
                 current.set('country_code', country_code)
                 router.push(`${pathname}?${current.toString()}`, { scroll: false })
             }}/>,

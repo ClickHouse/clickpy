@@ -1,7 +1,7 @@
 "use client";
 import ReactECharts from "echarts-for-react";
 import "echarts-countries-js/echarts-countries-js/world";
-export default function CountryMap({ data, onClick }) {
+export default function CountryMap({ data, selected, onClick }) {
 
   const scaledValues = data.map((p) => {
     return {
@@ -9,11 +9,14 @@ export default function CountryMap({ data, onClick }) {
       value: Math.sqrt(p.value),
       label: p.value,
       code: p.country_code,
-    };
-  });
+      selected: p.country_code == selected,
+
+    }
+  })
+
   const values = scaledValues.map((p) => Number(p.value));
   const options = {
-    backgroundColor: "#343431",
+    colorBy: 'series',
     animation: false,
     tooltip: {
       trigger: "item",
@@ -42,7 +45,7 @@ export default function CountryMap({ data, onClick }) {
       text: ["Max", "Min"],
       realtime: false,
       calculable: false,
-      color: ["#FBFF46", "#EEEF40", "#FCFF74", "#FDFFA3", "#FEFFBA", "#F6F7FA"],
+      color: selected ? ['#2F2F2F']: ["#FAFF69", "#DDE26B", "#B2B661", "#8A8C5A", "#51523B", "#2F2F2F"],
       left: 32,
     },
 
@@ -51,22 +54,30 @@ export default function CountryMap({ data, onClick }) {
         name: "Downloads",
         type: "map",
         map: "world",
-        roam: true,
+        roam: false,
         height: "80%",
         label: {
           show: false,
+        },
+        select: {
+            itemStyle: {
+              areaColor: "#EEF400"
+            },
+            label: { show: false },
         },
         itemStyle: {
           normal: {
             borderWidth: 0.5,
             borderColor: "black",
+            areaColor: "#343431"
           },
           emphasis: {
-            label: { show: true },
+            label: { show: false },
             shadowOffsetX: 0,
             shadowOffsetY: 0,
             shadowBlur: 20,
             shadowColor: "rgba(0, 0, 0, 0.3)",
+            areaColor: "#FEFFBF"
           },
         },
         data: scaledValues,
