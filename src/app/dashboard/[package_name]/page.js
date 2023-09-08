@@ -8,6 +8,7 @@ import { getPercentileRank, getPackageDetails, getDownloadSummary, getDownloadsO
 
 export default async function Dashboard({params, searchParams}) {
   const version = searchParams.version
+  const country_code = searchParams.country_code
   let min_date = searchParams.min_date
   let max_date = searchParams.max_date
   if (min_date == null || max_date == null) {
@@ -28,7 +29,7 @@ const [
       percentileRanks,
     ] = await Promise.all([
       getPackageDetails(params.package_name, version),
-      getDownloadSummary(params.package_name, version, min_date, max_date),
+      getDownloadSummary(params.package_name, version, min_date, max_date, country_code),
       getDownloadsOverTime(params.package_name, version,'Day', min_date, max_date),
       // getTopDistributionTypes(params.package_name, version, min_date, max_date),
       getTopVersions(params.package_name, version, min_date, max_date),

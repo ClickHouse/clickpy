@@ -6,9 +6,41 @@ export const clickhouse = createClient({
     password: process.env.CLICKHOUSE_PASSWORD,
 })
 
+
+const filters_to_tables = [
+    { columns: ['project'], table: 'pypi_downloads' },
+    { columns: ['project', 'version'], table: 'pypi_downloads_by_version' },
+    { columns: ['project', 'date'], table: 'pypi_downloads_per_day' },
+    { columns: ['project', 'date', 'version'], table: 'pypi_downloads_per_day_by_version' },
+    { columns: ['project', 'date', 'country_code'], table: 'pypi_downloads_per_day_by_country' },
+    { columns: ['project', 'date', 'version', 'country_code'], table: 'pypi_downloads_per_day_by_country' },
+    { columns: ['project', 'date', 'version', 'type'], table: 'pypi_downloads_per_day_by_file_type' },
+    { columns: ['project', 'date', 'version', 'python'], table: 'pypi_downloads_per_day_by_python_version' },
+    { columns: ['project', 'date', 'version', 'system'], table: 'pypi_downloads_per_day_by_system' },
+    { columns: ['project', 'date', 'version', 'installer', 'type'], table: 'pypi_file_types_by_installer' },
+]
+
+// based on required columns we identify the most optimal mv to query
+function findOptimalTable(required_columns) {
+    const match = filters_to_tables.find(value => {
+        if (value.columns.length == required_columns.length) {
+            let difference = value.columns.filter(column => !required_columns.includes(column))
+            if (difference.length == 0){
+                return true
+            }
+        }
+        return false
+    })
+    if (match) {
+        return match.table
+    }
+    return 'pypi'
+}
+
+
 export async function getPackages(query_prefix) {
     if (query_prefix != '') { 
-        const res = await query(`SELECT project, sum(count) AS c FROM pypi_downloads WHERE project LIKE {query_prefix:String} GROUP BY project ORDER BY c DESC LIMIT 6`, {
+        const res = await query(`SELECT project, sum(count) AS c FROM ${findOptimalTable(['project'])} WHERE project LIKE {query_prefix:String} GROUP BY project ORDER BY c DESC LIMIT 6`, {
                 query_prefix: `${query_prefix.toLowerCase().trim()}%`
             }
         )
@@ -19,23 +51,34 @@ export async function getPackages(query_prefix) {
 
 export async function getTotalDownloads() {
     const results = await query(`SELECT
-        formatReadableQuantity(sum(count)) AS total, uniqExact(project) as projects
-    FROM pypi_downloads`)
+        formatReadableQuantity(sum(count)) AS total, uniqExact(project) as projects FROM ${findOptimalTable(['project'])}`)
     return results[0]
 }
 
-export async function getDownloadSummary(package_name, version, min_date, max_date) {
+export async function getDownloadSummary(package_name, version, min_date, max_date, country_code) {
+    const columns = ['project', 'date']
+    if (version) {  columns.push('version') }
+    if (country_code) { columns.push('country_code') }
+    const table = findOptimalTable(columns)
+    console.log(`SELECT sumIf(count, date >= '${min_date}'::Date32 AND date >= '${max_date}'::Date32 - toIntervalDay(1) AND date <= '${max_date}'::Date32) AS last_day,
+    sumIf(count, date >= '${min_date}'::Date32 AND date >= '${max_date}'::Date32 - toIntervalWeek(1) AND date <= '${max_date}'::Date32) AS last_week,
+    sumIf(count, date >= '${min_date}'::Date32 AND date >= '${max_date}'::Date32 - toIntervalMonth(1) AND date <= '${max_date}'::Date32) AS last_month,
+    sumIf(count, date >= '${min_date}'::Date32 AND date >= '${min_date}'::Date32 AND date <= '${max_date}'::Date32) AS total
+    FROM ${table}
+    WHERE (project = '${package_name}') AND country_code='${country_code}'`)
+
     return query(`SELECT sumIf(count, date >= {min_date:String}::Date32 AND date >= {max_date:String}::Date32 - toIntervalDay(1) AND date <= {max_date:String}::Date32) AS last_day,
     sumIf(count, date >= {min_date:String}::Date32 AND date >= {max_date:String}::Date32 - toIntervalWeek(1) AND date <= {max_date:String}::Date32) AS last_week,
     sumIf(count, date >= {min_date:String}::Date32 AND date >= {max_date:String}::Date32 - toIntervalMonth(1) AND date <= {max_date:String}::Date32) AS last_month,
     sumIf(count, date >= {min_date:String}::Date32 AND date >= {min_date:String}::Date32 AND date <= {max_date:String}::Date32) AS total
-    FROM pypi_downloads_per_day
-    WHERE (project = {package_name:String}) AND ${version ? `version={version:String}`: '1=1'}`,
+    FROM ${table}
+    WHERE (project = {package_name:String}) AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'}`,
     {
         min_date: min_date,
         max_date: max_date,
         package_name: package_name,
-        version: version
+        version: version,
+        country_code: country_code,
     })
 }
 
@@ -43,7 +86,7 @@ export async function getProjectCount() {
     return query(`SELECT
         project,
         round(sum(count) / 1000000) AS c
-    FROM pypi_downloads
+    FROM ${findOptimalTable(['project'])}
     GROUP BY project
     ORDER BY c DESC
     LIMIT 6`)
@@ -52,13 +95,13 @@ export async function getProjectCount() {
 export async function getRecentPackageDownloads(package_name, max_date) {
     return query(`WITH (
         SELECT max(date) AS max_date
-        FROM pypi_downloads_per_day
+        FROM ${findOptimalTable(['project', 'date'])}
         WHERE project = {package_name:String}
     ) AS max_date
     SELECT
         toStartOfWeek(date) AS x,
         sum(count) AS y
-    FROM pypi_downloads_per_day
+    FROM ${findOptimalTable(['project', 'date'])}
     WHERE (project = {package_name:String}) AND (date > (max_date - toIntervalWeek(12)))
     GROUP BY x
     ORDER BY x ASC`, {
@@ -68,10 +111,13 @@ export async function getRecentPackageDownloads(package_name, max_date) {
 }
 
 export async function getPackageDateRanges(package_name, version) {
+    const columns = ['project', 'date']
+    if (version) {  columns.push('version') }
+    const table = findOptimalTable(columns)
     const results = await query(`SELECT
             max(date) AS max_date,
             min(date) AS min_date
-        FROM pypi_downloads_per_day
+        FROM ${table}
         WHERE project = {package_name:String} AND ${version ? `version={version:String}`: '1=1'}`, {
         package_name: package_name,
         version: version
@@ -109,7 +155,7 @@ export async function getDownloadsOverTime(package_name, version, period, min_da
     return query(`SELECT
         toStartOf${period}(date)::Date32 AS x,
         sum(count) AS y
-    FROM pypi_downloads_per_day
+    FROM pypi_downloads_per_day_by_version
     WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) AND ${version ? `version={version:String}`: '1=1'}
     GROUP BY x
     ORDER BY x ASC`, {
@@ -138,7 +184,7 @@ export async function getTopVersions(package_name, version, min_date, max_date) 
     return query(`SELECT
             version AS name,
             sum(count) AS value
-        FROM pypi_downloads_per_day
+        FROM pypi_downloads_per_day_by_version
         WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) AND ${version ? `version={version:String}`: '1=1'}
         GROUP BY version ORDER BY value DESC LIMIT 6`, {
             package_name: package_name,
@@ -190,6 +236,7 @@ export async function getDownloadsOverTimeBySystem(package_name, version, period
 export async function getDownloadsByCountry(package_name, version, min_date, max_date) {
     return query(`SELECT
             dictGet('countries_dict', 'name', country_code) AS name,
+            country_code,
             sum(count) AS value
         FROM pypi_downloads_per_day_by_country
         WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) AND ${version ? `version={version:String}`: '1=1'}
