@@ -35,4 +35,5 @@ yarn-error.log*
 next-env.d.ts
 **/.venv
 TODO.md
+**/.idea
 script.md
