@@ -3,16 +3,23 @@ import React, { useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function SparkLine({ name, data, total, link }) {
 	const chartRef = useRef()
+  const router = useRouter();
 	const [selected, setSelected] = useState(false)
+  
 	const formatQuantity = value => {
 		if (value > 1000) {
 			return `${value / 1000}B`
 		}
 		return `${value}M`
 	}
+  
+  const onClick = () => {
+    router.push(link)
+  }
 
 	const onMouseOver = () => {
 		const echartsInstance = chartRef.current.getEchartsInstance()
@@ -102,6 +109,7 @@ export default function SparkLine({ name, data, total, link }) {
 			className="rounded-lg bg-chart hover:bg-chart-hover shadow-inner border-2 border-neutral-725 h-full justify-between flex flex-col hover:shadow-xl transition-all duration-300 ease-in-out"
 			onMouseMove={onMouseOver}
 			onMouseOut={onMouseOut}
+      onClick={onClick}
 		>
 			<p
 				className={`text-right ml-2 mr-2 mt-3 transition-all duration-300 ease-in-out hover:shadow-xl ${
