@@ -24,7 +24,7 @@ export  default async function Home() {
                     Analytics for PyPI packages
                   </h1>
                   <p className="mt-6 text-lg leading-8 text-white">
-                    Browse through <span className="text-primary">{Number(total_downloads.projects).toLocaleString("en-US")}</span> Python packages from PyPI and over <span className="text-primary">{total_downloads.total}</span> downloads, updated daily.
+                    Browse through <span className="text-primary font-bold">{Number(total_downloads.projects).toLocaleString("en-US")}</span> Python packages from PyPI and over <span className="text-primary font-bold">{total_downloads.total}</span> downloads, updated daily.
                   </p>
                   <div className="mt-10 flex items-center justify-center gap-x-6">
                     <Search/>
