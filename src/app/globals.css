@@ -10,11 +10,9 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-    background-image: url('/dot_grid.svg');
+  background:  #1d1d1d;
+}
+
+.isolate {
+  background-image: url('/dot_grid.svg');
 }

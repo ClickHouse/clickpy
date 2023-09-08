@@ -19,6 +19,7 @@
     "@tailwindcss/typography": "^0.5.9",
     "@wojtekmaj/react-daterange-picker": "^5.4.2",
     "autoprefixer": "10.4.14",
+    "echarts": "^5.4.3",
     "echarts-countries-js": "^1.0.5",
     "echarts-for-react": "^3.0.2",
     "eslint": "8.46.0",
