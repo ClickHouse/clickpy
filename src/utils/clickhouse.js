@@ -7,7 +7,7 @@ export const clickhouse = createClient({
 })
 
 const BASE_TABLE = 'pypi'
-const filters_to_tables = [
+const materialized_views = [
     { columns: ['project'], table: 'pypi_downloads' },
     { columns: ['project', 'version'], table: 'pypi_downloads_by_version' },
     { columns: ['project', 'date'], table: 'pypi_downloads_per_day' },
@@ -17,14 +17,15 @@ const filters_to_tables = [
     // { columns: ['project', 'date', 'version', 'python_minor', 'country'], table: 'pypi_downloads_per_day_by_version_by_python_by_country' }, <- we can try and create but a lot of rows
     { columns: ['project', 'date', 'version', 'system'], table: 'pypi_downloads_per_day_by_version_by_system' },
     { columns: ['project', 'date', 'version', 'system', 'country_code'], table: 'pypi_downloads_per_day_by_version_by_system_by_country' },
-    { columns: ['project', 'date', 'version', 'installer', 'type'], table: 'pypi_file_types_by_version_by_installer_by_type' },
-    { columns: ['project', 'date', 'version', 'type'], table: 'pypi_downloads_per_day_by_version_by_file_type' },
+    { columns: ['project', 'date', 'version', 'installer', 'type'], table: 'pypi_downloads_per_day_by_version_by_installer_by_type' },
+    { columns: ['project', 'date', 'version', 'installer', 'type', 'country_code'], table: 'pypi_downloads_per_day_by_version_by_installer_by_type_by_country' },
+    { columns: ['project', 'date', 'version', 'type'], table: 'pypi_downloads_per_day_by_version_by_type' },
 ]
 
-// based on required columns we identify the most optimal mv to query
+// based on required columns we identify the most optimal mv to query - this is the smallest view (least columns) which covers all required columns 
 function findOptimalTable(required_columns) {
 
-    const candidates = filters_to_tables.filter(value => {
+    const candidates = materialized_views.filter(value => {
         if (value.columns.length >= required_columns.length) {
             // are all required columns in the candidate
             if (required_columns.every(column => value.columns.includes(column))){
@@ -189,7 +190,8 @@ export async function getTopVersions(package_name, version, min_date, max_date, 
             version AS name,
             sum(count) AS value
         FROM ${table}
-        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'}
+        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) 
+            AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'}
         GROUP BY version ORDER BY value DESC LIMIT 6`, {
             package_name: package_name,
             version: version,
@@ -228,28 +230,28 @@ export async function getDownloadsOverTimeBySystem(package_name, version, period
     if (version) { columns.push('version') }
     const table = findOptimalTable(columns)
     return query(`WITH systems AS
-            (
-                SELECT system
-                FROM ${table}
-                WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) AND ${version ? `version={version:String}`: '1=1'} AND system != ''
-                GROUP BY system
-                ORDER BY count() DESC
-                LIMIT 4
-            ) SELECT
-                system as name,
-                toStartOf${period}(date)::Date32 AS x,
-                ${table == BASE_TABLE ? 'count()': 'sum(count)'} AS y
-                FROM ${table}
-                WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) 
-                AND ${version ? `version={version:String}`: '1=1'} AND system IN systems 
-                AND ${country_code ? `country_code={country_code:String}`: '1=1'}
-                GROUP BY name, x ORDER BY x ASC, y DESC LIMIT 4 BY x`, {
-                    min_date: min_date,
-                    max_date: max_date,
-                    package_name: package_name,
-                    version: version,
-                    country_code: country_code
-                })
+    (
+        SELECT system
+        FROM ${table}
+        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) AND ${version ? `version={version:String}`: '1=1'} AND system != ''
+        GROUP BY system
+        ORDER BY count() DESC
+        LIMIT 4
+    ) SELECT
+        system as name,
+        toStartOf${period}(date)::Date32 AS x,
+        ${table == BASE_TABLE ? 'count()': 'sum(count)'} AS y
+        FROM ${table}
+        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) 
+        AND ${version ? `version={version:String}`: '1=1'} AND system IN systems 
+        AND ${country_code ? `country_code={country_code:String}`: '1=1'}
+        GROUP BY name, x ORDER BY x ASC, y DESC LIMIT 4 BY x`, {
+            min_date: min_date,
+            max_date: max_date,
+            package_name: package_name,
+            version: version,
+            country_code: country_code
+        })
 }
 
 export async function getDownloadsByCountry(package_name, version, min_date, max_date, country_code) {
@@ -274,12 +276,17 @@ export async function getDownloadsByCountry(package_name, version, min_date, max
         })
 }
 
-export async function getFileTypesByInstaller(package_name, version, min_date, max_date) {
+export async function getFileTypesByInstaller(package_name, version, min_date, max_date, country_code) {
+    const columns = ['project', 'date', 'installer', 'type']
+    if (version) { columns.push('version') }
+    if (country_code) { columns.push('country_code') }
+    const table = findOptimalTable(columns)
     return query(`WITH installers AS
         (
             SELECT installer
-            FROM pypi_file_types_by_version_by_installer_by_type
-            WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND installer != '' AND (project = {package_name:String}) AND ${version ? `version={version:String}`: '1=1'}
+            FROM ${table}
+            WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND installer != '' AND (project = {package_name:String}) 
+                    AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'}
             GROUP BY installer
             ORDER BY count() DESC
             LIMIT 6
@@ -288,8 +295,9 @@ export async function getFileTypesByInstaller(package_name, version, min_date, m
             installer AS name,
             type AS y,
             sum(count) AS value
-        FROM pypi_file_types_by_version_by_installer_by_type
-        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND installer IN installers AND (project = {package_name:String}) AND ${version ? `version={version:String}`: '1=1'}
+        FROM ${table}
+        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND installer IN installers AND (project = {package_name:String}) 
+                AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'}
         GROUP BY
             installer,
             type
@@ -299,24 +307,29 @@ export async function getFileTypesByInstaller(package_name, version, min_date, m
                 min_date: min_date,
                 max_date: max_date,
                 package_name: package_name,
-                version: version
+                version: version,
+                country_code: country_code
         })
 }
 
-export async function getPercentileRank(min_date, max_date) {
+export async function getPercentileRank(min_date, max_date, country_code) {
+    const columns = ['project', 'date']
+    if (country_code) { columns.push('country_code') }
+    const table = findOptimalTable(columns)
     const quantiles = [...Array(100).keys()].map(percentile => percentile/100) 
     return query(`WITH downloads AS
     (
         SELECT sum(count) AS c
-        FROM pypi_downloads_per_day
-        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
+        FROM ${table}
+        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND ${country_code ? `country_code={country_code:String}`: '1=1'}
         GROUP BY project
     )
     SELECT quantiles(${quantiles.join(',')})(c) as quantiles
     FROM downloads
     LIMIT 10`, {
         min_date: min_date,
-        max_date: max_date
+        max_date: max_date,
+        country_code: country_code,
     })
 }
 

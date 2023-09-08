@@ -26,7 +26,7 @@ const [
       downloadsOverTimeBySystem,
       downloadsByCountry,
       fileTypesByInstaller,
-      percentileRanks,
+      // percentileRanks,
     ] = await Promise.all([
       getPackageDetails(params.package_name, version),
       getDownloadSummary(params.package_name, version, min_date, max_date, country_code),
@@ -35,9 +35,9 @@ const [
       getTopVersions(params.package_name, version, min_date, max_date, country_code),
       getDownloadsOverTimeByPython(params.package_name, version,'Day', min_date, max_date, country_code),
       getDownloadsOverTimeBySystem(params.package_name, version,'Day', min_date, max_date, country_code),
-      getDownloadsByCountry(params.package_name, version, min_date, max_date),
-      getFileTypesByInstaller(params.package_name, version, min_date, max_date),
-      getPercentileRank(min_date, max_date)
+      getDownloadsByCountry(params.package_name, version, min_date, max_date, country_code),
+      getFileTypesByInstaller(params.package_name, version, min_date, max_date, country_code),
+      // getPercentileRank(min_date, max_date, country_code)
 ])
 
 return (
