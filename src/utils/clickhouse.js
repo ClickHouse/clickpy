@@ -6,7 +6,7 @@ export const clickhouse = createClient({
     password: process.env.CLICKHOUSE_PASSWORD,
 })
 
-const BASE_TABLE = 'pypi'
+const BASE_TABLE = 'pypi_compact'
 const materialized_views = [
     { columns: ['project'], table: 'pypi_downloads' },
     { columns: ['project', 'version'], table: 'pypi_downloads_by_version' },
@@ -14,7 +14,7 @@ const materialized_views = [
     { columns: ['project', 'date', 'version'], table: 'pypi_downloads_per_day_by_version' },
     { columns: ['project', 'date', 'version', 'country_code'], table: 'pypi_downloads_per_day_by_version_by_country' },
     { columns: ['project', 'date', 'version', 'python_minor'], table: 'pypi_downloads_per_day_by_version_by_python' }, 
-    // { columns: ['project', 'date', 'version', 'python_minor', 'country'], table: 'pypi_downloads_per_day_by_version_by_python_by_country' }, <- we can try and create but a lot of rows
+    { columns: ['project', 'date', 'version', 'python_minor', 'country_code'], table: 'pypi_downloads_per_day_by_version_by_python_by_country' },
     { columns: ['project', 'date', 'version', 'system'], table: 'pypi_downloads_per_day_by_version_by_system' },
     { columns: ['project', 'date', 'version', 'system', 'country_code'], table: 'pypi_downloads_per_day_by_version_by_system_by_country' },
     { columns: ['project', 'date', 'version', 'installer', 'type'], table: 'pypi_downloads_per_day_by_version_by_installer_by_type' },
@@ -41,7 +41,6 @@ function findOptimalTable(required_columns) {
     }
     return table
 }
-
 
 export async function getPackages(query_prefix) {
     if (query_prefix != '') { 
@@ -229,6 +228,7 @@ export async function getDownloadsOverTimeBySystem(package_name, version, period
     if (country_code) { columns.push('country_code') }
     if (version) { columns.push('version') }
     const table = findOptimalTable(columns)
+    console.log(table)
     return query(`WITH systems AS
     (
         SELECT system
