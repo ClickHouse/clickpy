@@ -45,7 +45,7 @@ return (
 
     <div className="flex flex-row bg-[#20201D] justify-between items-center pt-6 pb-6 lg:px-4 border-b z-20 border-slate-800 fixed top-0 left-0 right-0">
       <div className="ml-24">
-        <Search/>
+        <Search package_name={params.package_name}/>
       </div>
       <div className="hidden xl:flex justify-end items-center gap-4 mr-16">
           <ClientComponent type='filter' data={version} options={{label: 'version'}}/>

@@ -6,8 +6,8 @@ import {
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-export default function Search() {
-	const [query, setQuery] = useState('')
+export default function Search({package_name=''}) {
+	const [query, setQuery] = useState(package_name)
 	const [showPackages, setShowPackages] = useState(false)
 	const [packages, setPackages] = useState([])
 	const router = useRouter()

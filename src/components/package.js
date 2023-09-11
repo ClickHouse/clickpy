@@ -4,7 +4,7 @@ export default function Package({packageDetails}) {
     return (
         <div>
             <div className="flex items-center text-center">
-                <p className="text-2xl font-bold mr-5">{packageDetails.name}</p>
+                <p className="text-4xl font-bold mr-5">{packageDetails.name}</p>
                 <a href={packageDetails.home_page} target="_blank" className="text-center pt-1">
                     <button type="button"><ArrowTopRightOnSquareIcon className={`h-4 w-4 fill-white`} aria-hidden="true" /></button>
                 </a>

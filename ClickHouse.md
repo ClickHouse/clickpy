@@ -290,7 +290,7 @@ CREATE TABLE pypi_downloads_per_day_by_version_by_system
 ENGINE = SummingMergeTree
 ORDER BY (project, version, date, system)
 
-INSERT INTO pypi_downloads_per_day_by_system SELECT
+INSERT INTO pypi_downloads_per_day_by_version_by_system SELECT
     date,
     project,
     version,

@@ -39,16 +39,7 @@ export default function CountryMap({ data, selected, onClick }) {
         return params.name + ": 0";
       },
     },
-    visualMap: {
-      min: Math.min(...values),
-      max: Math.max(...values),
-      text: ["Max", "Min"],
-      realtime: false,
-      calculable: false,
-      color: selected ? ['#2F2F2F']: ["#FAFF69", "#DDE26B", "#B2B661", "#8A8C5A", "#51523B", "#2F2F2F"],
-      left: 32,
-    },
-
+    
     series: [
       {
         name: "Downloads",
@@ -84,6 +75,18 @@ export default function CountryMap({ data, selected, onClick }) {
       },
     ],
   };
+
+  if (values.length > 0) {
+    options['visualMap'] = {
+      min: Math.min(...values),
+      max: Math.max(...values),
+      text: ["Max", "Min"],
+      realtime: false,
+      calculable: false,
+      color: selected ? ['#2F2F2F']: ["#FAFF69", "#DDE26B", "#B2B661", "#8A8C5A", "#51523B", "#2F2F2F"],
+      left: 32,
+    }
+  }
 
   const select = (params) => {
     onClick && onClick(params.data.code);
