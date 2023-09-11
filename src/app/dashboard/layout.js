@@ -5,7 +5,7 @@ export default async function DashboardLayout({ children }) {
   return (
     <div className="pb-20">
       <div className="hidden fixed inset-y-0 z-50 xl:flex w-20 flex-col">
-        <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-nav px-2 pb-2">
+        <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-nav px-2 pb-2 border-r border-slate-800">
           <div className="flex h-16 shrink-0 items-center mt-6 ml-0">
             <Link href="/">
               <Image

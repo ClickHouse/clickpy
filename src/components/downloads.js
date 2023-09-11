@@ -1,6 +1,6 @@
 export default function Downloads({total, last_day, last_week, last_month}) {
     return (
-        <div className="rounded-lg bg-slate-850 flex items-center gap-8 lg:justify-between p-4 h-24">
+        <div className="rounded-lg bg-slate-850 flex items-center gap-8 lg:justify-between p-4 h-24 border border-slate-800 rounded-l">
             <div className="h-16 w-16 flex gap-4">
                 <img className="h-16 w-16 min-w-[64px] min-h-16" src="/download.svg" alt="Download"/>
                 <div className="hidden 2xl:flex flex-col">

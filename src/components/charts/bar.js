@@ -17,21 +17,29 @@ export default function Bar({ data, stack, onSelect }) {
   data.forEach((p) => (values[p.name].data[xAxis.indexOf(p.x)] = p.y));
 
   const chartRef = useRef();
-  const colors = ["#74FF7A", "#74ACFF", "#FC74FF", "#FCFF74"];
+  const colors = ["#FCFF74", "#FC74FF", "#74ACFF", "#74FFD5", "#FF7C74", "#74FF9B", "#FFE074", "#CF4B4B"];
+  const mappedColors = {}
   const series = Object.values(values).map((series, i) => {
+    let color = colors[i % colors.length]
+    if (series.name in mappedColors) {
+      color = mappedColors[series.name]
+    } else {
+      mappedColors[series.name] = color
+    }
+    console.log(`${series.name} - ${color}`)
     return stack
       ? {
           type: "bar",
           name: series.name,
           data: series.data,
-          color: colors[i],
+          color: color,
           stack: "series",
         }
       : {
           type: "bar",
           name: series.name,
           data: series.data,
-          color: colors[i],
+          color: color,
         };
   });
 
@@ -66,9 +74,10 @@ export default function Bar({ data, stack, onSelect }) {
         fontSize: 16,
       },
       icon: "circle",
-      backgroundColor: "#626262",
+      backgroundColor: "#3F3F3F",
       borderRadius: 5,
       borderWidth: 1,
+      borderColor: "#626262",
       padding: 10,
     },
     yAxis: {
@@ -76,6 +85,7 @@ export default function Bar({ data, stack, onSelect }) {
         show: true,
         lineStyle: {
           color: "#808691",
+          opacity: 0.3,
         },
       },
     },
@@ -116,7 +126,7 @@ export default function Bar({ data, stack, onSelect }) {
 
   return (
     <div
-      className="rounded-lg bg-chart border border-slate-700 h-full justify-between flex flex-col"
+      className="rounded-lg bg-chart border border-slate-800 rounded-l h-full justify-between flex flex-col"
       onMouseOver={onMouseOver}
     >
       <ReactECharts

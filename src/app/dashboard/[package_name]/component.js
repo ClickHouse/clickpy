@@ -31,7 +31,7 @@ export default function ClientComponent ({type, data, options={}}) {
                 current.set('max_date', max_date)
                 router.push(`${pathname}?${current.toString()}`, { scroll: false })
             }}/>,
-            'date_picker': <DatePicker dates={data} clearable={true} onChange={(min_date, max_date) => {
+            'date_picker': <DatePicker dates={data} clearable={current.get('min_date') || current.get('max_date')} onChange={(min_date, max_date) => {
                 min_date ? current.set('min_date', min_date): current.delete('min_date')
                 max_date ? current.set('max_date', max_date): current.delete('max_date')
                 router.push(`${pathname}?${current.toString()}`, { scroll: false })

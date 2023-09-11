@@ -87,7 +87,7 @@ export default function Radar({ data, onClick }) {
   };
 
   return (
-    <div className="rounded-lg bg-chart border border-slate-700 h-full">
+    <div className="rounded-lg bg-chart border border-slate-800 h-full">
       <ReactECharts
         option={options}
         style={{ width: "100%", height: "100%" }}
