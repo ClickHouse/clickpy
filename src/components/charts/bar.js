@@ -17,21 +17,29 @@ export default function Bar({ data, stack, onSelect }) {
   data.forEach((p) => (values[p.name].data[xAxis.indexOf(p.x)] = p.y));
 
   const chartRef = useRef();
-  const colors = ["#FCFF74", "#FC74FF", "#74ACFF", "#74FF7A", ""];
+  const colors = ["#FCFF74", "#FC74FF", "#74ACFF", "#74FFD5", "#FF7C74", "#74FF9B", "#FFE074", "#CF4B4B"];
+  const mappedColors = {}
   const series = Object.values(values).map((series, i) => {
+    let color = colors[i % colors.length]
+    if (series.name in mappedColors) {
+      color = mappedColors[series.name]
+    } else {
+      mappedColors[series.name] = color
+    }
+    console.log(`${series.name} - ${color}`)
     return stack
       ? {
           type: "bar",
           name: series.name,
           data: series.data,
-          color: colors[i],
+          color: color,
           stack: "series",
         }
       : {
           type: "bar",
           name: series.name,
           data: series.data,
-          color: colors[i],
+          color: color,
         };
   });
 

@@ -48,6 +48,7 @@ return (
         <Search package_name={params.package_name}/>
       </div>
       <div className="hidden xl:flex justify-end items-center gap-4 mr-16">
+          <ClientComponent type='filter' data={country_code} options={{label: 'country_code'}}/>
           <ClientComponent type='filter' data={version} options={{label: 'version'}}/>
           <ClientComponent type='date_picker' data={[min_date, max_date]}/>
           <div>

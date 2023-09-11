@@ -56,15 +56,7 @@ export default function Pie({ data, onClick }) {
         itemStyle: {
           
         },
-        color: [
-          "#FCFF74",
-          "#FC74FF",
-          "#74ACFF",
-          "#74FFD5",
-          "#74FF9B",
-          "#FF7C74",
-          "#CF4B4B",
-        ],
+        color: ["#FCFF74", "#FC74FF", "#74ACFF", "#74FFD5", "#FF7C74", "#74FF9B", "#FFE074", "#CF4B4B"],
         data: data,
       },
     ],
