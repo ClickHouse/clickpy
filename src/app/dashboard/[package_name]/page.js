@@ -50,9 +50,9 @@ return (
       <div className='ml-12 xl:ml-36'>
         <Search package_name={params.package_name}/>
       </div>
-      <div className='flex xl:justify-end flex-col items-start sm:flex-row md:items-center gap-4 mr-12 ml-8 xl:ml-0 mt-4 xl:mt-0'>
-          <ClientComponent type='filter' data={country_code} options={{name: 'country_code', icon: <Image src={countryIcon}/>}}/>
-          <ClientComponent type='filter' data={version} options={{name: 'version', icon: <Image src={versionIcon}/>}}/>
+      <div className='flex xl:justify-end flex-col items-start md:flex-row md:items-center gap-4 mr-12 ml-8 xl:ml-0 mt-4 xl:mt-0'>
+          <ClientComponent type='filter' data={country_code} options={{name: 'country_code', icon: <Image alt='country code' src={countryIcon}/>}}/>
+          <ClientComponent type='filter' data={version} options={{name: 'version', icon: <Image alt='version' src={versionIcon}/>}}/>
           <ClientComponent type='date_picker' data={[min_date, max_date]}/>
           <div className='hidden xl:flex grow width-20 max-w-[80px]'>
             <p className='text-sm text-neutral-0'>

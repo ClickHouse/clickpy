@@ -4,19 +4,25 @@ import 'echarts-countries-js/echarts-countries-js/world';
 export default function CountryMap({ data, selected, onClick }) {
 
   const scaledValues = data.map((p) => {
-    return {
+    const country =  {
       name: p.name,
       value: Math.sqrt(p.value),
       label: p.value,
       code: p.country_code,
       selected: p.country_code == selected,
-
+      itemStyle: {}
     }
+    if (p.country_code == selected) {
+      country['itemStyle']['areaColor'] = '#EEF400'
+    }
+    
+    return country
   })
 
   const values = scaledValues.map((p) => Number(p.value));
   const options = {
-    colorBy: 'series',
+    colorBy: selected == null ? 'series': 'data',
+    color: selected ? ['#2F2F2F']: ['#FAFF69', '#DDE26B', '#B2B661', '#8A8C5A', '#51523B', '#2F2F2F'],
     animation: false,
     tooltip: {
       trigger: 'item',
@@ -39,7 +45,6 @@ export default function CountryMap({ data, selected, onClick }) {
         return params.name + ': 0';
       },
     },
-    
     series: [
       {
         name: 'Downloads',
@@ -51,45 +56,46 @@ export default function CountryMap({ data, selected, onClick }) {
           show: false,
         },
         select: {
+            disabled: true,
             itemStyle: {
               areaColor: '#EEF400'
             },
             label: { show: false },
         },
         itemStyle: {
-          normal: {
-            borderWidth: 0.5,
-            borderColor: 'black',
-            areaColor: '#343431'
-          },
-          emphasis: {
-            label: { show: false },
+          borderWidth: 0.5,
+          borderColor: 'black',
+          areaColor: '#343431'
+        },
+        data: scaledValues,
+        emphasis: {
+          label: { show: false },
+          itemStyle: {
             shadowOffsetX: 0,
             shadowOffsetY: 0,
             shadowBlur: 20,
             shadowColor: 'rgba(0, 0, 0, 0.3)',
             areaColor: '#FEFFBF'
-          },
+          }
         },
-        data: scaledValues,
       },
     ],
   }
 
-  if (values.length > 0) {
+  if (values.length > 0 && selected === null) {
     options['visualMap'] = {
       min: Math.min(...values),
       max: Math.max(...values),
       text: ['Max', 'Min'],
       realtime: false,
-      calculable: false,
+      calculable: false,  
       color: selected ? ['#2F2F2F']: ['#FAFF69', '#DDE26B', '#B2B661', '#8A8C5A', '#51523B', '#2F2F2F'],
       left: 32,
     }
   }
 
   const select = (params) => {
-    onClick && onClick(params.data.code);
+    onClick && selected === null && onClick(params.data.code);
   }
 
   return (
