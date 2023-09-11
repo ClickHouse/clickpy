@@ -2,8 +2,8 @@
 import React, { useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
 
-export default function Bar({ data, stack, onSelect }) {
-  const xAxis = Array.from(new Set(data.map((p) => p.x)));
+export default function MultiLine({ data, stack, fill, onSelect }) {
+  const xAxis = Array.from(new Set(data.map((p) => p.x)))
   const values = data.reduce((accumulator, val) => {
     if (!(val.name in accumulator)) {
       accumulator[val.name] = {
@@ -12,12 +12,12 @@ export default function Bar({ data, stack, onSelect }) {
       };
     }
     return accumulator;
-  }, {});
+  }, {})
 
-  data.forEach((p) => (values[p.name].data[xAxis.indexOf(p.x)] = p.y));
+  data.forEach((p) => (values[p.name].data[xAxis.indexOf(p.x)] = p.y))
 
-  const chartRef = useRef();
-  const colors = ['#FCFF74', '#FC74FF', '#74ACFF', '#74FFD5', '#FF7C74', '#74FF9B', '#FFE074', '#CF4B4B'];
+  const chartRef = useRef()
+  const colors = ['#FCFF74', '#FC74FF', '#74ACFF', '#74FFD5', '#FF7C74', '#74FF9B', '#FFE074', '#CF4B4B']
   const mappedColors = {}
   const series = Object.values(values).map((series, i) => {
     let color = colors[i % colors.length]
@@ -28,19 +28,21 @@ export default function Bar({ data, stack, onSelect }) {
     }
     return stack
       ? {
-          type: 'bar',
+          type: 'line',
           name: series.name,
           data: series.data,
+          areaStyle: fill ? {} : null,
           color: color,
           stack: 'series',
         }
       : {
-          type: 'bar',
+          type: 'line',
           name: series.name,
           data: series.data,
+          areaStyle: fill ? {} : null,
           color: color,
-        };
-  });
+        }
+  })
 
   const options = {
     animation: false,
@@ -95,7 +97,7 @@ export default function Bar({ data, stack, onSelect }) {
       brushMode: 'single',
       transformable: false,
     },
-  };
+  }
 
   const onMouseOver = () => {
     const echartsInstance = chartRef.current.getEchartsInstance();
@@ -105,8 +107,8 @@ export default function Bar({ data, stack, onSelect }) {
       brushOption: {
         brushType: 'lineX',
       },
-    });
-  };
+    })
+  }
 
   const onBrushEnd = (params) => {
     if (params.areas.length > 0) {
@@ -114,20 +116,17 @@ export default function Bar({ data, stack, onSelect }) {
       const start = echartsInstance.convertFromPixel(
         { xAxisIndex: 0 },
         params.areas[0].range[0]
-      );
+      )
       const end = echartsInstance.convertFromPixel(
         { xAxisIndex: 0 },
         params.areas[0].range[1]
-      );
+      )
       onSelect && onSelect(xAxis[start], xAxis[end]);
     }
-  };
+  }
 
   return (
-    <div
-      className='rounded-lg bg-chart border border-slate-800 rounded-l h-full justify-between flex flex-col'
-      onMouseOver={onMouseOver}
-    >
+    <div className='rounded-lg bg-chart border border-slate-800 rounded-l h-full justify-between flex flex-col' onMouseOver={onMouseOver}>
       <ReactECharts
         ref={chartRef}
         option={options}
@@ -137,5 +136,5 @@ export default function Bar({ data, stack, onSelect }) {
         }}
       />
     </div>
-  );
+  )
 }

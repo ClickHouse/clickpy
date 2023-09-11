@@ -24,11 +24,11 @@ export default function QueryToggle() {
 
     return (
         <div>
-            <span className="isolate inline-flex rounded-md shadow-sm h-full">
+            <span className='isolate inline-flex rounded-md shadow-sm h-full'>
                 {
                     queryEngines.map((option, i) => {
                         return (
-                            <button key={option.value} onClick={ ()=> onClick(option) } type="button" className={`${i === 0 ? "rounded-l-lg": (i == queryEngines.length -1) ? "rounded-r-lg": ""} ${option.value == selected.value ? "bg-primary-300 cursor-default": "bg-white hover:bg-gray-50"} relative inline-flex items-center px-3 py-2.5 text-sm text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-10`}>
+                            <button key={option.value} onClick={ ()=> onClick(option) } type='button' className={`${i === 0 ? 'rounded-l-lg': (i == queryEngines.length -1) ? 'rounded-r-lg': ''} ${option.value == selected.value ? 'bg-primary-300 cursor-default': 'bg-white hover:bg-gray-50'} relative inline-flex items-center px-3 py-2.5 text-sm text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-10`}>
                                 {option.label}
                             </button>
                         )

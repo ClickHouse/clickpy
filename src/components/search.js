@@ -46,27 +46,27 @@ export default function Search({package_name=''}) {
 	}, [debouncedQuery])
 
 	return (
-		<div className="lg:w-[400px] sm:w-[300px]">
-			<div className="h-12 flex">
-				<div className="relative flex flex-grow flex-col items-stretch">
-					<div className="flex">
-						<div className="pointer-events-none flex items-center z-10">
+		<div className='lg:w-[400px] sm:w-[300px]'>
+			<div className='h-12 flex'>
+				<div className='relative flex flex-grow flex-col items-stretch'>
+					<div className='flex'>
+						<div className='pointer-events-none flex items-center z-10'>
 							<MagnifyingGlassIcon
-								className="h-6 w-6 text-neutral-400"
-								aria-hidden="true"
+								className='h-6 w-6 text-neutral-400'
+								aria-hidden='true'
 							/>
 						</div>
 						<input
-							type="package"
-							name="package"
-							id="package"
+							type='package'
+							name='package'
+							id='package'
 							value = {query}
-							className="rounded-md bg-neutral-725 items-center outline-none placeholder:tracking-wide 
+							className='rounded-md bg-neutral-725 items-center outline-none placeholder:tracking-wide 
 							placeholder:font-light hover:placeholder:text-neutral-0 font-normal text-neutral-400 
 							hover:text-neutral-0 focus:text-neutral-0 placeholder:text-neutral-400 w-full py-4 
 							pl-14 -ml-9 leading-5 cursor-pointer border-2 box-border border-transparent hover:border-neutral-700 
-							hover:border-opacity-50 transition-all duration-300 ease-in-out h-14"
-							placeholder="Search for a package"
+							hover:border-opacity-50 transition-all duration-300 ease-in-out h-14'
+							placeholder='Search for a package'
 							onChange={e => {
 								setShowPackages(true)
 								setQuery(e.target.value)
@@ -74,28 +74,28 @@ export default function Search({package_name=''}) {
 						/>
 					</div>
 					{(packages.length > 0 && showPackages) && (
-						<div className="pl-5 -ml-3 bg-neutral-725 font-normal rounded-b-xl border-t border-primary-300 shadow-sm w-full z-10">
-							<ul role="list" className="divide-y divide-white/5 w-full">
+						<div className='pl-5 -ml-3 bg-neutral-725 font-normal rounded-b-xl border-t border-primary-300 shadow-sm w-full z-10'>
+							<ul role='list' className='divide-y divide-white/5 w-full'>
 								{packages.map((p, i) => (
 									<li
 										onClick={() => {
 											onClick(p.project)
 										}}
 										key={`package-${i}`}
-										className="cursor-pointer flex space-x-2 py-4 hover:bg-[url('/highlight.svg')]"
+										className='cursor-pointer flex space-x-2 py-4 hover:bg-[url("/highlight.svg")]'
 									>
-										<div className="flex items-center gap-x-2 w-full pr-2">
-											<div className="flex items-center flex-auto">
-												<h2 className="min-w-0 text-sm text-white">
-													<span className="truncate">{p.project}</span>
+										<div className='flex items-center gap-x-2 w-full pr-2'>
+											<div className='flex items-center flex-auto'>
+												<h2 className='min-w-0 text-sm text-white'>
+													<span className='truncate'>{p.project}</span>
 												</h2>
 											</div>
-											<div className="flex gap-3">
+											<div className='flex gap-3'>
 												<div>{p.c}</div>
 											</div>
 											<ChevronRightIcon
-												className="h-6 w-6 flex-none text-primary"
-												aria-hidden="true"
+												className='h-6 w-6 flex-none text-primary'
+												aria-hidden='true'
 											/>
 										</div>
 									</li>
