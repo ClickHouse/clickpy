@@ -28,9 +28,10 @@ export default function Pie({ data, onClick }) {
       icon: "circle",
       icon: "circle",
       left: "24px",
-      backgroundColor: "#626262",
+      backgroundColor: "#3F3F3F",
       borderRadius: 5,
       borderWidth: 1,
+      borderColor: "#626262",
       padding: 10,
     },
     series: [
@@ -53,10 +54,7 @@ export default function Pie({ data, onClick }) {
         },
         z: 2,
         itemStyle: {
-          shadowColor: "#181818",
-          shadowOffsetY: -10,
-          shadowOffsetX: -10,
-          shadowBlur: 10,
+          
         },
         color: [
           "#FCFF74",
@@ -77,7 +75,7 @@ export default function Pie({ data, onClick }) {
   };
 
   return (
-    <div className="rounded-lg bg-chart border border-slate-700 h-full">
+    <div className="rounded-lg bg-chart border border-slate-800 h-full">
       <ReactECharts
         option={options}
         style={{ width: "100%", height: "100%" }}

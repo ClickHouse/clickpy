@@ -35,7 +35,7 @@ export default function SparkLine({ name, data, total, link }) {
 				x: 0,
 				y: 0,
 				x2: 0,
-				y2: 0.65,
+				y2: 0.8,
 				colorStops: [
 					{
 						offset: 0,
@@ -106,7 +106,7 @@ export default function SparkLine({ name, data, total, link }) {
 
 	return (
 		<div
-			className="rounded-lg bg-chart hover:bg-chart-hover shadow-inner border-2 border-neutral-725 h-full justify-between flex flex-col hover:shadow-xl transition-all duration-300 ease-in-out"
+			className="rounded-lg bg-chart hover:bg-chart-hover shadow-inner border border-slate-800 h-full justify-between flex flex-col hover:shadow-xl transition-all duration-300 ease-in-out"
 			onMouseMove={onMouseOver}
 			onMouseOut={onMouseOut}
       onClick={onClick}
