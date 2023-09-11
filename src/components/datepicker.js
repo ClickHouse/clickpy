@@ -3,8 +3,6 @@ import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import '@wojtekmaj/react-daterange-picker/dist/DateRangePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import './datepicker.css'
-import { XMarkIcon } from '@heroicons/react/20/solid'
-import remove from './xmark.svg'
 
 function DownLogo() {
     return (<svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -30,7 +28,7 @@ export default function DatePicker({dates, onChange, clearable}) {
                     18.8852 17.4067 20.1108 15.6594 20.8346C13.9121 21.5584 11.9894 21.7477 10.1345 21.3788C8.27951 21.0098 6.57564 20.099 5.2383 18.7617C3.90096 17.4244 2.99022 15.7205 2.62125 13.8656C2.25227 12.0106 2.44164 10.0879 3.16541 8.34059C3.88917 6.59327 5.11482 5.09981 6.68736 4.04907C8.25991 
                     2.99833 10.1087 2.4375 12 2.4375C14.5352 2.44048 16.9658 3.44891 18.7584 5.24158C20.5511 7.03425 21.5595 9.46478 21.5625 12ZM20.4375 12C20.4375 10.3312 19.9427 8.69992 19.0155 7.31238C18.0884 5.92484 16.7706 4.84338 15.2289 4.20477C13.6871 3.56615 11.9906 3.39906 10.3539 3.72462C8.71722 
                     4.05019 7.2138 4.85378 6.03379 6.03379C4.85379 7.21379 4.05019 8.71721 3.72463 10.3539C3.39907 11.9906 3.56616 13.6871 4.20477 15.2289C4.84338 16.7706 5.92484 18.0884 7.31238 19.0155C8.69992 19.9426 10.3312 20.4375 12 20.4375C14.237 20.435 16.3817 19.5453 17.9635 17.9635C19.5453 16.3817 
-                    20.435 14.237 20.4375 12Z" fill={clearable? "#FDFF88": "#9A9EA7"}/>
+                    20.435 14.237 20.4375 12Z" fill={clearable ? "#FDFF88": "#9A9EA7"} cursor={clearable ? "pointer": "default"}/>
                 </svg> }/>
         </div>
     )
