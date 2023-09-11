@@ -1,6 +1,3 @@
-import Search from "@/components/search";
-import QueryToggle from "@/components/toggle";
-import VisitClickHouseCloud from "@/components/visit-clickhouse";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -21,19 +18,6 @@ export default async function DashboardLayout({ children }) {
             </Link>
           </div>
           <nav className="flex flex-1 flex-col">{/* maybe later nav  */}</nav>
-        </div>
-      </div>
-      <div className="flex flex-row justify-between items-center p-6 lg:px-8">
-        <div className="xl:ml-28 ml-10">
-          <Search />
-        </div>
-        <div className="hidden xl:flex justify-end">
-          <div className="mr-2">
-            <QueryToggle />
-          </div>
-          <div className="py-3">
-            <VisitClickHouseCloud />
-          </div>
         </div>
       </div>
       {children}
