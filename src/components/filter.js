@@ -7,7 +7,7 @@ export default function Filter({value, name, icon, onRemove}) {
 
     return (
         value &&
-        <span className='flex items-center gap-2 rounded-xl bg-slate-800 px-2 py-2 text font-medium text-white border border-slate-700 h-[50px] pr-4 min-w-[140px]'>
+        <span className='flex items-center gap-2 rounded-xl bg-slate-800 px-2 py-2 text font-medium text-white border border-slate-700 h-[50px] pr-4'>
             {pill} {value}
             <button onClick={() => onRemove && onRemove()} type='button' className='group relative rounded-sm'>
                 <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
