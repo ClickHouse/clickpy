@@ -11,13 +11,13 @@
   "dependencies": {
     "@clickhouse/client": "^0.2.1",
     "@clickhouse/client-web": "^0.2.1",
+    "@gingerwizard/react-daterange-picker": "github:gingerwizard/react-daterange-picker",
     "@headlessui/react": "^1.7.16",
     "@heroicons/react": "^2.0.18",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.4",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/typography": "^0.5.9",
-    "@wojtekmaj/react-daterange-picker": "^5.4.2",
     "autoprefixer": "10.4.14",
     "echarts": "^5.4.3",
     "echarts-countries-js": "^1.0.5",
@@ -31,5 +31,8 @@
     "react-dom": "18.2.0",
     "server-only": "^0.0.1",
     "tailwindcss": "3.3.3"
+  },
+  "devDependencies": {
+    "husky": "^8.0.3"
   }
 }

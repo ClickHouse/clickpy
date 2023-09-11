@@ -3,7 +3,7 @@
 }
 
 .date_picker {
-    @apply bg-neutral-725 leading-5 rounded-xl font-inter border text-sm font-semibold border-slate-800 p-2 w-full;
+    @apply bg-slate-800 leading-5 rounded-xl font-inter border text-sm font-semibold border-slate-700 p-2 w-full;
 }
 
 .date_picker > * > span {
@@ -11,7 +11,7 @@
 }
 
 .calendar {
-    @apply bg-neutral-725 rounded-lg leading-5 font-inter text-sm text-white border font-medium border-slate-800 mt-1 p-4;
+    @apply bg-slate-800 rounded-lg leading-5 font-inter text-sm text-white border font-medium border-slate-700 mt-1 p-4;
 }
 
 .react-daterange-picker__range-divider {
@@ -19,7 +19,7 @@
 }
 
 .calendar div {
-    @apply bg-neutral-725;
+    @apply bg-slate-800;
 }
 
 .react-daterange-picker__wrapper {
@@ -39,15 +39,15 @@
 }
 
 .react-calendar__navigation button:enabled:hover {
-    @apply bg-neutral-725;
+    @apply bg-slate-800;
 }
 
 .react-calendar__navigation button:enabled:focus {
-    @apply bg-neutral-725;
+    @apply bg-slate-800;
 }
 
 .react-calendar__tile--hasActive {
-    @apply bg-neutral-725;
+    @apply bg-slate-800;
 }
 
 .react-calendar__tile:enabled:hover,

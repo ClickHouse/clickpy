@@ -29,6 +29,7 @@ export default async function Home() {
 									<span className='text-primary font-bold'>
 										{total_downloads.total}
 									</span>
+									{' '}downloads
 								</p>
 								<div className='mt-10 flex items-center justify-center h-8'>
 									<Search />

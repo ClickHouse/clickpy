@@ -20,7 +20,7 @@ export default function Pie({ data, onClick }) {
       borderWidth: 0,
     },
     legend: {
-      top: '5%',
+      bottom: '5%',
       textStyle: {
         color: '#FFFFFFF',
         fontSize: 18,
@@ -40,7 +40,7 @@ export default function Pie({ data, onClick }) {
         type: 'pie',
         radius: ['50%', '70%'],
         avoidLabelOverlap: true,
-        center: ['50%', '60%'],
+        center: ['50%', '40%'],
         label: {
           show: false,
         },
@@ -67,7 +67,7 @@ export default function Pie({ data, onClick }) {
   }
 
   return (
-    <div className='rounded-lg bg-chart border border-slate-800 h-full'>
+    <div className='rounded-lg bg-slate-850 border border-slate-700 h-full'>
       <ReactECharts
         option={options}
         style={{ width: '100%', height: '100%' }}
