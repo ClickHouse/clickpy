@@ -1,5 +1,5 @@
-"use client";
-import ReactECharts from "echarts-for-react";
+'use client';
+import ReactECharts from 'echarts-for-react';
 
 export default function Radar({ data, onClick }) {
   const maxValues = data.reduce((acc, obj) => {
@@ -12,34 +12,34 @@ export default function Radar({ data, onClick }) {
   }, {});
   const xValues = Object.keys(maxValues);
   const yValues = Array.from(new Set(data.map((p) => p.y)));
-  const colors = ["#FCFF74", "#FC74FF", "#74ACFF", "#74FFD5"];
+  const colors = ['#FCFF74', '#FC74FF', '#74ACFF', '#74FFD5'];
   const options = {
     animation: false,
     tooltip: {
-      trigger: "item",
+      trigger: 'item',
       textStyle: {
-        color: "#FCFF74",
-        fontWeight: "bold",
+        color: '#FCFF74',
+        fontWeight: 'bold',
         fontSize: 14,
         lineHeight: 24,
       },
-      backgroundColor: "#181818",
+      backgroundColor: '#181818',
       borderWidth: 0,
     },
     legend: {
       data: yValues,
-      align: "left",
-      left: "20px",
-      top: "20px",
-      orient: "vertical",
-      icon: "circle",
-      backgroundColor: "#626262",
+      align: 'left',
+      left: '20px',
+      top: '20px',
+      orient: 'vertical',
+      icon: 'circle',
+      backgroundColor: '#626262',
       borderRadius: 5,
       borderWidth: 1,
       padding: 10,
       textStyle: {
         fontSize: 16,
-        color: "#FFFFFFF",
+        color: '#FFFFFFF',
       },
     },
     radar: {
@@ -53,7 +53,7 @@ export default function Radar({ data, onClick }) {
     },
     series: [
       {
-        type: "radar",
+        type: 'radar',
         lineStyle: {
           width: 3,
         },
@@ -87,10 +87,10 @@ export default function Radar({ data, onClick }) {
   };
 
   return (
-    <div className="rounded-lg bg-chart border border-slate-800 h-full">
+    <div className='rounded-lg bg-chart border border-slate-800 h-full'>
       <ReactECharts
         option={options}
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: '100%', height: '100%' }}
         lazyUpdate={true}
         onEvents={{ click: select }}
       />

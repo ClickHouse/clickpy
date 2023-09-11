@@ -106,7 +106,7 @@ export default function SparkLine({ name, data, total, link }) {
 
 	return (
 		<div
-			className="rounded-lg bg-chart hover:bg-chart-hover shadow-inner border border-slate-800 h-full justify-between flex flex-col hover:shadow-xl transition-all duration-300 ease-in-out"
+			className='rounded-lg bg-chart hover:bg-chart-hover shadow-inner border border-slate-800 h-full justify-between flex flex-col hover:shadow-xl transition-all duration-300 ease-in-out'
 			onMouseMove={onMouseOver}
 			onMouseOut={onMouseOut}
       onClick={onClick}
@@ -119,7 +119,7 @@ export default function SparkLine({ name, data, total, link }) {
 				{formatQuantity(total)} Downloads
 			</p>
 
-			<div className="justify-self-stretch">
+			<div className='justify-self-stretch'>
 				<ReactECharts
 					ref={chartRef}
 					option={options}
@@ -127,7 +127,7 @@ export default function SparkLine({ name, data, total, link }) {
 					lazyUpdate={false}
 				/>
 			</div>
-			<div className="mb-3 ml-4 mr-2 flex justify-between text-left">
+			<div className='mb-3 ml-4 mr-2 flex justify-between text-left'>
 				<p className={`${selected ? 'text-white' : 'text-neutral-500'}`}>
 					{name}
 				</p>
@@ -136,7 +136,7 @@ export default function SparkLine({ name, data, total, link }) {
 						className={`h-6 w-6 ${
 							selected ? 'fill-white' : 'fill-neutral-500'
 						}`}
-						aria-hidden="true"
+						aria-hidden='true'
 					/>
 				</Link>
 			</div>

@@ -4,7 +4,10 @@ import Package from '@/components/package'
 import ClientComponent from './component'
 import { getPackageDetails, getDownloadSummary, getDownloadsOverTime, getPackageDateRanges, getTopVersions, getDownloadsOverTimeByPython, 
   getDownloadsOverTimeBySystem, getDownloadsByCountry, getFileTypesByInstaller } from '@/utils/clickhouse'
-  import Search from "@/components/search";
+import Search from '@/components/search'
+import Image from 'next/image';
+import versionIcon from './icons/version.svg'
+import countryIcon from './icons/country.svg'
 
 export default async function Dashboard({params, searchParams}) {
   const version = searchParams.version
@@ -43,18 +46,18 @@ const [
 return (
   <div className='xl:ml-24'>
 
-    <div className="flex flex-row bg-[#20201D] justify-between items-center pt-6 pb-6 lg:px-4 border-b z-20 border-slate-800 fixed top-0 left-0 right-0">
-      <div className="ml-24">
+    <div className='flex flex-row bg-[#20201D] justify-between items-center pt-6 pb-6 lg:px-4 border-b z-20 border-slate-800 fixed top-0 left-0 right-0'>
+      <div className='ml-24'>
         <Search package_name={params.package_name}/>
       </div>
-      <div className="hidden xl:flex justify-end items-center gap-4 mr-16">
-          <ClientComponent type='filter' data={country_code} options={{label: 'country_code'}}/>
-          <ClientComponent type='filter' data={version} options={{label: 'version'}}/>
+      <div className='hidden xl:flex justify-end items-center gap-4 mr-16'>
+          <ClientComponent type='filter' data={country_code} options={{name: 'country_code', icon: <Image src={countryIcon}/>}}/>
+          <ClientComponent type='filter' data={version} options={{name: 'version', icon: <Image src={versionIcon}/>}}/>
           <ClientComponent type='date_picker' data={[min_date, max_date]}/>
           <div>
-            <p className="text-sm text-neutral-0">
+            <p className='text-sm text-neutral-0'>
               Powered by &nbsp;
-              <a className="text-primary-300 hover:underline" href="http://clickhouse.com/" target="_blank">
+              <a className='text-primary-300 hover:underline' href='http://clickhouse.com/' target='_blank'>
                 ClickHouse
               </a>
             </p>
@@ -62,7 +65,7 @@ return (
       </div>
     </div>
 
-    <div className="top-20 relative isolate z-10">
+    <div className='top-20 relative isolate z-10'>
       <div className='ml-10 mt-10 mr-10 relative z-10'>
           { packageDetails.length > 0 &&
               <Package packageDetails={packageDetails[0]}/>
@@ -102,7 +105,7 @@ return (
       <div className='mt-20 ml-10 mr-10 h-[480px]'>
         <div className='h-[480px]'>
               <p className='text-2xl font-bold mb-5'>Downloads by system over time</p>
-              <ClientComponent type={'bar'} data={downloadsOverTimeBySystem} options={{stack: false}}/>
+              <ClientComponent type={'multiline'} data={downloadsOverTimeBySystem} options={{stack: true, fill: false}}/>
         </div>
       </div>
       <div className='mt-20 ml-10 mr-10 h-[480px] lg:grid xl:grid-cols-3 gap-4 mb-32'>

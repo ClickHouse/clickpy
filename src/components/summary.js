@@ -1,6 +1,6 @@
-import SparkLine from "./charts/sparkline";
-import { getProjectCount, getRecentPackageDownloads } from "@/utils/clickhouse";
-import "server-only";
+import SparkLine from './charts/sparkline';
+import { getProjectCount, getRecentPackageDownloads } from '@/utils/clickhouse';
+import 'server-only';
 
 async function getPackageData() {
   // replace with materialied view to compute top K
@@ -16,8 +16,8 @@ async function getPackageData() {
 export default async function Summary() {
   const packageData = await getPackageData();
   return (
-    <div className="flex flex-col grow lg:grid lg:grid-cols-6 lg:grid-rows-2 gap-4 lg:h-[480px] lg:min-h-[480px] min-w-[350px]">
-      <div className="lg:col-span-2">
+    <div className='flex flex-col grow lg:grid lg:grid-cols-6 lg:grid-rows-2 gap-4 lg:h-[480px] lg:min-h-[480px] min-w-[350px]'>
+      <div className='lg:col-span-2'>
           <SparkLine
             data={packageData[0].data}
             name={packageData[0].name}
@@ -25,7 +25,7 @@ export default async function Summary() {
             link={`/dashboard/${packageData[0].name}`}
           />
       </div>
-      <div className="justify-self align-self lg:row-span-2 lg:col-span-2">
+      <div className='justify-self align-self lg:row-span-2 lg:col-span-2'>
           <SparkLine
             data={packageData[1].data}
             name={packageData[1].name}
@@ -33,7 +33,7 @@ export default async function Summary() {
             link={`/dashboard/${packageData[1].name}`}
           />
       </div>
-      <div className="lg:col-span-2">
+      <div className='lg:col-span-2'>
           <SparkLine
             data={packageData[2].data}
             name={packageData[2].name}
@@ -47,7 +47,7 @@ export default async function Summary() {
             name={packageData[3].name}
             total={packageData[3].total}
             link={`/dashboard/${packageData[3].name}`}
-          />{" "}
+          />{' '}
       </div>
       <div>
           <SparkLine
@@ -57,7 +57,7 @@ export default async function Summary() {
             link={`/dashboard/${packageData[4].name}`}
           />
       </div>
-      <div className="lg:col-span-2">
+      <div className='lg:col-span-2'>
           <SparkLine
             data={packageData[5].data}
             name={packageData[5].name}
