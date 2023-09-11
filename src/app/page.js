@@ -30,7 +30,7 @@ export default async function Home() {
 										{total_downloads.total}
 									</span>
 								</p>
-								<div className="mt-10 flex items-center justify-center">
+								<div className="mt-10 flex items-center justify-center h-8">
 									<Search />
 								</div>
 								<div className="mt-16 flow-root sm:mt-24 w-full md:w-5/6 md:px-4">

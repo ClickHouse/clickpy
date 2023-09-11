@@ -228,7 +228,6 @@ export async function getDownloadsOverTimeBySystem(package_name, version, period
     if (country_code) { columns.push('country_code') }
     if (version) { columns.push('version') }
     const table = findOptimalTable(columns)
-    console.log(table)
     return query(`WITH systems AS
     (
         SELECT system

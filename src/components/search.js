@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 
 export default function Search() {
 	const [query, setQuery] = useState('')
+	const [showPackages, setShowPackages] = useState(false)
 	const [packages, setPackages] = useState([])
 	const router = useRouter()
 
@@ -32,6 +33,8 @@ export default function Search() {
 	const debouncedQuery = useDebounce(query, 100)
 
 	const onClick = package_name => {
+		setQuery(package_name)
+		setShowPackages(false)
 		setPackages([])
 		router.push(`/dashboard/${package_name}`)
 	}
@@ -57,14 +60,20 @@ export default function Search() {
 							type="package"
 							name="package"
 							id="package"
-							className="rounded-md bg-neutral-725 items-center outline-none placeholder:tracking-wide placeholder:font-light hover:placeholder:text-neutral-0 font-normal text-neutral-400 hover:text-neutral-0 focus:text-neutral-0 placeholder:text-neutral-400 w-full py-4 pl-14 -ml-9 leading-5 cursor-pointer border-2 box-border border-transparent hover:border-neutral-700 hover:border-opacity-50 transition-all duration-300 ease-in-out"
+							value = {query}
+							className="rounded-md bg-neutral-725 items-center outline-none placeholder:tracking-wide 
+							placeholder:font-light hover:placeholder:text-neutral-0 font-normal text-neutral-400 
+							hover:text-neutral-0 focus:text-neutral-0 placeholder:text-neutral-400 w-full py-4 
+							pl-14 -ml-9 leading-5 cursor-pointer border-2 box-border border-transparent hover:border-neutral-700 
+							hover:border-opacity-50 transition-all duration-300 ease-in-out h-14"
 							placeholder="Search for a package"
 							onChange={e => {
+								setShowPackages(true)
 								setQuery(e.target.value)
 							}}
 						/>
 					</div>
-					{packages.length > 0 && (
+					{(packages.length > 0 && showPackages) && (
 						<div className="pl-5 -ml-3 bg-neutral-725 font-normal rounded-b-xl border-t border-primary-300 shadow-sm w-full z-10">
 							<ul role="list" className="divide-y divide-white/5 w-full">
 								{packages.map((p, i) => (

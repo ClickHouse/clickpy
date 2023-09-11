@@ -50,7 +50,7 @@ ENGINE = MergeTree
 ORDER BY (project, date, version, country_code, python_minor, system)
 
 
-INSERT INTO pypi_compact SELECT timestamp::Date as date, country_code, project, file.type as type, installer.name as installer, arrayStringConcat(arraySlice(splitByChar('.', python), 1, 2), '.') as python_minor, system.name as name, file.version as version FROM s3('https://storage.googleapis.com/clickhouse_public_datasets/pypi/file_downloads/2023_may_aug/file_downloads-*.parquet', 'Parquet', 'timestamp DateTime64(6), country_code LowCardinality(String), url String, project String, `file.filename` String, `file.project` String, `file.version` String, `file.type` String, `installer.name` String, `installer.version` String, python String, `implementation.name` String, `implementation.version` String, `distro.name` String, `distro.version` String, `distro.id` String, `distro.libc.lib` String, `distro.libc.version` String, `system.name` String, `system.release` String, cpu String, openssl_version String, setuptools_version String, rustc_version String,tls_protocol String, tls_cipher String') SETTINGS input_format_null_as_default = 1, input_format_parquet_import_nested = 1, max_insert_block_size = 100000000, min_insert_block_size_rows = 100000000, min_insert_block_size_bytes = 500000000, parts_to_throw_insert = 50000, max_insert_threads = 16
+INSERT INTO pypi_compact SELECT timestamp::Date as date, country_code, project, file.type as type, installer.name as installer, arrayStringConcat(arraySlice(splitByChar('.', python), 1, 2), '.') as python_minor, system.name as system, file.version as version FROM s3('https://storage.googleapis.com/clickhouse_public_datasets/pypi/file_downloads/2023_may_aug/file_downloads-*.parquet', 'Parquet', 'timestamp DateTime64(6), country_code LowCardinality(String), url String, project String, `file.filename` String, `file.project` String, `file.version` String, `file.type` String, `installer.name` String, `installer.version` String, python String, `implementation.name` String, `implementation.version` String, `distro.name` String, `distro.version` String, `distro.id` String, `distro.libc.lib` String, `distro.libc.version` String, `system.name` String, `system.release` String, cpu String, openssl_version String, setuptools_version String, rustc_version String,tls_protocol String, tls_cipher String') SETTINGS input_format_null_as_default = 1, input_format_parquet_import_nested = 1, max_insert_block_size = 100000000, min_insert_block_size_rows = 100000000, min_insert_block_size_bytes = 500000000, parts_to_throw_insert = 50000, max_insert_threads = 16
 
 ```
 
@@ -355,7 +355,23 @@ INSERT INTO pypi_downloads_per_day_by_version_by_python_by_country
 
 
 ```sql
+CREATE TABLE pypi_downloads_per_day_by_version_by_system_by_country
+(
+    `date` Date,
+    `project` String,
+    `version` String,
+    `system` String,
+    `country_code` String,
+    `count` Int64
+)
+ENGINE = SummingMergeTRee
+ORDER BY (project, version, date, country_code, system)
 
+INSERT INTO pypi_downloads_per_day_by_version_by_system_by_country 
+    SELECT 
+    date, project, file.version as version, system.name as system, country_code, count() as count 
+    FROM pypi 
+    GROUP BY date, project, version, system, country_code
 ```
 
 ## Dictionaries

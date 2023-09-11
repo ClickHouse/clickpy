@@ -28,11 +28,7 @@ export default function Header() {
 					<div>
 						<p className="text-sm text-neutral-0">
 							Powered by &nbsp;
-							<a
-								className="text-primary-300 hover:underline"
-								href="http://clickhouse.com/"
-								target="_blank"
-							>
+							<a className="text-primary-300 hover:underline" href="http://clickhouse.com/" target="_blank">
 								ClickHouse
 							</a>
 						</p>
