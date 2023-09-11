@@ -146,7 +146,7 @@ export default function Line({ data, onSelect }) {
 
   return (
     <div
-      className='rounded-lg bg-chart border border-slate-800 rounded-l h-full justify-between flex flex-col'
+      className='rounded-lg bg-slate-850 border border-slate-700 rounded-l h-full justify-between flex flex-col'
       onMouseMove={onMouseOver}
       onMouseOut={onMouseOut}
     >

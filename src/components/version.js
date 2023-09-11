@@ -1,6 +1,6 @@
 export default function Version({current, latest}) {
     return (
-        <div className='rounded-lg col-span-1 bg-slate-850 items-center gap-4 flex p-4 h-24 w-full border border-slate-800 rounded-l'>
+        <div className='rounded-lg col-span-1 bg-slate-850 items-center gap-4 flex p-4 h-24 w-full border border-slate-700 rounded-l'>
             <img className='h-16 w-16 min-w-16 min-h-16' src='/version.svg' alt='Version'/>
             <div className='ml-2 mr-4'>
                 <p className='text-xl mr-2 font-bold'>{current}</p>

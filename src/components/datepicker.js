@@ -1,6 +1,6 @@
 'use client'
-import DateRangePicker from '@wojtekmaj/react-daterange-picker';
-import '@wojtekmaj/react-daterange-picker/dist/DateRangePicker.css';
+import DateRangePicker from '@gingerwizard/react-daterange-picker'
+import '@gingerwizard/react-daterange-picker/dist/DateRangePicker.css'
 import 'react-calendar/dist/Calendar.css';
 import './datepicker.css'
 import Image from 'next/image';
@@ -28,8 +28,8 @@ export default function DatePicker({dates, onChange, clearable}) {
     }
 
     return (
-        <div className="width-[320px] max-w-[320px]">
-            <DateRangePicker showLeadingZeros={true} calendarClassName='calendar' className='date_picker' onChange={onSelectDates} rangeDivider={' to '} calendarIcon={<Image src={calendarIcon}/>} value={dates} clearIcon={ ClearLogo(clearable) }/>
+        <div className="width-[320px] max-w-[320px] min-w-[320px]">
+            <DateRangePicker portalContainer={null} showLeadingZeros={true} calendarClassName='calendar' className='date_picker' onChange={onSelectDates} rangeDivider={' to '} calendarIcon={<Image src={calendarIcon}/>} value={dates} clearIcon={ ClearLogo(clearable) }/>
         </div>
     )
 }
