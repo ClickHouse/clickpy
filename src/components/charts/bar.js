@@ -1,9 +1,9 @@
-'use client';
-import React, { useRef } from 'react';
-import ReactECharts from 'echarts-for-react';
+'use client'
+import React, { useRef } from 'react'
+import ReactECharts from 'echarts-for-react'
 
 export default function Bar({ data, stack, onSelect }) {
-  const xAxis = Array.from(new Set(data.map((p) => p.x)));
+  const xAxis = Array.from(new Set(data.map((p) => p.x)))
   const values = data.reduce((accumulator, val) => {
     if (!(val.name in accumulator)) {
       accumulator[val.name] = {
@@ -12,7 +12,7 @@ export default function Bar({ data, stack, onSelect }) {
       };
     }
     return accumulator;
-  }, {});
+  }, {})
 
   data.forEach((p) => (values[p.name].data[xAxis.indexOf(p.x)] = p.y));
 
@@ -39,8 +39,8 @@ export default function Bar({ data, stack, onSelect }) {
           name: series.name,
           data: series.data,
           color: color,
-        };
-  });
+        }
+  })
 
   const options = {
     animation: false,
@@ -95,33 +95,35 @@ export default function Bar({ data, stack, onSelect }) {
       brushMode: 'single',
       transformable: false,
     },
-  };
+  }
 
   const onMouseOver = () => {
-    const echartsInstance = chartRef.current.getEchartsInstance();
+    const echartsInstance = chartRef.current.getEchartsInstance()
     echartsInstance.dispatchAction({
       type: 'takeGlobalCursor',
       key: 'brush',
       brushOption: {
         brushType: 'lineX',
       },
-    });
-  };
+    })
+  }
 
   const onBrushEnd = (params) => {
     if (params.areas.length > 0) {
-      const echartsInstance = chartRef.current.getEchartsInstance();
-      const start = echartsInstance.convertFromPixel(
+      const echartsInstance = chartRef.current.getEchartsInstance()
+      let start = echartsInstance.convertFromPixel(
         { xAxisIndex: 0 },
         params.areas[0].range[0]
-      );
-      const end = echartsInstance.convertFromPixel(
+      )
+      let end = echartsInstance.convertFromPixel(
         { xAxisIndex: 0 },
         params.areas[0].range[1]
-      );
+      )
+      start = start > 0 ? start : 0
+      end = end < xAxis.length ? end: xAxis.length - 1
       onSelect && onSelect(xAxis[start], xAxis[end]);
     }
-  };
+  }
 
   return (
     <div

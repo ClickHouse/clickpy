@@ -1,6 +1,6 @@
-'use client';
-import React, { useRef } from 'react';
-import ReactECharts from 'echarts-for-react';
+'use client'
+import React, { useRef } from 'react'
+import ReactECharts from 'echarts-for-react'
 
 export default function MultiLine({ data, stack, fill, onSelect }) {
   const xAxis = Array.from(new Set(data.map((p) => p.x)))
@@ -113,14 +113,16 @@ export default function MultiLine({ data, stack, fill, onSelect }) {
   const onBrushEnd = (params) => {
     if (params.areas.length > 0) {
       const echartsInstance = chartRef.current.getEchartsInstance();
-      const start = echartsInstance.convertFromPixel(
+      let start = echartsInstance.convertFromPixel(
         { xAxisIndex: 0 },
         params.areas[0].range[0]
       )
-      const end = echartsInstance.convertFromPixel(
+      let end = echartsInstance.convertFromPixel(
         { xAxisIndex: 0 },
         params.areas[0].range[1]
       )
+      start = start > 0 ? start : 0
+      end = end < xAxis.length ? end: xAxis.length - 1
       onSelect && onSelect(xAxis[start], xAxis[end]);
     }
   }

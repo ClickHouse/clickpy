@@ -110,7 +110,7 @@ export default function Line({ data, onSelect }) {
           params[0].axisValue,
           params[0].value,
         ]);
-        return [pos[0], pos[1] - size.contentSize[1] * 2];
+        return [pos[0], pos[1] - size.contentSize[1] * 2]
       },
     },
     brush: {
@@ -122,21 +122,23 @@ export default function Line({ data, onSelect }) {
   }
 
   const onMouseOut = () => {
-    const echartsInstance = chartRef.current.getEchartsInstance();
-    echartsInstance.setOption(options);
+    const echartsInstance = chartRef.current.getEchartsInstance()
+    echartsInstance.setOption(options)
   }
 
   const onBrushEnd = (params) => {
     if (params.areas.length > 0) {
       const echartsInstance = chartRef.current.getEchartsInstance();
-      const start = echartsInstance.convertFromPixel(
+      let start = echartsInstance.convertFromPixel(
         { xAxisIndex: 0 },
         params.areas[0].range[0]
-      );
-      const end = echartsInstance.convertFromPixel(
+      )
+      let end = echartsInstance.convertFromPixel(
         { xAxisIndex: 0 },
         params.areas[0].range[1]
-      );
+      )
+      start = start > 0 ? start : 0
+      end = end < xAxis.length ? end: xAxis.length - 1
       onSelect &&
         xAxis[start] &&
         xAxis[end] &&
