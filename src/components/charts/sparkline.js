@@ -106,7 +106,7 @@ export default function SparkLine({ name, data, total, link }) {
 
 	return (
 		<div
-			className='rounded-lg bg-chart hover:bg-chart-hover shadow-inner border border-slate-800 h-full justify-between flex flex-col hover:shadow-xl transition-all duration-300 ease-in-out'
+			className='rounded-lg bg-chart hover:bg-chart-hover cursor-pointer shadow-inner border border-slate-800 h-full justify-between flex flex-col hover:shadow-xl transition-all duration-300 ease-in-out'
 			onMouseMove={onMouseOver}
 			onMouseOut={onMouseOut}
       onClick={onClick}
