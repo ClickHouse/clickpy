@@ -28,7 +28,7 @@ export default function DatePicker({dates, onChange, clearable}) {
     }
 
     return (
-        <div className="width-[320px] max-w-[320px] min-w-[320px]">
+        <div className="width-[320px] max-w-[360px] min-w-[320px]">
             <DateRangePicker portalContainer={null} showLeadingZeros={true} calendarClassName='calendar' className='date_picker' onChange={onSelectDates} rangeDivider={' to '} calendarIcon={<Image alt='calendar' src={calendarIcon}/>} value={dates} clearIcon={ ClearLogo(clearable) }/>
         </div>
     )
