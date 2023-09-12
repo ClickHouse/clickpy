@@ -4,19 +4,13 @@ import 'echarts-countries-js/echarts-countries-js/world';
 export default function CountryMap({ data, selected, onClick }) {
 
   const scaledValues = data.map((p) => {
-    const country =  {
+    return  {
       name: p.name,
       value: Math.sqrt(p.value),
       label: p.value,
       code: p.country_code,
       selected: p.country_code == selected,
-      itemStyle: {}
     }
-    if (p.country_code == selected) {
-      country['itemStyle']['areaColor'] = '#EEF400'
-    }
-    
-    return country
   })
 
   const values = scaledValues.map((p) => Number(p.value));
@@ -56,9 +50,9 @@ export default function CountryMap({ data, selected, onClick }) {
           show: false,
         },
         select: {
-            disabled: true,
+            disabled: false,
             itemStyle: {
-              areaColor: '#EEF400'
+              areaColor: '#FFFFFF'
             },
             label: { show: false },
         },
@@ -82,20 +76,20 @@ export default function CountryMap({ data, selected, onClick }) {
     ],
   }
 
-  if (values.length > 0 && selected === null) {
+  if (values.length > 0) {
     options['visualMap'] = {
       min: Math.min(...values),
       max: Math.max(...values),
       text: ['Max', 'Min'],
       realtime: false,
       calculable: false,  
-      color: selected ? ['#2F2F2F']: ['#FAFF69', '#DDE26B', '#B2B661', '#8A8C5A', '#51523B', '#2F2F2F'],
+      color: ['#FAFF69', '#DDE26B', '#B2B661', '#8A8C5A', '#51523B', '#2F2F2F'],
       left: 32,
     }
   }
 
   const select = (params) => {
-    onClick && selected === null && onClick(params.data.code);
+    onClick && params.data && onClick(params.data.code);
   }
 
   return (

@@ -257,16 +257,18 @@ export async function getDownloadsByCountry(package_name, version, min_date, max
     const columns = ['project', 'date', 'country_code']
     if (version) { columns.push('version') }
     const table = findOptimalTable(columns)
-    return query(`SELECT
-            dictGet('countries_dict', 'name', country_code) AS name,
-            country_code,
-            sum(count) AS value
-        FROM ${table} WHERE (date >= {min_date:String}::Date32) 
-            AND (date < {max_date:String}::Date32) 
-            AND (project = {package_name:String}) 
-            AND ${version ? `version={version:String}`: '1=1'}
-            AND ${country_code ? `country_code={country_code:String}`: '1=1'}
-        GROUP BY country_code`, {
+    return query(`SELECT name, code AS country_code, value 
+                    FROM countries AS all 
+                    LEFT OUTER JOIN (
+                        SELECT country_code, 
+                        sum(count) AS value 
+                        FROM ${table} 
+                    WHERE (date >= {min_date:String}::Date32) AND 
+                        (date < {max_date:String}::Date32) AND 
+                        project = {package_name:String} AND 
+                        ${version ? `version={version:String}`: '1=1'} GROUP BY country_code 
+                    ) AS values ON all.code = values.country_code`, 
+            {
             package_name: package_name,
             version: version,
             min_date: min_date,
