@@ -44,7 +44,8 @@ CREATE TABLE pypi_compact
     `installer` LowCardinality(String),
     `python_minor` LowCardinality(String),
     `system` LowCardinality(String),
-    `version` String
+    `version` String,
+        `_file` String
 )
 ENGINE = MergeTree
 ORDER BY (project, date, version, country_code, python_minor, system)
