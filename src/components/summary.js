@@ -1,6 +1,6 @@
 
 
-import { getProjectCount, getRecentReleases, getPopularEmergingRepos, getPopularReposNeedingARefresh } from '@/utils/clickhouse'
+import { getProjectCount, getRecentReleases, getPopularEmergingRepos, getPopularReposNeedingRefresh } from '@/utils/clickhouse'
 import 'server-only'
 import SparkLine from './charts/sparkline'
 import HeatMap from './charts/heatmap'
@@ -16,7 +16,7 @@ export default async function Summary() {
         [
             getRecentReleases(packages.map(p => p.project)),
             getPopularEmergingRepos(),
-            getPopularReposNeedingARefresh()
+            getPopularReposNeedingRefresh()
         ]
     )
 
@@ -42,7 +42,7 @@ export default async function Summary() {
             <SimpleList data={needing_refresh.map(p => { return { title: p.name, subtitle: `${Math.round(Number(p.c)/10000000)/100}B downloads, last updated on ${p.last_updated}` } })} title={'Needing a refresh'} subtitle={'Top 5'}/>
           </div>
           <div className='lg:col-span-2 lg:h-[240px]'>
-            <SimpleList data={emerging_repos} title={'Emerging repos'} subtitle={'Top 5'}/>
+            <SimpleList data={emerging_repos} title={'Highest release cadence'} subtitle={'Top 5'}/>
           </div>
         </div>
     )

@@ -383,8 +383,8 @@ export async function getPopularEmergingRepos() {
 }
 
 // highest downloaded repos with no update in last 3 months
-export async function getPopularReposNeedingARefresh() {
-    return query('getPopularReposNeedingARefresh', `
+export async function getPopularReposNeedingRefresh() {
+    return query('getPopularReposNeedingRefresh', `
         WITH (
             SELECT max(upload_time) AS max_date
             FROM ${PYPI_DATABASE}.projects
@@ -400,6 +400,53 @@ export async function getPopularReposNeedingARefresh() {
         LIMIT 5
     `)
 }
+
+
+// biggest change in download in the last 3 months
+export async function hotPackages() {
+    const min_downloads = 1000000
+    return query('hotPackages', `
+    WITH
+    (
+        SELECT max(max_date)
+        FROM ${PYPI_DATABASE}.pypi_downloads_max_min
+    ) AS max_date,
+    percentage_increases AS
+    (
+        SELECT
+            project,
+            sum(count) AS c,
+            month,
+            any(c) OVER (PARTITION BY project ORDER BY month ASC ROWS BETWEEN 2 PRECEDING AND 1 PRECEDING) AS previous,
+            if(previous > 0, (c - previous) / previous, 0) AS percent_increase
+        FROM ${PYPI_DATABASE}.pypi_downloads_per_month
+        WHERE ((month >= (toStartOfMonth(max_date) - toIntervalMonth(4))) AND (month <= (toStartOfMonth(max_date) - toIntervalMonth(1)))) AND (project IN (
+            SELECT project
+            FROM pypi.pypi_downloads_per_month
+            GROUP BY project
+            HAVING sum(count) > ${min_downloads}
+        ))
+        GROUP BY
+            project,
+            month
+        ORDER BY
+            project ASC,
+            month ASC
+    )
+    SELECT
+        project,
+        month,
+        c
+    FROM percentage_increases
+    WHERE project IN (
+        SELECT project
+        FROM percentage_increases
+        GROUP BY project
+        ORDER BY sum(percent_increase) DESC
+        LIMIT 5
+    )`)
+}
+
 
 async function query(query_name, query, query_params) {
     const start = performance.now()

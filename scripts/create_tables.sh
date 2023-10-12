@@ -460,6 +460,39 @@ CREATE MATERIALIZED VIEW pypi.pypi_downloads_max_min_mv TO pypi.pypi_downloads_m
 SELECT project, maxSimpleState(date) as max_date, minSimpleState(date) FROM pypi.pypi GROUP BY project
 '
 
+echo "creating pypi_downloads_per_month"
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+CREATE TABLE pypi.pypi_downloads_per_month
+(
+    `month` Date,
+    `project` String,
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY (month, project)
+'
+
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_month_mv TO pypi.pypi_downloads_per_month
+(
+    `month` Date,
+    `project` String,
+    `count` Int64
+) AS
+SELECT
+    toStartOfMonth(date) AS month,
+    project,
+    count() AS count
+FROM pypi
+WHERE date > (toStartOfMonth(now()) - toIntervalMonth(3))
+GROUP BY
+    month,
+    project
+'
+
+
 echo "creating projects table"
 
 clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
