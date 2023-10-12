@@ -7,7 +7,7 @@
 }
 
 .date_picker > * > span {
-    @apply mr-2 ml-2;
+    @apply mr-2 ml-[-20px];
 }
 
 .calendar {

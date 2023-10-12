@@ -2,13 +2,54 @@
 import React, { useRef } from 'react'
 import ReactECharts from 'echarts-for-react'
 
-export default function HorizontalBar({ data,  title, subtitle }) {
+export default function HorizontalBar({ data,  title, subtitle, stack=false, labelMargin = 80 }) {
   const xAxis = Array.from(new Set(data.map((p) => p.x)))
-  const chartRef = useRef();
+  // unique series - we assume they are shorted by series
+  const seriesNames = data.map(p => p.name).filter(function(item, pos, ary) {
+    return !pos || item != ary[pos - 1]
+  })
+  console.log(seriesNames)
+  const values = data.reduce((accumulator, val) => {
+    if (!(val.name in accumulator)) {
+      accumulator[val.name] = {
+        name: val.name,
+        data: new Array(xAxis.length).fill(0),
+      };
+    }
+    return accumulator;
+  }, {})
+
+  data.forEach((p) => (values[p.name].data[xAxis.indexOf(p.x)] = p.y));
+
+  const chartRef = useRef()
+  const colors = seriesNames.length === 1 ? ['rgba(252, 255, 116, 1.0)']: ['rgba(252, 255, 116, 0.2)','rgba(252, 255, 116, 0.6)','rgba(252, 255, 116, 1.0)']
+  const mappedColors = {}
+  const series = Object.values(values).map((series, i) => {
+    let color = colors[i % colors.length]
+    if (series.name in mappedColors) {
+      color = mappedColors[series.name]
+    } else {
+      mappedColors[series.name] = color
+    }
+    return stack
+      ? {
+          type: 'bar',
+          name: series.name,
+          data: series.data,
+          color: color,
+          stack: 'total',
+        }
+      : {
+          type: 'bar',
+          name: series.name,
+          data: series.data,
+          color: color,
+        }
+  })
   const options = {
     animation: false,
     grid: {
-      left: '80px',
+      left: labelMargin,
       right: 50,
       top: 10,
       bottom: 35
@@ -40,15 +81,14 @@ export default function HorizontalBar({ data,  title, subtitle }) {
       show: true,
       type: 'category',
       data: xAxis,
+      axisLabel: {
+        show: true,
+      }
     },
-    series: [
-      {
-        type: 'bar',
-        data: data.map(p => p.y),
-        color: '#FCFF74',
-      } 
-    ],
+    series: seriesNames.map(s => series.find(c => c.name === s)),
   }
+
+    console.log(seriesNames.map(s => series.find(c => c.name === s)))
 
   const onMouseOver = () => {
     const echartsInstance = chartRef.current.getEchartsInstance()

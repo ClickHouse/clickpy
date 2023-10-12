@@ -94,12 +94,10 @@ const chartRef = useRef()
 			className='rounded-lg bg-slate-850 hover:bg-chart-hover cursor-pointer shadow-inner border border-slate-700 h-full justify-between flex flex-col hover:shadow-xl transition-all duration-300 ease-in-out'
             onClick={onClick}>
             <div className='px-6 py-4  flex-row flex justify-between'>
-                <p className='transition-all duration-300 ease-in-out hover:shadow-xl text-white font-bold'>
-                    {title}
-                </p>
-                <p className={'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500'}>
-                    {subtitle}
-                </p>
+              {title}
+              <p className={'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500'}>
+                  {subtitle}
+              </p>
             </div>
 
 			<div className='justify-self-stretch h-full'>

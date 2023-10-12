@@ -20,7 +20,7 @@ const materialized_views = [
     { columns: ['project', 'date', 'version', 'system', 'country_code'], table: 'pypi_downloads_per_day_by_version_by_system_by_country' },
     { columns: ['project', 'date', 'version', 'installer', 'type'], table: 'pypi_downloads_per_day_by_version_by_installer_by_type' },
     { columns: ['project', 'date', 'version', 'installer', 'type', 'country_code'], table: 'pypi_downloads_per_day_by_version_by_installer_by_type_by_country' },
-    { columns: ['project', 'date', 'version', 'type'], table: 'pypi_downloads_per_day_by_version_by_type' },
+    { columns: ['project', 'date', 'version', 'type'], table: 'pypi_downloads_per_day_by_version_by_file_type' },
     { columns: ['project','max_date', 'min_date'], table: 'pypi_downloads_max_min' },
 ]
 
@@ -417,7 +417,7 @@ export async function hotPackages() {
             project,
             sum(count) AS c,
             month,
-            any(c) OVER (PARTITION BY project ORDER BY month ASC ROWS BETWEEN 2 PRECEDING AND 1 PRECEDING) AS previous,
+            any(c) OVER (PARTITION BY project ORDER BY month ASC ROWS BETWEEN 1 PRECEDING AND 1 PRECEDING) AS previous,
             if(previous > 0, (c - previous) / previous, 0) AS percent_increase
         FROM ${PYPI_DATABASE}.pypi_downloads_per_month
         WHERE ((month >= (toStartOfMonth(max_date) - toIntervalMonth(4))) AND (month <= (toStartOfMonth(max_date) - toIntervalMonth(1)))) AND (project IN (
@@ -444,7 +444,7 @@ export async function hotPackages() {
         GROUP BY project
         ORDER BY sum(percent_increase) DESC
         LIMIT 5
-    )`)
+    ) ORDER BY month DESC, project`)
 }
 
 

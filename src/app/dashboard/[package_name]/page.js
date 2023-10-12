@@ -5,7 +5,7 @@ import ClientComponent from './component'
 import { getPackageDetails, getDownloadSummary, getDownloadsOverTime, getPackageDateRanges, getTopVersions, getDownloadsOverTimeByPython, 
   getDownloadsOverTimeBySystem, getDownloadsByCountry, getFileTypesByInstaller } from '@/utils/clickhouse'
 import Search from '@/components/search'
-import Image from 'next/image';
+import Image from 'next/image'
 import versionIcon from './icons/version.svg'
 import countryIcon from './icons/country.svg'
 
