@@ -367,7 +367,7 @@ export async function getEmergingRepos() {
             FROM ${PYPI_DATABASE}.pypi_downloads_max_min
         ) AS max_date
         SELECT
-            project,
+            project as name,
             sum(count) AS c
         FROM ${PYPI_DATABASE}.pypi_downloads_per_day
         WHERE project IN (
