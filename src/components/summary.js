@@ -1,16 +1,16 @@
-import SparkLine from './charts/sparkline';
-import { getProjectCount, getRecentPackageDownloads } from '@/utils/clickhouse';
-import 'server-only';
+import SparkLine from './charts/sparkline'
+import { getProjectCount, getRecentPackageDownloads } from '@/utils/clickhouse'
+import 'server-only'
 
 async function getPackageData() {
   // replace with materialied view to compute top K
-  const packages = await getProjectCount();
+  const packages = await getProjectCount()
   const downloads = await Promise.all(
     packages.map((p) => getRecentPackageDownloads(p.project))
-  );
+  )
   return downloads.map((data, i) => {
-    return { name: packages[i].project, data: data, total: packages[i].c };
-  });
+    return { name: packages[i].project, data: data, total: packages[i].c }
+  })
 }
 
 export default async function Summary() {
@@ -66,5 +66,5 @@ export default async function Summary() {
           />
       </div>
     </div>
-  );
+  )
 }
