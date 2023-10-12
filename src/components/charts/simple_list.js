@@ -9,9 +9,7 @@ export default function SimpleList({ data,  title, subtitle }) {
       {
         title && (
           <div className='px-6 pt-4 pb-0 flex-row flex justify-between'>
-              <p className='transition-all duration-300 ease-in-out hover:shadow-xl text-white font-bold'>
-                  {title}
-              </p>
+              {title}
               <p className={'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500'}>
                   {subtitle}
               </p>

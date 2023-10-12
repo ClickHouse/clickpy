@@ -11,6 +11,7 @@ import emergingIcon from './emerging.svg'
 import refreshIcon from './refresh.svg'
 import hotIcon from './hot.svg'
 import Image from 'next/image'
+import PunchCard from './charts/punch_card'
 
 export default async function Summary() {
     const packages = await getProjectCount()
@@ -25,7 +26,7 @@ export default async function Summary() {
             hotPackages()
         ]
     )
-    const total_hot_downloads = hot_packages.map(p => p.c).reduce((ps, a) => {
+    const total_hot_downloads = hot_packages.map(p => p.z).reduce((ps, a) => {
       return Number(ps) + Number(a)
   }, 0)
 
@@ -53,10 +54,8 @@ export default async function Summary() {
           title={<div className='flex space-x-2'><Image alt='recent' src={refreshIcon}/><span className='text-white font-bold space-x-0.5'>Needing a refresh</span></div>} subtitle={'Top 5'}/>
         </div>
         <div className='lg:col-span-2 lg:h-[240px]'>
-          <HorizontalBar
-            data={hot_packages.map(p => {
-                return {x: p.project, y: p.c, name: p.month}
-            }).reverse()}
+          <PunchCard
+            data={hot_packages}
             title={<div className='flex space-x-2'><Image alt='recent' src={hotIcon}/><span className='text-white font-bold space-x-0.5'>Hot packages</span></div>}
             subtitle={`${Math.round(total_hot_downloads/1000)/1000}M downloads`}
             stack={true}

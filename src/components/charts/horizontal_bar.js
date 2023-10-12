@@ -2,7 +2,7 @@
 import React, { useRef } from 'react'
 import ReactECharts from 'echarts-for-react'
 
-export default function HorizontalBar({ data,  title, subtitle, stack=false, labelMargin = 80 }) {
+export default function HorizontalBar({ data,  title, subtitle, stack=false }) {
   const xAxis = Array.from(new Set(data.map((p) => p.x)))
   // unique series - we assume they are shorted by series
   const seriesNames = data.map(p => p.name).filter(function(item, pos, ary) {
@@ -49,7 +49,7 @@ export default function HorizontalBar({ data,  title, subtitle, stack=false, lab
   const options = {
     animation: false,
     grid: {
-      left: labelMargin,
+      left: 80,
       right: 50,
       top: 10,
       bottom: 35
@@ -88,14 +88,10 @@ export default function HorizontalBar({ data,  title, subtitle, stack=false, lab
     series: seriesNames.map(s => series.find(c => c.name === s)),
   }
 
-    console.log(seriesNames.map(s => series.find(c => c.name === s)))
-
   const onMouseOver = () => {
     const echartsInstance = chartRef.current.getEchartsInstance()
 
   }
-
-
   return (
     <div
       className='rounded-lg bg-slate-850 border border-slate-700 rounded-l h-full justify-between flex flex-col'
@@ -104,9 +100,7 @@ export default function HorizontalBar({ data,  title, subtitle, stack=false, lab
       {
         title && (
           <div className='px-6 pt-4 pb-0 flex-row flex justify-between'>
-              <p className='transition-all duration-300 ease-in-out hover:shadow-xl text-white font-bold'>
-                  {title}
-              </p>
+              {title}
               <p className={'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500'}>
                   {subtitle}
               </p>
