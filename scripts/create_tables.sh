@@ -437,6 +437,7 @@ CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_by_version_by_system_by_cou
 SELECT date, project, version,  system, country_code, count() as count FROM pypi.pypi GROUP BY date, project, version, system, country_code
 '
 
+echo "creating pypi_downloads_max_min"
 
 clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
 CREATE TABLE pypi.pypi_downloads_max_min
@@ -456,5 +457,52 @@ CREATE MATERIALIZED VIEW pypi.pypi_downloads_max_min_mv TO pypi.pypi_downloads_m
     `max_date` SimpleAggregateFunction(max, Date),
     `min_date` SimpleAggregateFunction(min, Date)
 ) AS
-SELECT project, maxSimpleState(date) as max_date, minSimpleState(date) FROM pypi GROUP BY project
+SELECT project, maxSimpleState(date) as max_date, minSimpleState(date) FROM pypi.pypi GROUP BY project
+'
+
+echo "creating projects table"
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+CREATE TABLE pypi.projects
+(
+    `metadata_version` String,
+    `name` String,
+    `version` String,
+    `summary` String,
+    `description` String,
+    `description_content_type` String,
+    `author` String,
+    `author_email` String,
+    `maintainer` String,
+    `maintainer_email` String,
+    `license` String,
+    `keywords` String,
+    `classifiers` Array(String),
+    `platform` Array(String),
+    `home_page` String,
+    `download_url` String,
+    `requires_python` String,
+    `requires` Array(String),
+    `provides` Array(String),
+    `obsoletes` Array(String),
+    `requires_dist` Array(String),
+    `provides_dist` Array(String),
+    `obsoletes_dist` Array(String),
+    `requires_external` Array(String),
+    `project_urls` Array(String),
+    `uploaded_via` String,
+    `upload_time` DateTime64,
+    `filename` String,
+    `size` Int64,
+    `path` String,
+    `python_version` String,
+    `packagetype` String,
+    `comment_text` String,
+    `has_signature` Bool,
+    `md5_digest` String,
+    `sha256_digest` String,
+    `blake2_256_digest` String
+)
+ENGINE = MergeTree
+ORDER BY name
 '

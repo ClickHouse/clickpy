@@ -125,7 +125,7 @@ export async function getPackageDateRanges(package_name, version) {
 export async function getPackageDetails(package_name, version) {
     return query('getPackageDetails',`WITH (
                 SELECT version
-                FROM packages
+                FROM ${PYPI_DATABASE}.projects
                 WHERE name = {package_name:String}
                 ORDER BY arrayMap(x -> toUInt8OrDefault(x, 0), splitByChar('.', version)) DESC
                 LIMIT 1
@@ -139,7 +139,7 @@ export async function getPackageDetails(package_name, version) {
             license,
             home_page,
             max_version
-        FROM packages
+        FROM ${PYPI_DATABASE}.projects
         WHERE (name = {package_name:String}) AND ${version ? `version={version:String}`: '1=1'} 
         ORDER BY upload_time DESC
         LIMIT 1`, {
@@ -340,13 +340,13 @@ export async function getRecentReleases(packages) {
     return query('getRecentReleases', `
         WITH (
             SELECT max(upload_time) AS max_date
-            FROM packages
+            FROM ${PYPI_DATABASE}.projects
         ) AS max_date
         SELECT
             release_month as x,
             name as y,
             uniqExact(version) AS z
-        FROM packages
+        FROM ${PYPI_DATABASE}.projects
         WHERE (name IN {packages:Array(String)}) AND (toStartOfMonth(upload_time) > toStartOfMonth(max_date - toIntervalMonth(6)))
         GROUP BY
             name,
@@ -360,7 +360,7 @@ export async function getRecentReleases(packages) {
 }
 
 // top repos with no downloads prior to last 3 months
-export async function getEmergingRepos() {
+export async function getPopularEmergingRepos() {
     return query('getEmergingRepos',`
         WITH (
             SELECT max(max_date)
@@ -373,9 +373,28 @@ export async function getEmergingRepos() {
         WHERE project IN (
             SELECT project
             FROM ${PYPI_DATABASE}.pypi_downloads_max_min
-            WHERE min_date >= (max_date - toIntervalWeek(12))
+            WHERE min_date >= (max_date - toIntervalMonth(3))
             GROUP BY project
         )
+        GROUP BY project
+        ORDER BY c DESC
+        LIMIT 5
+    `)
+}
+
+// highest downloaded repos with no update in last 3 months
+export async function getPopularReposNeedingARefresh() {
+    return query('getPopularReposNeedingARefresh', `
+        WITH (
+            SELECT max(upload_time) AS max_date
+            FROM ${PYPI_DATABASE}.projects
+        ) AS max_date
+        SELECT
+            project AS name,
+            sum(count) AS c,
+            formatDateTime(dictGet('${PYPI_DATABASE}.last_updated_dict', 'last_update', project), '%d %M %Y') AS last_updated
+        FROM ${PYPI_DATABASE}.pypi_downloads_per_day
+        WHERE dictGet('${PYPI_DATABASE}.last_updated_dict', 'last_update', project) <= (max_date - toIntervalMonth(6))
         GROUP BY project
         ORDER BY c DESC
         LIMIT 5
@@ -392,7 +411,12 @@ async function query(query_name, query, query_params) {
     const end = performance.now()
     console.log(`Execution time for ${query_name}: ${end - start} ms`)
     if (end - start > 1000) {
-        console.log(query, query_params)
+        if (query_params) {
+            console.log(query, query_params)
+        } else {
+            console.log(query)
+        }
     }
     return results.json()
 }
+

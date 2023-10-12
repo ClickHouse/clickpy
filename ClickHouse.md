@@ -555,38 +555,33 @@ INSERT INTO pypi_downloads_per_day_by_version_by_system_by_country
     SELECT date, project, version,  system, country_code, count() as count FROM pypi GROUP BY date, project, version,  system, country_code
 ```
 
-## Dictionaries
+### First and Last download 
 
 ```sql
-CREATE TABLE countries
+CREATE TABLE pypi.pypi_downloads_max_min
 (
-    `name` String,
-    `code` String
+    `project` String,
+    `max_date` SimpleAggregateFunction(max, Date),
+    `min_date` SimpleAggregateFunction(min, Date)
 )
-ENGINE = MergeTree
-ORDER BY code
+ENGINE = AggregatingMergeTree
+ORDER BY project
+```
 
-
-INSERT INTO countries SELECT
-    name,
-    `alpha-2` AS code
-FROM url('https://gist.githubusercontent.com/gingerwizard/963e2aa7b0f65a3e8761ce2d413ba02c/raw/4b09800f48d932890eedd3ec5f7de380f2067947/country_codes.csv')
-
-CREATE DICTIONARY countries_dict
+```sql
+CREATE MATERIALIZED VIEW pypi.pypi_downloads_max_min_mv TO pypi.pypi_downloads_max_min
 (
-    `name` String,
-    `code` String
-)
-PRIMARY KEY code
-SOURCE(CLICKHOUSE(TABLE 'countries'))
-LIFETIME(MIN 0 MAX 300)
-LAYOUT(COMPLEX_KEY_HASHED())
+    `project` String,
+    `max_date` SimpleAggregateFunction(max, Date),
+    `min_date` SimpleAggregateFunction(min, Date)
+) AS
+SELECT project, maxSimpleState(date) as max_date, minSimpleState(date) FROM pypi.pypi GROUP BY project
 ```
 
 # Packages table
 
 ```sql
-CREATE TABLE packages
+CREATE TABLE pypi.projects
 (
     `metadata_version` String,
     `name` String,
@@ -629,13 +624,52 @@ CREATE TABLE packages
 ENGINE = MergeTree
 ORDER BY name
 
-INSERT INTO packages SELECT *
+INSERT INTO projects SELECT *
 FROM s3('https://storage.googleapis.com/clickhouse_public_datasets/pypi/packages/packages-*.parquet')
 
 ```
 
 
-## Queries
+# Dictionaries
+
+```sql
+CREATE TABLE countries
+(
+    `name` String,
+    `code` String
+)
+ENGINE = MergeTree
+ORDER BY code
+
+
+INSERT INTO countries SELECT
+    name,
+    `alpha-2` AS code
+FROM url('https://gist.githubusercontent.com/gingerwizard/963e2aa7b0f65a3e8761ce2d413ba02c/raw/4b09800f48d932890eedd3ec5f7de380f2067947/country_codes.csv')
+
+CREATE DICTIONARY countries_dict
+(
+    `name` String,
+    `code` String
+)
+PRIMARY KEY code
+SOURCE(CLICKHOUSE(TABLE 'countries'))
+LIFETIME(MIN 0 MAX 300)
+LAYOUT(COMPLEX_KEY_HASHED())
+
+
+CREATE DICTIONARY pypi.last_updated_dict
+(
+    `name` String,
+    `last_update` DateTime64(3)
+)
+PRIMARY KEY name
+SOURCE(CLICKHOUSE(QUERY 'SELECT name, max(upload_time) AS last_update FROM pypi.projects GROUP BY name'))
+LIFETIME(MIN 0 MAX 300)
+LAYOUT(COMPLEX_KEY_HASHED())
+```
+
+# Queries
 
 ```sql
 SELECT
@@ -662,5 +696,4 @@ GROUP BY name, x
 ORDER BY x ASC, y DESC LIMIT 4 BY x
 
 ```
-
 

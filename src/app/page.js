@@ -1,6 +1,6 @@
 import Header from '@/components/header'
 import Search from '@/components/search'
-import SummaryNew from '@/components/summary_new'
+import Summary from '@/components/summary'
 import { getTotalDownloads } from '@/utils/clickhouse'
 
 import 'server-only'
@@ -35,7 +35,7 @@ export default async function Home() {
 									<Search />
 								</div>
 								<div className='mt-16 flow-root sm:mt-24 w-full md:w-5/6 md:px-4'>
-									<SummaryNew />
+									<Summary />
 								</div>
 							</div>
 						</div>
