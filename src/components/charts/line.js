@@ -156,7 +156,7 @@ export default function Line({ data, onSelect }) {
         ref={chartRef}
         option={options}
         style={{ width: '100%', height: '100%' }}
-        lazyUpdate={true}
+        lazyUpdate={false}
         onEvents={{
           brushEnd: onBrushEnd,
         }}

@@ -1,5 +1,5 @@
-'use client';
-import ReactECharts from 'echarts-for-react';
+'use client'
+import ReactECharts from 'echarts-for-react'
 
 export default function Pie({ data, onClick }) {
   const options = {
@@ -63,7 +63,7 @@ export default function Pie({ data, onClick }) {
   }
 
   const select = (params) => {
-    onClick && onClick(params.name);
+    onClick && onClick(params.name)
   }
 
   return (

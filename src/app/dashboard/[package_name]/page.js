@@ -8,6 +8,7 @@ import Search from '@/components/search'
 import Image from 'next/image'
 import versionIcon from './icons/version.svg'
 import countryIcon from './icons/country.svg'
+import { Suspense } from 'react'
 
 export default async function Dashboard({params, searchParams}) {
   const version = searchParams.version
@@ -19,12 +20,17 @@ export default async function Dashboard({params, searchParams}) {
     min_date =  ranges.min_date
     max_date = ranges.max_date
 }
+
+const Component = async ({getData, type, params, options}) => {
+    const data = await getData(params)
+    return (<ClientComponent type={type} data={data} options={options}/>)
+}
   
 const [
       packageDetails, 
       downloadSummary, 
-      downloadsOverTime, 
-      versions,
+      //downloadsOverTime, 
+      //versions,
       downloadsOverTimeByPython,
       downloadsOverTimeBySystem,
       downloadsByCountry,
@@ -33,9 +39,9 @@ const [
     ] = await Promise.all([
       getPackageDetails(params.package_name, version),
       getDownloadSummary(params.package_name, version, min_date, max_date, country_code),
-      getDownloadsOverTime(params.package_name, version,'Day', min_date, max_date, country_code),
+      //getDownloadsOverTime(params.package_name, version,'Day', min_date, max_date, country_code),
       // getTopDistributionTypes(params.package_name, version, min_date, max_date, country_code),
-      getTopVersions(params.package_name, version, min_date, max_date, country_code),
+      //getTopVersions(params.package_name, version, min_date, max_date, country_code),
       getDownloadsOverTimeByPython(params.package_name, version,'Day', min_date, max_date, country_code),
       getDownloadsOverTimeBySystem(params.package_name, version,'Day', min_date, max_date, country_code),
       getDownloadsByCountry(params.package_name, version, min_date, max_date, country_code),
@@ -89,11 +95,18 @@ return (
       <div className='mt-20 ml-10 mr-10 lg:h-[480px] lg:grid lg:grid-cols-3 gap-4'>
           <div className='h-[480px] lg:col-span-2'>
               <p className='text-2xl font-bold mb-5'>Downloads over time</p>
-              <ClientComponent type={'line'} data={downloadsOverTime}/>
+              <Suspense fallback={<div>Loading!</div>}>
+                <Component getData={getDownloadsOverTime} type={'line'} params={{package_name: params.package_name, version: version, period: 'Day', min_date: min_date, max_date: max_date, country_code: country_code}} options={{}}/>
+              </Suspense>
+              
+              {/* <ClientComponent type={'line'} data={downloadsOverTime}/> */}
           </div>
           <div className='h-[480px] mt-32 lg:mt-0'>
               <p className='text-2xl font-bold mb-5'>Top versions</p>
-              <ClientComponent type={'pie'} data={versions} options={ {filter_name: 'version'} }/>
+              <Suspense fallback={<div>Loading!</div>}>
+                <Component getData={getTopVersions} type={'pie'} params={{package_name: params.package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}} options={ {filter_name: 'version'} }/>
+              </Suspense>
+              {/* <ClientComponent type={'pie'} data={versions} options={ {filter_name: 'version'} }/> */}
           </div>
       </div>
       <div className='mt-32 ml-10 mr-10'>
