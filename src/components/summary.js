@@ -10,8 +10,11 @@ import refreshIcon from './refresh.svg'
 import hotIcon from './hot.svg'
 import Image from 'next/image'
 import PunchCard from './charts/punch_card'
+import { useRouter } from 'next/navigation'
 
 export default function Summary({packages, recent_releases, emerging_repos, needing_refresh, hot_packages}) {
+  const router = useRouter()
+  
   const total_top_downloads = packages.map(p => p.c).reduce((ps, a) => {
       return Number(ps) + Number(a)
   }, 0)
@@ -32,15 +35,23 @@ export default function Summary({packages, recent_releases, emerging_repos, need
   return (
       <div className='flex flex-col grow lg:grid lg:grid-cols-6 lg:grid-rows-2 gap-4 lg:h-[680px] lg:min-h-[680px] min-w-[350px]'>
         <div className='lg:col-span-3'>
-          <HeatMap data={recent_releases} title={<div className='flex space-x-2'><Image alt='recent' src={recentIcon}/><span className='text-white font-bold space-x-0.5'>Recent releases</span></div>} subtitle={'On popular packages'}/>
+          <HeatMap data={recent_releases} 
+            title={<div className='flex space-x-2'><Image alt='recent' src={recentIcon}/><span className='text-white font-bold space-x-0.5'>Recent releases</span></div>} 
+            subtitle={'On popular packages'}
+            onClick={(value) => {
+              router.push(`/dashboard/${value[1]}`)
+            }}/>
         </div>
         <div className='justify-self align-self lg:col-span-3'>
         <HorizontalBar
-          data={packages.map(p => {
-              return {x: p.project, y: p.c, name: 'counts'}
-          }).reverse()}
-          title={<div className='flex space-x-2'><Image alt='recent' src={popularIcon}/><span className='text-white font-bold space-x-0.5'>Top Repos</span></div>}
-          subtitle={`${formatNumber(total_top_downloads)} downloads`}
+            data={packages.map(p => {
+                return {x: p.project, y: p.c, name: 'counts'}
+            }).reverse()}
+            title={<div className='flex space-x-2'><Image alt='recent' src={popularIcon}/><span className='text-white font-bold space-x-0.5'>Top Repos</span></div>}
+            subtitle={`${formatNumber(total_top_downloads)} downloads`}
+            onClick={(value) => {
+              router.push(`/dashboard/${value}`)
+            }}
         />
         </div>
         <div className='lg:col-span-2 lg:h-[240px]'>

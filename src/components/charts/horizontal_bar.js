@@ -3,9 +3,9 @@ import React, { useRef } from 'react'
 import ReactECharts from 'echarts-for-react'
 import styles from './styles.module.css'
 
-export default function HorizontalBar({ data,  title, subtitle, stack=false }) {
+export default function HorizontalBar({ data,  title, subtitle, stack=false, onClick}) {
   const chartRef = useRef()
-  const xAxis = Array.from(new Set(data.map((p) => p.x)))
+  const yValues = Array.from(new Set(data.map((p) => p.x)))
   // unique series - we assume they are shorted by series
   const seriesNames = data.map(p => p.name).filter(function(item, pos, ary) {
     return !pos || item != ary[pos - 1]
@@ -14,13 +14,17 @@ export default function HorizontalBar({ data,  title, subtitle, stack=false }) {
     if (!(val.name in accumulator)) {
       accumulator[val.name] = {
         name: val.name,
-        data: new Array(xAxis.length).fill(0),
+        data: new Array(yValues.length).fill(0),
       };
     }
-    return accumulator;
+    return accumulator
   }, {})
 
-  data.forEach((p) => (values[p.name].data[xAxis.indexOf(p.x)] = p.y));
+  const select = (values) => {
+      onClick(values.name)
+  }
+
+  data.forEach((p) => (values[p.name].data[yValues.indexOf(p.x)] = p.y));
   const colors = seriesNames.length === 1 ? ['rgba(252, 255, 116, 1.0)']: ['rgba(252, 255, 116, 0.2)','rgba(252, 255, 116, 0.6)','rgba(252, 255, 116, 1.0)']
   const mappedColors = {}
   const series = Object.values(values).map((series, i) => {
@@ -45,6 +49,7 @@ export default function HorizontalBar({ data,  title, subtitle, stack=false }) {
           color: color,
         }
   })
+
   const options = {
     animation: false,
     grid: {
@@ -91,7 +96,7 @@ export default function HorizontalBar({ data,  title, subtitle, stack=false }) {
     yAxis: {
       show: true,
       type: 'category',
-      data: xAxis,
+      data: yValues,
       axisLabel: {
         show: true,
       }
@@ -122,6 +127,7 @@ export default function HorizontalBar({ data,  title, subtitle, stack=false }) {
         ref={chartRef}
         option={options}
         style={{ width: '100%', height: '100%' }}
+        onEvents={{ click: select }}
       />
     </div>
   );

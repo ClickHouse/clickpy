@@ -84,7 +84,7 @@ export default function Radar({ data, onClick }) {
 
   const select = (params) => {
     onClick && onClick(params.name);
-  };
+  }
 
   return (
     <div className='rounded-lg bg-slate-850 border border-slate-700 h-full'>
@@ -95,5 +95,5 @@ export default function Radar({ data, onClick }) {
         onEvents={{ click: select }}
       />
     </div>
-  );
+  )
 }
