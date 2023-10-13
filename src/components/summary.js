@@ -69,6 +69,10 @@ export default function Summary({packages, recent_releases, emerging_repos, need
             subtitle={`${formatNumber(total_hot_downloads)} downloads`}
             stack={true}
             labelMargin={200}
+            onClick={(value) => {
+              router.push(`/dashboard/${value[1]}`)
+            }}
+            scale='log'
           />
         </div>
       </div>

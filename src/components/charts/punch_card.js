@@ -3,8 +3,8 @@ import React, { useRef } from 'react'
 import ReactECharts from 'echarts-for-react'
 import styles from './styles.module.css'
 
-export default function PunchCard({ data,  title, subtitle}) {
-    // we data is sorted by x-values
+export default function PunchCard({ data,  title, subtitle, onClick, scale='linear'}) {
+    // we assume data is sorted by x-values
     const xValues = data.map(p => p.x).filter(function(item, pos, ary) {
         return !pos || item != ary[pos - 1]
     }).reverse()
@@ -29,6 +29,10 @@ export default function PunchCard({ data,  title, subtitle}) {
     const maxSymbolSize = 30
     const maxValue = Math.max(...data.map(p => Number(p.z)))
 
+    const select = (values) => {
+        onClick([values.name, yValues[values.value[1]]])
+    }
+    
     const options = {
         animation: false,
         grid: {
@@ -91,11 +95,25 @@ export default function PunchCard({ data,  title, subtitle}) {
             type: 'scatter',
             color: 'rgba(252, 255, 116, 1)',
             symbolSize: function (val) {
-                return (Number(val[2])/maxValue)*maxSymbolSize;
+                if (scale === 'linear') {
+                    return (Number(val[2])/maxValue)*maxSymbolSize
+                } else if (scale === 'log') {
+                    if (Number(val[2]) <= 0) {
+                        return 0
+                    }
+                    console.log(Number(val[2]))
+                    const scaleFactor = (Math.log(Number(val[2]))/Math.log(maxValue)) * maxSymbolSize
+                    console.log(scaleFactor)
+                    return Math.min(30, Math.max(0, scaleFactor))
+                } else if (scale === 'sqrt') {
+                    // Calculate the squared scaling factor.
+                    const scaleFactor = (Number(val[2]) / maxValue) ** 2 * maxSymbolSize
+                    return Math.min(maxSymbolSize, Math.max(0, scaleFactor))
+                }
             },
             data: xValues.map((x, xi) => yValues.map((y, yi) => [xi,yi, y in values[x] ? values[x][y] : 0])).flat(),
             animationDelay: function (idx) {
-                return idx * 5;
+                return idx * 5
             }
             }
         ]
@@ -103,9 +121,7 @@ export default function PunchCard({ data,  title, subtitle}) {
 
 
   return (
-    <div
-      className='rounded-lg bg-slate-850 border border-slate-700 rounded-l h-full justify-between flex flex-col'
-    >
+    <div className='rounded-lg bg-slate-850 border border-slate-700 rounded-l h-full justify-between flex flex-col'>
       {
         title && (
           <div className='px-6 pt-4 pb-0 flex-row flex justify-between'>
@@ -119,6 +135,7 @@ export default function PunchCard({ data,  title, subtitle}) {
       <ReactECharts
         option={options}
         style={{ width: '100%', height: '100%' }}
+        onEvents={{ click: select }}
       />
     </div>
   );
