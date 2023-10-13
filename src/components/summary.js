@@ -11,6 +11,7 @@ import hotIcon from './hot.svg'
 import Image from 'next/image'
 import PunchCard from './charts/punch_card'
 import { useRouter } from 'next/navigation'
+import { formatNumber } from '@/utils/utils'
 
 export default function Summary({packages, recent_releases, emerging_repos, needing_refresh, hot_packages}) {
   const router = useRouter()
@@ -22,15 +23,6 @@ export default function Summary({packages, recent_releases, emerging_repos, need
   const total_hot_downloads = hot_packages.map(p => p.z).reduce((ps, a) => {
     return Number(ps) + Number(a)
   }, 0)
-
-  const formatNumber = (number) => {
-    if (number > 1000000000) {
-      return `${Math.round(Number(number)/10000000)/100}B`
-    } else if (number > 1000000) {
-      return `${Math.round(Number(number)/10000)/100}M`
-    }
-    return `${number}`
-  }
   
   return (
       <div className='flex flex-col grow xl:grid xl:grid-cols-6 gap-4 min-w-[360px] mb-16'>

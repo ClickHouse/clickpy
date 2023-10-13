@@ -22,8 +22,9 @@ export default async function Home() {
 			{/* Header */}
 			<Header />
 			<main className='isolate h-screen'>
-				<div className='pt-14'>
-					<div className='pt-12 md:pt-24'>
+				<div className='pt-
+				6'>
+					<div className='pt-6 md:pt-24'>
 						<div className='max-w-8xl px-6 lg:px-8'>
 							<div className='text-center flex items-center flex-col justify-center'>
 								<h1 className='text-4xl font-bold font-inter lg:text-5xl'>

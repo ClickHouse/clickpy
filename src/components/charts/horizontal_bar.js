@@ -2,6 +2,7 @@
 import React, { useRef } from 'react'
 import ReactECharts from 'echarts-for-react'
 import styles from './styles.module.css'
+import { formatNumber } from '@/utils/utils'
 
 export default function HorizontalBar({ data,  title, subtitle, stack=false, onClick}) {
   const chartRef = useRef()
@@ -89,6 +90,11 @@ export default function HorizontalBar({ data,  title, subtitle, stack=false, onC
           opacity: 0.3,
         },
       },
+      axisLabel: {
+        formatter: (value, index) => {
+            return formatNumber(value)
+        }
+      }
     },
     legend: {
       show: false

@@ -378,7 +378,7 @@ export async function getPopularEmergingRepos() {
         )
         GROUP BY project
         ORDER BY c DESC
-        LIMIT 10
+        LIMIT 7
     `)
 }
 
@@ -397,7 +397,7 @@ export async function getPopularReposNeedingRefresh() {
         WHERE dictGet('${PYPI_DATABASE}.last_updated_dict', 'last_update', project) BETWEEN '1970-01-02' AND (max_date - toIntervalMonth(6))
         GROUP BY project
         ORDER BY c DESC
-        LIMIT 10
+        LIMIT 7
     `)
 }
 
