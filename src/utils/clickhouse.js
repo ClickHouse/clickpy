@@ -434,7 +434,7 @@ export async function hotPackages() {
             month ASC
     )
     SELECT
-        month as x,
+        formatDateTime(month, '%b') as x,
         project as y,
         c AS z
     FROM percentage_increases

@@ -1,12 +1,14 @@
 'use client'
 import React, { useRef } from 'react'
 import ReactECharts from 'echarts-for-react'
+import styles from './styles.module.css'
 
 export default function PunchCard({ data,  title, subtitle}) {
+    // we data is sorted by x-values
     const xValues = data.map(p => p.x).filter(function(item, pos, ary) {
         return !pos || item != ary[pos - 1]
     }).reverse()
-    //sort according to total y-values
+    // sort according to total y-values - largest punches at top
     const yValues = data.reduce((acc, curr) => {
         const { y, z } = curr
         // Check if the key already exists in the accumulator
@@ -36,15 +38,21 @@ export default function PunchCard({ data,  title, subtitle}) {
             bottom: 35
         },
         tooltip: {
-        trigger: 'item',
-        textStyle: {
-            color: '#FCFF74',
-            fontWeight: 'bold',
-            fontSize: 16,
-            lineHeight: 24,
-        },
-        backgroundColor: '#181818',
-        borderWidth: 0,
+            trigger: 'item',
+            textStyle: {
+              color: '#FCFF74',
+              fontWeight: 'bold',
+              fontSize: 16,
+              lineHeight: 24,
+            },
+            backgroundColor: '#181818',
+            borderWidth: 0,
+            formatter: (params) => {
+              return `${yValues[params.value[1]]} - ${xValues[params.value[0]]} - ${Number(
+                params.value[2]
+              ).toLocaleString('en-US')}`
+            },
+            
         },
         xAxis: {
             type: 'category',
@@ -62,7 +70,7 @@ export default function PunchCard({ data,  title, subtitle}) {
             }
         },
         legend: {
-        show: false
+            show: false
         },
         yAxis: {
             type: 'category',
