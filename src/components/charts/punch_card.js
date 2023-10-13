@@ -121,7 +121,7 @@ export default function PunchCard({ data,  title, subtitle, onClick, scale='line
 
 
   return (
-    <div className='rounded-lg bg-slate-850 border border-slate-700 rounded-l min-h-full'>
+    <div className='rounded-lg bg-slate-850 border border-slate-700 rounded-l h-full'>
       {
         title && (
           <div className='px-6 pt-4 pb-0 flex-row flex justify-between'>
@@ -134,7 +134,7 @@ export default function PunchCard({ data,  title, subtitle, onClick, scale='line
       }
       <ReactECharts
         option={options}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: '100%', height: '100%', minHeight: '320px' }}
         onEvents={{ click: select }}
       />
     </div>
