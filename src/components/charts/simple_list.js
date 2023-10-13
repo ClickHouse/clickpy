@@ -16,11 +16,11 @@ export default function SimpleList({ data,  title, subtitle, link_prefix }) {
           </div>
         )
       }
-      <div className='flex flex-col items-start ml-6 mt-6'>
+      <div className='text-left ml-6 mt-6 '>
         {
             data.map(p => {
                 return (
-                    <div className='mb-2' key={p.title}><Link href={`${link_prefix}${p.title}`} className='text-[#FAFF69] leading-6'>{p.title}</Link> <span className='text-[#696E79]'>{`- ${p.subtitle}`}</span></div>
+                    <div className='mb-2 mr-4' key={p.title}><Link href={`${link_prefix}${p.title}`} className='text-[#FAFF69] leading-6'>{p.title}</Link> <span className='text-start text-[#696E79]'>{`- ${p.subtitle}`}</span></div>
                 )
             })
         }

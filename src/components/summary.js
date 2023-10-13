@@ -33,8 +33,8 @@ export default function Summary({packages, recent_releases, emerging_repos, need
   }
   
   return (
-      <div className='flex flex-col grow lg:grid lg:grid-cols-6 lg:grid-rows-2 gap-4 lg:h-[680px] lg:min-h-[680px] min-w-[350px]'>
-        <div className='lg:col-span-3'>
+      <div className='flex flex-col grow xl:grid xl:grid-cols-6 gap-4 min-w-[360px] mb-16'>
+        <div className='xl:col-span-3 h-[360px]'>
           <HeatMap data={recent_releases} 
             title={<div className='flex space-x-2'><Image alt='recent' src={recentIcon}/><span className='text-white font-bold space-x-0.5'>Recent releases</span></div>} 
             subtitle={'On popular packages'}
@@ -42,7 +42,7 @@ export default function Summary({packages, recent_releases, emerging_repos, need
               router.push(`/dashboard/${value[1]}`)
             }}/>
         </div>
-        <div className='justify-self align-self lg:col-span-3'>
+        <div className='justify-self align-self xl:col-span-3 h-[360px]'>
         <HorizontalBar
             data={packages.map(p => {
                 return {x: p.project, y: p.c, name: 'counts'}
@@ -54,15 +54,15 @@ export default function Summary({packages, recent_releases, emerging_repos, need
             }}
         />
         </div>
-        <div className='lg:col-span-2 lg:h-[240px]'>
+        <div className='xl:col-span-2'>
           <SimpleList link_prefix={'/dashboard/'} data={emerging_repos.map(p => { return { title: p.name, subtitle: `${formatNumber(Number(p.c))} downloads in the last 3 months` } })} 
           title={<div className='flex space-x-2'><Image alt='recent' src={emergingIcon}/><span className='text-white font-bold space-x-0.5'>Emerging repos</span></div>} subtitle={'Top 5'}/>
         </div>
-        <div className='lg:col-span-2 lg:h-[240px]'>
+        <div className='xl:col-span-2'>
           <SimpleList link_prefix={'/dashboard/'} data={needing_refresh.map(p => { return { title: p.name, subtitle: `${formatNumber(Number(p.c))} downloads, last updated on ${p.last_updated}` } })} 
           title={<div className='flex space-x-2'><Image alt='recent' src={refreshIcon}/><span className='text-white font-bold space-x-0.5'>Needing a refresh</span></div>} subtitle={'Top 5'}/>
         </div>
-        <div className='lg:col-span-2 lg:h-[240px]'>
+        <div className='xl:col-span-2 min-h-[360px]'>
           <PunchCard
             data={hot_packages}
             title={<div className='flex space-x-2'><Image alt='recent' src={hotIcon}/><span className='text-white font-bold space-x-0.5'>Hot packages</span></div>}
