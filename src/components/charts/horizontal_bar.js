@@ -1,14 +1,15 @@
 'use client'
 import React, { useRef } from 'react'
 import ReactECharts from 'echarts-for-react'
+import styles from './styles.module.css'
 
 export default function HorizontalBar({ data,  title, subtitle, stack=false }) {
+  const chartRef = useRef()
   const xAxis = Array.from(new Set(data.map((p) => p.x)))
   // unique series - we assume they are shorted by series
   const seriesNames = data.map(p => p.name).filter(function(item, pos, ary) {
     return !pos || item != ary[pos - 1]
   })
-  console.log(seriesNames)
   const values = data.reduce((accumulator, val) => {
     if (!(val.name in accumulator)) {
       accumulator[val.name] = {
@@ -20,8 +21,6 @@ export default function HorizontalBar({ data,  title, subtitle, stack=false }) {
   }, {})
 
   data.forEach((p) => (values[p.name].data[xAxis.indexOf(p.x)] = p.y));
-
-  const chartRef = useRef()
   const colors = seriesNames.length === 1 ? ['rgba(252, 255, 116, 1.0)']: ['rgba(252, 255, 116, 0.2)','rgba(252, 255, 116, 0.6)','rgba(252, 255, 116, 1.0)']
   const mappedColors = {}
   const series = Object.values(values).map((series, i) => {
@@ -64,6 +63,18 @@ export default function HorizontalBar({ data,  title, subtitle, stack=false }) {
       },
       backgroundColor: '#181818',
       borderWidth: 0,
+      // TODO: make this work for multi series and stacked
+      formatter: (params) => {
+        return `<div class='${styles.tooltip}'>
+                    <span class='${styles.tooltiptext}'>${params.name} - ${Number(
+          params.value
+        ).toLocaleString('en-US')}</span>
+                </div>`
+      },
+      extraCssText: 'visibility: hidden;padding:0px;',
+      position: (point, params, dom, rect, size) => {
+        return [point[0], point[1] - rect.height]
+      },
     },
     xAxis: {
       splitLine: {

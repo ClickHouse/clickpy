@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 
-export default function SimpleList({ data,  title, subtitle }) {
+export default function SimpleList({ data,  title, subtitle, link_prefix }) {
   return (
     <div
       className='rounded-lg bg-slate-850 border border-slate-700 rounded-l h-full justify-start flex flex-col'
@@ -20,7 +20,7 @@ export default function SimpleList({ data,  title, subtitle }) {
         {
             data.map(p => {
                 return (
-                    <div className='mb-2'><Link href={`/dashboard/${p.title}`} className='text-[#FAFF69] leading-6'>{p.title}</Link> <span className='text-[#696E79]'>{`- ${p.subtitle}`}</span></div>
+                    <div className='mb-2'><Link href={`${link_prefix}${p.title}`} className='text-[#FAFF69] leading-6'>{p.title}</Link> <span className='text-[#696E79]'>{`- ${p.subtitle}`}</span></div>
                 )
             })
         }

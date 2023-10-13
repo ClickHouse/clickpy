@@ -26,7 +26,6 @@ export default function PunchCard({ data,  title, subtitle}) {
     })
     const maxSymbolSize = 30
     const maxValue = Math.max(...data.map(p => Number(p.z)))
-    console.log(`Max value: ${maxValue}`)
 
     const options = {
         animation: false,
@@ -84,8 +83,6 @@ export default function PunchCard({ data,  title, subtitle}) {
             type: 'scatter',
             color: 'rgba(252, 255, 116, 1)',
             symbolSize: function (val) {
-                console.log(Number(val[2]))
-                console.log((Number(val[2])/maxValue)*maxSymbolSize)
                 return (Number(val[2])/maxValue)*maxSymbolSize;
             },
             data: xValues.map((x, xi) => yValues.map((y, yi) => [xi,yi, y in values[x] ? values[x][y] : 0])).flat(),

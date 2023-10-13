@@ -29,8 +29,7 @@ export default async function Summary() {
     const total_hot_downloads = hot_packages.map(p => p.z).reduce((ps, a) => {
       return Number(ps) + Number(a)
   }, 0)
-
-        
+  
   return (
       <div className='flex flex-col grow lg:grid lg:grid-cols-6 lg:grid-rows-2 gap-4 lg:h-[680px] lg:min-h-[680px] min-w-[350px]'>
         <div className='lg:col-span-3'>
@@ -46,11 +45,11 @@ export default async function Summary() {
         />
         </div>
         <div className='lg:col-span-2 lg:h-[240px]'>
-          <SimpleList data={emerging_repos.map(p => { return { title: p.name, subtitle: `${Math.round(Number(p.c)/10000)/100}M downloads in the last 3 months` } })} 
+          <SimpleList link_prefix={'/dashboard/'} data={emerging_repos.map(p => { return { title: p.name, subtitle: `${Math.round(Number(p.c)/10000)/100}M downloads in the last 3 months` } })} 
           title={<div className='flex space-x-2'><Image alt='recent' src={emergingIcon}/><span className='text-white font-bold space-x-0.5'>Emerging repos</span></div>} subtitle={'Top 5'}/>
         </div>
         <div className='lg:col-span-2 lg:h-[240px]'>
-          <SimpleList data={needing_refresh.map(p => { return { title: p.name, subtitle: `${Math.round(Number(p.c)/10000000)/100}B downloads, last updated on ${p.last_updated}` } })} 
+          <SimpleList link_prefix={'/dashboard/'} data={needing_refresh.map(p => { return { title: p.name, subtitle: `${Math.round(Number(p.c)/10000000)/100}B downloads, last updated on ${p.last_updated}` } })} 
           title={<div className='flex space-x-2'><Image alt='recent' src={refreshIcon}/><span className='text-white font-bold space-x-0.5'>Needing a refresh</span></div>} subtitle={'Top 5'}/>
         </div>
         <div className='lg:col-span-2 lg:h-[240px]'>

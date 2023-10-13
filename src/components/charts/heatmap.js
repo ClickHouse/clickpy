@@ -1,23 +1,12 @@
 'use client'
 import React, { useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import styles from './styles.module.css'
 
 export default function HeatMap({ data, title, subtitle }) {
 
-const chartRef = useRef()
-  const router = useRouter();
-	const [selected, setSelected] = useState(false)
-  
-	const formatQuantity = value => {
-		if (value > 1000) {
-			return `${value / 1000}B`
-		}
-		return `${value}M`
-	}
-  
+  const chartRef = useRef()
+	
   const onClick = () => {
       
   }
@@ -61,6 +50,33 @@ const chartRef = useRef()
         onZero: false,
       }
 		},
+    tooltip: {
+      trigger: 'item',
+      textStyle: {
+        color: '#FCFF74',
+        fontWeight: 'bold',
+        fontSize: 16,
+        lineHeight: 24,
+      },
+      backgroundColor: '#181818',
+      borderWidth: 0,
+      formatter: (params) => {
+        return `<div class='${styles.tooltip}'>
+                    <span class='${styles.tooltiptext}'>${yValues[params.value[1]]} - ${xValues[params.value[0]]} - ${Number(
+          params.value[2]
+        ).toLocaleString('en-US')}</span>
+                </div>`;
+      },
+      extraCssText: 'visibility: hidden;padding:0px;',
+      position: (point, params, dom, rect, size) => {
+        const echartsInstance = chartRef.current.getEchartsInstance();
+        const pos = echartsInstance.convertToPixel({ seriesIndex: 0 }, [
+          params.value[0],
+          params.value[1],
+        ]);
+        return [pos[0], pos[1] - size.contentSize[1] * 2]
+      },
+    },
     visualMap: {
         min: 0,
         max: Math.max(...data.map(p => p.z)),
@@ -85,7 +101,6 @@ const chartRef = useRef()
           },
       },
 		],
-		tooltip: null,
     legend: null
 	}
 

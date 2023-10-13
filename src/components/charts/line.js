@@ -101,11 +101,11 @@ export default function Line({ data, onSelect }) {
                     <span class='${styles.tooltiptext}'>${Number(
           params[0].value
         ).toLocaleString('en-US')}</span>
-                </div>`;
+                </div>`
       },
       extraCssText: 'visibility: hidden;padding:0px;',
       position: (point, params, dom, rect, size) => {
-        const echartsInstance = chartRef.current.getEchartsInstance();
+        const echartsInstance = chartRef.current.getEchartsInstance()
         const pos = echartsInstance.convertToPixel({ seriesIndex: 0 }, [
           params[0].axisValue,
           params[0].value,

@@ -3,7 +3,6 @@ import React, { useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
 
 export default function Guage({ data, onSelect }) {
-  console.log(data.ranks)
   let value = data.ranks.findIndex((value) => value > data.value)
   value = value == -1 ? 0.99 : (value - 1) / 100
 
