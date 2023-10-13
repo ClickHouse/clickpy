@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 
 export default function SparkLine({ name, data, total, link }) {
 	const chartRef = useRef()
-  const router = useRouter();
+  	const router = useRouter()
 	const [selected, setSelected] = useState(false)
   
 	const formatQuantity = value => {
