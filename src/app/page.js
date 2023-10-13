@@ -1,12 +1,21 @@
 import Header from '@/components/header'
 import Search from '@/components/search'
 import Summary from '@/components/summary'
-import { getTotalDownloads } from '@/utils/clickhouse'
-
+import { getTotalDownloads, getProjectCount, getRecentReleases, getPopularEmergingRepos, getPopularReposNeedingRefresh, hotPackages } from '@/utils/clickhouse'
 import 'server-only'
 
 export default async function Home() {
 	const total_downloads = await getTotalDownloads()
+	const packages = await getProjectCount()
+	const [recent_releases, emerging_repos, needing_refresh, hot_packages] = await Promise.all(
+        [
+            getRecentReleases(packages.map(p => p.project)),
+            getPopularEmergingRepos(),
+            getPopularReposNeedingRefresh(),
+            hotPackages()
+        ]
+    )
+	console.log(recent_releases)
 
 	return (
 		<div>
@@ -32,10 +41,10 @@ export default async function Home() {
 									{' '}downloads
 								</p>
 								<div className='mt-10 flex items-center justify-center h-8'>
-									<Search />
+									<Search/>
 								</div>
 								<div className='mt-16 flow-root sm:mt-24 w-full md:w-5/6 md:px-4'>
-									<Summary />
+									<Summary packages={packages} recent_releases={recent_releases} emerging_repos={emerging_repos} needing_refresh={needing_refresh} hot_packages={hot_packages}/>
 								</div>
 							</div>
 						</div>
