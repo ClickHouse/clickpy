@@ -10,6 +10,11 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import Radar from '@/components/charts/radar'
 import Guage from '@/components/charts/guage'
 
+export function Loading() {
+    return (<div>Loading!</div>)
+}
+
+
 export default function ClientComponent ({type, data, options={}}) {
     const router = useRouter()
     const searchParams = useSearchParams()

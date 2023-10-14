@@ -13,8 +13,7 @@ export default async function DashboardLayout({ children }) {
                 src='/logo.svg'
                 alt='ClickPy'
                 width={41}
-                height={42}
-              />
+                height={42}/>
             </Link>
           </div>
           <nav className='flex flex-1 flex-col'>{/* maybe later nav  */}</nav>

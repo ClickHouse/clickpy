@@ -3,7 +3,7 @@ import {
 	MagnifyingGlassIcon,
 	ChevronRightIcon,
 } from '@heroicons/react/20/solid'
-import { useEffect, useState } from 'react'
+import { useEffect, useState} from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function Search({package_name=''}) {

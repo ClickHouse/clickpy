@@ -1,9 +1,11 @@
-'use client';
-import React, { useRef, useState } from 'react';
-import ReactECharts from 'echarts-for-react';
-import styles from './styles.module.css';
+'use client'
+import React, { useRef, useState } from 'react'
+import ReactECharts from 'echarts-for-react'
+import styles from './styles.module.css'
+import { Suspense } from 'react'
 
 export default function Line({ data, onSelect }) {
+
   const chartRef = useRef()
   const xAxis = data.map((p) => p.x)
   const onMouseOver = () => {
@@ -152,15 +154,17 @@ export default function Line({ data, onSelect }) {
       onMouseMove={onMouseOver}
       onMouseOut={onMouseOut}
     >
-      <ReactECharts
-        ref={chartRef}
-        option={options}
-        style={{ width: '100%', height: '100%' }}
-        lazyUpdate={false}
-        onEvents={{
-          brushEnd: onBrushEnd,
-        }}
-      />
+      <Suspense fallback={<div>Loading!</div>}>
+        <ReactECharts
+          ref={chartRef}
+          option={options}
+          style={{ width: '100%', height: '100%' }}
+          lazyUpdate={true}
+          onEvents={{
+            brushEnd: onBrushEnd,
+          }}
+        />
+      </Suspense>
     </div>
   )
 }
