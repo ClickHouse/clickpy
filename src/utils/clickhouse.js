@@ -148,7 +148,7 @@ export async function getPackageDetails(package_name, version) {
         })
 }
 
-export async function getDownloadsOverTime(package_name, version, period, min_date, max_date, country_code) {
+export async function getDownloadsOverTime({package_name, version, period, min_date, max_date, country_code}) {
     const columns = ['project', 'date']
     if (version) {  columns.push('version') }
     if (country_code) { columns.push('country_code') }
@@ -182,7 +182,7 @@ export async function getTopDistributionTypes(package_name, version, min_date, m
         })
 }
 
-export async function getTopVersions(package_name, version, min_date, max_date, country_code) {
+export async function getTopVersions({package_name, version, min_date, max_date, country_code}) {
     const columns = ['project', 'date', 'version']
     if (country_code) { columns.push('country_code') }
     const table = findOptimalTable(columns)
