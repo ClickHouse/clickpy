@@ -1,8 +1,10 @@
-'use client'
 import ReactECharts from 'echarts-for-react'
-import { chartLoadingOption, onChartReady } from '@/utils/chartsUtils'
+import Loading from '../Loading'
+import isEqual from 'lodash/isEqual'
+import { useState } from 'react'
 
 export default function Pie({ data, onClick }) {
+  const [loading, setLoading] = useState(true)
   const options = {
     animation: false,
     grid: {
@@ -67,18 +69,29 @@ export default function Pie({ data, onClick }) {
     onClick && onClick(params.name)
   }
 
+  const onChartReady = (echarts) => {
+    setLoading(false)
+  }
+
   return (
-    <div className='rounded-lg bg-slate-850 border border-slate-700 h-full'>
+    <div className='relative rounded-lg bg-slate-850 border border-slate-700 h-full'>
       <ReactECharts
         option={options}
         notMerge={true}
         style={{ width: '100%', height: '100%' }}
         lazyUpdate={true}
-        showLoading={true}
-        loadingOption={chartLoadingOption}
         onChartReady={onChartReady}
         onEvents={{ click: select }}
+        shouldSetOption={(prevProps, currentProps) => {
+          const shoulRender = !isEqual(prevProps, currentProps)
+          if (shoulRender) {
+            setLoading(true)
+          }
+
+          return shoulRender
+        }}
       />
+      {loading && <Loading />}
     </div>
   )
 }

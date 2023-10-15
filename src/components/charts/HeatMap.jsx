@@ -1,12 +1,13 @@
 'use client'
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
+import isEqual from 'lodash/isEqual'
 import ReactECharts from 'echarts-for-react'
 import styles from './styles.module.css'
-import { chartLoadingOption, onChartReady } from '@/utils/chartsUtils'
+import Loading from '../Loading'
 
 export default function HeatMap({ data, title, subtitle, onClick }) {
   const chartRef = useRef()
-
+  const [loading, setLoading] = useState(true)
 
   const xValues = data.map(p => p.x).filter(function (item, pos, ary) {
     return !pos || item != ary[pos - 1]
@@ -106,6 +107,10 @@ export default function HeatMap({ data, title, subtitle, onClick }) {
     legend: null
   }
 
+  const onChartReady = (echarts) => {
+    setLoading(false)
+  }
+
   return (
     <div className='rounded-lg bg-slate-850 hover:bg-chart-hover cursor-pointer shadow-inner border border-slate-700 h-full justify-between flex flex-col hover:shadow-xl transition-all duration-300 ease-in-out'>
       <div className='px-6 py-4  flex-row flex justify-between'>
@@ -115,17 +120,24 @@ export default function HeatMap({ data, title, subtitle, onClick }) {
         </p>
       </div>
 
-      <div className='justify-self-stretch h-full'>
+      <div className='relative justify-self-stretch h-full'>
         <ReactECharts
           ref={chartRef}
           option={options}
           style={{ width: '100%', height: '100%' }}
           lazyUpdate
-          showLoading
-          loadingOption={chartLoadingOption}
           onChartReady={onChartReady}
           onEvents={{ click: select }}
+          shouldSetOption={(prevProps, currentProps) => {
+            const shoulRender = !isEqual(prevProps, currentProps)
+            if (shoulRender) {
+              setLoading(true)
+            }
+
+            return shoulRender
+          }}
         />
+        {loading && <Loading />}
       </div>
     </div>
   )

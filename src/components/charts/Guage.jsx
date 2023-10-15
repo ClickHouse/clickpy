@@ -1,9 +1,11 @@
 'use client'
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
-import { chartLoadingOption, onChartReady } from '@/utils/chartsUtils'
+import isEqual from 'lodash/isEqual'
+import Loading from '../Loading'
 
-export default function Guage({ data, onSelect }) {
+export default function Guage({ data }) {
+  const [loading, setLoading] = useState(true)
   let value = data.ranks.findIndex((value) => value > data.value)
   value = value == -1 ? 0.99 : (value - 1) / 100
 
@@ -99,17 +101,28 @@ export default function Guage({ data, onSelect }) {
     onClick && onClick(params.name)
   }
 
+  const onChartReady = (echarts) => {
+    setLoading(false)
+  }
+
   return (
-    <div className='rounded-lg bg-chart border border-slate-700 h-full'>
+    <div className='relative rounded-lg bg-chart border border-slate-700 h-full'>
       <ReactECharts
         option={options}
         style={{ width: '100%', height: '100%' }}
         lazyUpdate
-        showLoading
-        loadingOption={chartLoadingOption}
         onChartReady={onChartReady}
         onEvents={{ click: select }}
+        shouldSetOption={(prevProps, currentProps) => {
+          const shoulRender = !isEqual(prevProps, currentProps)
+          if (shoulRender) {
+            setLoading(true)
+          }
+
+          return shoulRender
+        }}
       />
+      {loading && <Loading />}
     </div>
   )
 }

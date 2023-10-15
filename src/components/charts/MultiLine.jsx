@@ -1,9 +1,11 @@
 'use client'
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
-import { chartLoadingOption, onChartReady } from '@/utils/chartsUtils'
+import isEqual from 'lodash/isEqual'
+import Loading from '../Loading'
 
 export default function MultiLine({ data, stack, fill, onSelect }) {
+  const [loading, setLoading] = useState(true)
   const xAxis = Array.from(new Set(data.map((p) => p.x)))
   const values = data.reduce((accumulator, val) => {
     if (!(val.name in accumulator)) {
@@ -128,20 +130,31 @@ export default function MultiLine({ data, stack, fill, onSelect }) {
     }
   }
 
+  const onChartReady = (echarts) => {
+    setLoading(false)
+  }
+
   return (
-    <div className='rounded-lg bg-slate-850 border border-slate-700 rounded-l h-full justify-between flex flex-col' onMouseOver={onMouseOver}>
+    <div className='relative rounded-lg bg-slate-850 border border-slate-700 rounded-l h-full justify-between flex flex-col' onMouseOver={onMouseOver}>
       <ReactECharts
         ref={chartRef}
         option={options}
         style={{ width: '100%', height: '100%' }}
         lazyUpdate
-        showLoading
-        loadingOption={chartLoadingOption}
         onChartReady={onChartReady}
         onEvents={{
           brushEnd: onBrushEnd,
         }}
+        shouldSetOption={(prevProps, currentProps) => {
+          const shoulRender = !isEqual(prevProps, currentProps)
+          if (shoulRender) {
+            setLoading(true)
+          }
+
+          return shoulRender
+        }}
       />
+      {loading && <Loading />}
     </div>
   )
 }

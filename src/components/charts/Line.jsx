@@ -1,11 +1,12 @@
 'use client'
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
+import isEqual from 'lodash/isEqual'
 import ReactECharts from 'echarts-for-react'
 import styles from './styles.module.css'
-import { Suspense } from 'react'
-import { chartLoadingOption, onChartReady } from '@/utils/chartsUtils'
+import Loading from '../Loading'
 
 export default function Line({ data, onSelect }) {
+  const [loading, setLoading] = useState(true)
 
   const chartRef = useRef()
   const xAxis = data.map((p) => p.x)
@@ -149,9 +150,13 @@ export default function Line({ data, onSelect }) {
     }
   }
 
+  const onChartReady = (echarts) => {
+    setLoading(false)
+  }
+
   return (
     <div
-      className='rounded-lg bg-slate-850 border border-slate-700 rounded-l h-full justify-between flex flex-col'
+      className='relative rounded-lg bg-slate-850 border border-slate-700 rounded-l h-full justify-between flex flex-col'
       onMouseMove={onMouseOver}
       onMouseOut={onMouseOut}
     >
@@ -160,13 +165,20 @@ export default function Line({ data, onSelect }) {
         option={options}
         style={{ width: '100%', height: '100%' }}
         lazyUpdate
-        showLoading
-        loadingOption={chartLoadingOption}
         onChartReady={onChartReady}
         onEvents={{
           brushEnd: onBrushEnd,
         }}
+        shouldSetOption={(prevProps, currentProps) => {
+          const shoulRender = !isEqual(prevProps, currentProps)
+          if (shoulRender) {
+            setLoading(true)
+          }
+
+          return shoulRender
+        }}
       />
+      {loading && <Loading />}
     </div>
   )
 }

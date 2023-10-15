@@ -1,12 +1,14 @@
 'use client'
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
+import isEqual from 'lodash/isEqual'
 import ReactECharts from 'echarts-for-react'
 import styles from './styles.module.css'
 import { formatNumber } from '@/utils/utils'
-import { chartLoadingOption, onChartReady } from '@/utils/chartsUtils'
+import Loading from '../Loading'
 
 export default function HorizontalBar({ data, title, subtitle, stack = false, onClick }) {
   const chartRef = useRef()
+  const [loading, setLoading] = useState(true)
   const yValues = Array.from(new Set(data.map((p) => p.x)))
   // unique series - we assume they are shorted by series
   const seriesNames = data.map(p => p.name).filter(function (item, pos, ary) {
@@ -113,11 +115,15 @@ export default function HorizontalBar({ data, title, subtitle, stack = false, on
 
   const onMouseOver = () => {
     const echartsInstance = chartRef.current.getEchartsInstance()
-
   }
+
+  const onChartReady = (echarts) => {
+    setLoading(false)
+  }
+
   return (
     <div
-      className='rounded-lg bg-slate-850 border border-slate-700 rounded-l h-full justify-between flex flex-col'
+      className='relative rounded-lg bg-slate-850 border border-slate-700 rounded-l h-full justify-between flex flex-col'
       onMouseOver={onMouseOver}
     >
       {
@@ -135,11 +141,18 @@ export default function HorizontalBar({ data, title, subtitle, stack = false, on
         option={options}
         style={{ width: '100%', height: '100%' }}
         lazyUpdate
-        showLoading
-        loadingOption={chartLoadingOption}
         onChartReady={onChartReady}
         onEvents={{ click: select }}
+        shouldSetOption={(prevProps, currentProps) => {
+          const shoulRender = !isEqual(prevProps, currentProps)
+          if (shoulRender) {
+            setLoading(true)
+          }
+
+          return shoulRender
+        }}
       />
+      {loading && <Loading />}
     </div>
   );
 }

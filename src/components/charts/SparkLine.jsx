@@ -4,9 +4,11 @@ import ReactECharts from 'echarts-for-react'
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { chartLoadingOption, onChartReady } from '@/utils/chartsUtils'
+import isEqual from 'lodash/isEqual'
+import Loading from '../Loading'
 
 export default function SparkLine({ name, data, total, link }) {
+	const [loading, setLoading] = useState(true)
 	const chartRef = useRef()
 	const router = useRouter()
 	const [selected, setSelected] = useState(false)
@@ -105,6 +107,10 @@ export default function SparkLine({ name, data, total, link }) {
 		setSelected(false)
 	}
 
+	const onChartReady = (echarts) => {
+		setLoading(false)
+	}
+
 	return (
 		<div
 			className='rounded-lg bg-chart hover:bg-chart-hover cursor-pointer shadow-inner border border-slate-800 h-full justify-between flex flex-col hover:shadow-xl transition-all duration-300 ease-in-out'
@@ -125,12 +131,19 @@ export default function SparkLine({ name, data, total, link }) {
 					option={options}
 					style={{ width: '100%', height: '100%' }}
 					lazyUpdate
-					showLoading
-					loadingOption={chartLoadingOption}
 					onChartReady={onChartReady}
+					shouldSetOption={(prevProps, currentProps) => {
+						const shoulRender = !isEqual(prevProps, currentProps)
+						if (shoulRender) {
+							setLoading(true)
+						}
+
+						return shoulRender
+					}}
 				/>
+				{loading && <Loading />}
 			</div>
-			<div className='mb-3 ml-4 mr-2 flex justify-between text-left'>
+			<div className='relative mb-3 ml-4 mr-2 flex justify-between text-left'>
 				<p className={`${selected ? 'text-white' : 'text-neutral-500'}`}>
 					{name}
 				</p>

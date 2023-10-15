@@ -1,8 +1,11 @@
 'use client';
 import ReactECharts from 'echarts-for-react';
-import { chartLoadingOption, onChartReady } from '@/utils/chartsUtils'
+import isEqual from 'lodash/isEqual'
+import Loading from '../Loading';
+import { useState } from 'react';
 
 export default function Radar({ data, onClick }) {
+  const [loading, setLoading] = useState(true)
   const maxValues = data.reduce((acc, obj) => {
     let { name, value } = obj;
     value = Number(value);
@@ -87,17 +90,28 @@ export default function Radar({ data, onClick }) {
     onClick && onClick(params.name);
   }
 
+  const onChartReady = (echarts) => {
+    setLoading(false)
+  }
+
   return (
-    <div className='rounded-lg bg-slate-850 border border-slate-700 h-full'>
+    <div className='relative rounded-lg bg-slate-850 border border-slate-700 h-full'>
       <ReactECharts
         option={options}
         style={{ width: '100%', height: '100%' }}
         lazyUpdate
-        showLoading
-        loadingOption={chartLoadingOption}
         onChartReady={onChartReady}
         onEvents={{ click: select }}
+        shouldSetOption={(prevProps, currentProps) => {
+          const shoulRender = !isEqual(prevProps, currentProps)
+          if (shoulRender) {
+            setLoading(true)
+          }
+
+          return shoulRender
+        }}
       />
+      {loading && <Loading />}
     </div>
   )
 }

@@ -1,9 +1,12 @@
 'use client';
 import ReactECharts from 'echarts-for-react';
 import 'echarts-countries-js/echarts-countries-js/world';
-import { chartLoadingOption, onChartReady } from '@/utils/chartsUtils'
-export default function CountryMap({ data, selected, onClick }) {
+import isEqual from 'lodash/isEqual'
+import Loading from '../Loading';
+import { useState } from 'react';
 
+export default function CountryMap({ data, selected, onClick }) {
+  const [loading, setLoading] = useState(true)
   const scaledValues = data.map((p) => {
     return {
       name: p.name,
@@ -93,17 +96,28 @@ export default function CountryMap({ data, selected, onClick }) {
     onClick && params.data && onClick(params.data.code);
   }
 
+  const onChartReady = (echarts) => {
+    setLoading(false)
+  }
+
   return (
-    <div className='rounded-lg bg-slate-850 border border-slate-700 h-full'>
+    <div className='relative rounded-lg bg-slate-850 border border-slate-700 h-full'>
       <ReactECharts
         option={options}
         style={{ width: '100%', height: '100%' }}
         lazyUpdate
-        showLoading
-        loadingOption={chartLoadingOption}
         onChartReady={onChartReady}
         onEvents={{ click: select }}
+        shouldSetOption={(prevProps, currentProps) => {
+          const shoulRender = !isEqual(prevProps, currentProps)
+          if (shoulRender) {
+            setLoading(true)
+          }
+
+          return shoulRender
+        }}
       />
+      {loading && <Loading />}
     </div>
   )
 }
