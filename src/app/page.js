@@ -1,5 +1,5 @@
-import Header from '@/components/header'
-import Search from '@/components/search'
+import Header from '@/components/Header'
+import Search from '@/components/Search'
 import Summary from '@/components/Summary'
 import { getTotalDownloads, getProjectCount, getRecentReleases, getPopularEmergingRepos, getPopularReposNeedingRefresh, hotPackages } from '@/utils/clickhouse'
 import 'server-only'

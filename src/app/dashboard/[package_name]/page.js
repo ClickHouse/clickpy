@@ -4,7 +4,7 @@ import {
   getPackageDetails, getPackageDateRanges,
   getDownloadsOverTimeBySystem,
 } from '@/utils/clickhouse'
-import Search from '@/components/search'
+import Search from '@/components/Search'
 import Image from 'next/image'
 import DashboardDownloadOverTime from '@/components/DashboardDownloadOverTime'
 import DashboardDownloadList from '@/components/DashboardDownloadList'
