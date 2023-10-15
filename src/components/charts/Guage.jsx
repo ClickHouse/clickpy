@@ -1,6 +1,7 @@
 'use client'
 import React, { useRef } from 'react'
 import ReactECharts from 'echarts-for-react'
+import { chartLoadingOption, onChartReady } from '@/utils/chartsUtils'
 
 export default function Guage({ data, onSelect }) {
   let value = data.ranks.findIndex((value) => value > data.value)
@@ -81,11 +82,10 @@ export default function Guage({ data, onSelect }) {
         data: [
           {
             value: value,
-            name: `${
-              value < 0.5
-                ? `Bottom ${Math.round(value * 100)}%`
-                : `Top ${Math.round((1 - value) * 100)}%`
-            }`,
+            name: `${value < 0.5
+              ? `Bottom ${Math.round(value * 100)}%`
+              : `Top ${Math.round((1 - value) * 100)}%`
+              }`,
             itemStyle: {
               fontSize: 40,
             },
@@ -104,7 +104,10 @@ export default function Guage({ data, onSelect }) {
       <ReactECharts
         option={options}
         style={{ width: '100%', height: '100%' }}
-        lazyUpdate={true}
+        lazyUpdate
+        showLoading
+        loadingOption={chartLoadingOption}
+        onChartReady={onChartReady}
         onEvents={{ click: select }}
       />
     </div>

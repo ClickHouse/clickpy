@@ -4,22 +4,23 @@ import ReactECharts from 'echarts-for-react'
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { chartLoadingOption, onChartReady } from '@/utils/chartsUtils'
 
 export default function SparkLine({ name, data, total, link }) {
 	const chartRef = useRef()
-  	const router = useRouter()
+	const router = useRouter()
 	const [selected, setSelected] = useState(false)
-  
+
 	const formatQuantity = value => {
 		if (value > 1000) {
 			return `${value / 1000}B`
 		}
 		return `${value}M`
 	}
-  
-  const onClick = () => {
-    router.push(link)
-  }
+
+	const onClick = () => {
+		router.push(link)
+	}
 
 	const onMouseOver = () => {
 		const echartsInstance = chartRef.current.getEchartsInstance()
@@ -109,12 +110,11 @@ export default function SparkLine({ name, data, total, link }) {
 			className='rounded-lg bg-chart hover:bg-chart-hover cursor-pointer shadow-inner border border-slate-800 h-full justify-between flex flex-col hover:shadow-xl transition-all duration-300 ease-in-out'
 			onMouseMove={onMouseOver}
 			onMouseOut={onMouseOut}
-      onClick={onClick}
+			onClick={onClick}
 		>
 			<p
-				className={`text-right ml-2 mr-2 mt-3 transition-all duration-300 ease-in-out hover:shadow-xl ${
-					selected ? 'text-white' : 'text-neutral-500'
-				}`}
+				className={`text-right ml-2 mr-2 mt-3 transition-all duration-300 ease-in-out hover:shadow-xl ${selected ? 'text-white' : 'text-neutral-500'
+					}`}
 			>
 				{formatQuantity(total)} Downloads
 			</p>
@@ -124,7 +124,10 @@ export default function SparkLine({ name, data, total, link }) {
 					ref={chartRef}
 					option={options}
 					style={{ width: '100%', height: '100%' }}
-					lazyUpdate={false}
+					lazyUpdate
+					showLoading
+					loadingOption={chartLoadingOption}
+					onChartReady={onChartReady}
 				/>
 			</div>
 			<div className='mb-3 ml-4 mr-2 flex justify-between text-left'>
@@ -133,9 +136,8 @@ export default function SparkLine({ name, data, total, link }) {
 				</p>
 				<Link href={link}>
 					<ArrowTopRightOnSquareIcon
-						className={`h-6 w-6 ${
-							selected ? 'fill-white' : 'fill-neutral-500'
-						}`}
+						className={`h-6 w-6 ${selected ? 'fill-white' : 'fill-neutral-500'
+							}`}
 						aria-hidden='true'
 					/>
 				</Link>

@@ -1,5 +1,6 @@
 'use client'
 import ReactECharts from 'echarts-for-react'
+import { chartLoadingOption, onChartReady } from '@/utils/chartsUtils'
 
 export default function Pie({ data, onClick }) {
   const options = {
@@ -54,7 +55,7 @@ export default function Pie({ data, onClick }) {
         },
         z: 2,
         itemStyle: {
-          
+
         },
         color: ['#FCFF74', '#FC74FF', '#74ACFF', '#74FFD5', '#FF7C74', '#74FF9B', '#FFE074', '#CF4B4B'],
         data: data,
@@ -70,8 +71,12 @@ export default function Pie({ data, onClick }) {
     <div className='rounded-lg bg-slate-850 border border-slate-700 h-full'>
       <ReactECharts
         option={options}
+        notMerge={true}
         style={{ width: '100%', height: '100%' }}
         lazyUpdate={true}
+        showLoading={true}
+        loadingOption={chartLoadingOption}
+        onChartReady={onChartReady}
         onEvents={{ click: select }}
       />
     </div>

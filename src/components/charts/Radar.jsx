@@ -1,5 +1,6 @@
 'use client';
 import ReactECharts from 'echarts-for-react';
+import { chartLoadingOption, onChartReady } from '@/utils/chartsUtils'
 
 export default function Radar({ data, onClick }) {
   const maxValues = data.reduce((acc, obj) => {
@@ -91,7 +92,10 @@ export default function Radar({ data, onClick }) {
       <ReactECharts
         option={options}
         style={{ width: '100%', height: '100%' }}
-        lazyUpdate={true}
+        lazyUpdate
+        showLoading
+        loadingOption={chartLoadingOption}
+        onChartReady={onChartReady}
         onEvents={{ click: select }}
       />
     </div>

@@ -3,22 +3,24 @@ import {
 	MagnifyingGlassIcon,
 	ChevronRightIcon,
 } from '@heroicons/react/20/solid'
-import { useEffect, useState} from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-export default function Search({package_name=''}) {
+export default function Search({ package_name = '' }) {
 	const [query, setQuery] = useState(package_name)
 	const [showPackages, setShowPackages] = useState(false)
 	const [packages, setPackages] = useState([])
 	const router = useRouter()
 
-	const getPackages = async () => {
-		if (query != '') {
-			const response = await fetch(`/packages?query=${query}`)
-			return await response.json()
-		}
-		return []
-	}
+	const getPackages = useCallback(
+		async () => {
+			if (query != '') {
+				const response = await fetch(`/packages?query=${query}`)
+				return await response.json()
+			}
+			return []
+		},
+		[query])
 
 	//https://levelup.gitconnected.com/create-a-debounce-hook-for-search-box-auto-completion-f9a2b18eb28c
 	const useDebounce = (value, timeout) => {
@@ -43,7 +45,7 @@ export default function Search({package_name=''}) {
 		getPackages().then(results => {
 			setPackages(results)
 		})
-	}, [debouncedQuery])
+	}, [debouncedQuery, getPackages])
 
 	return (
 		<div className='sm:w-[400px] min-w-[300px] h-[50px] max-w-[400px]'>
@@ -60,11 +62,11 @@ export default function Search({package_name=''}) {
 							type='package'
 							name='package'
 							id='package'
-							value = {query}
-							className='rounded-md bg-neutral-725 items-center outline-none placeholder:tracking-wide 
-							placeholder:font-light hover:placeholder:text-neutral-0 font-normal text-neutral-400 
-							hover:text-neutral-0 focus:text-neutral-0 placeholder:text-neutral-400 w-full py-4 
-							pl-14 -ml-9 leading-5 cursor-pointer border box-border border hover:border-neutral-700 border-slate-700
+							value={query}
+							className='rounded-md bg-neutral-725 items-center outline-none placeholder:tracking-wide
+							placeholder:font-light hover:placeholder:text-neutral-0 font-normal text-neutral-400
+							hover:text-neutral-0 focus:text-neutral-0 placeholder:text-neutral-400 w-full py-4
+							pl-14 -ml-9 leading-5 cursor-pointer border box-border hover:border-neutral-700 border-slate-700
 							hover:border-opacity-50 transition-all duration-300 ease-in-out h-14 h-[50px]'
 							placeholder='Search for a package'
 							onChange={e => {

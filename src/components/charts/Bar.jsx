@@ -1,8 +1,9 @@
 'use client'
 import React, { useRef } from 'react'
 import ReactECharts from 'echarts-for-react'
+import { chartLoadingOption, onChartReady } from '@/utils/chartsUtils'
 
-export default function MultiLine({ data, stack, fill, onSelect }) {
+export default function Bar({ data, stack, onSelect }) {
   const xAxis = Array.from(new Set(data.map((p) => p.x)))
   const values = data.reduce((accumulator, val) => {
     if (!(val.name in accumulator)) {
@@ -14,10 +15,10 @@ export default function MultiLine({ data, stack, fill, onSelect }) {
     return accumulator;
   }, {})
 
-  data.forEach((p) => (values[p.name].data[xAxis.indexOf(p.x)] = p.y))
+  data.forEach((p) => (values[p.name].data[xAxis.indexOf(p.x)] = p.y));
 
-  const chartRef = useRef()
-  const colors = ['#FCFF74', '#FC74FF', '#74ACFF', '#74FFD5', '#FF7C74', '#74FF9B', '#FFE074', '#CF4B4B']
+  const chartRef = useRef();
+  const colors = ['#FCFF74', '#FC74FF', '#74ACFF', '#74FFD5', '#FF7C74', '#74FF9B', '#FFE074', '#CF4B4B'];
   const mappedColors = {}
   const series = Object.values(values).map((series, i) => {
     let color = colors[i % colors.length]
@@ -28,20 +29,18 @@ export default function MultiLine({ data, stack, fill, onSelect }) {
     }
     return stack
       ? {
-          type: 'line',
-          name: series.name,
-          data: series.data,
-          areaStyle: fill ? {} : null,
-          color: color,
-          stack: 'series',
-        }
+        type: 'bar',
+        name: series.name,
+        data: series.data,
+        color: color,
+        stack: 'series',
+      }
       : {
-          type: 'line',
-          name: series.name,
-          data: series.data,
-          areaStyle: fill ? {} : null,
-          color: color,
-        }
+        type: 'bar',
+        name: series.name,
+        data: series.data,
+        color: color,
+      }
   })
 
   const options = {
@@ -100,7 +99,7 @@ export default function MultiLine({ data, stack, fill, onSelect }) {
   }
 
   const onMouseOver = () => {
-    const echartsInstance = chartRef.current.getEchartsInstance();
+    const echartsInstance = chartRef.current.getEchartsInstance()
     echartsInstance.dispatchAction({
       type: 'takeGlobalCursor',
       key: 'brush',
@@ -112,7 +111,7 @@ export default function MultiLine({ data, stack, fill, onSelect }) {
 
   const onBrushEnd = (params) => {
     if (params.areas.length > 0) {
-      const echartsInstance = chartRef.current.getEchartsInstance();
+      const echartsInstance = chartRef.current.getEchartsInstance()
       let start = echartsInstance.convertFromPixel(
         { xAxisIndex: 0 },
         params.areas[0].range[0]
@@ -122,21 +121,28 @@ export default function MultiLine({ data, stack, fill, onSelect }) {
         params.areas[0].range[1]
       )
       start = start > 0 ? start : 0
-      end = end < xAxis.length ? end: xAxis.length - 1
+      end = end < xAxis.length ? end : xAxis.length - 1
       onSelect && onSelect(xAxis[start], xAxis[end]);
     }
   }
 
   return (
-    <div className='rounded-lg bg-slate-850 border border-slate-700 rounded-l h-full justify-between flex flex-col' onMouseOver={onMouseOver}>
+    <div
+      className='rounded-lg bg-slate-850 border border-slate-700 rounded-l h-full justify-between flex flex-col'
+      onMouseOver={onMouseOver}
+    >
       <ReactECharts
         ref={chartRef}
         option={options}
         style={{ width: '100%', height: '100%' }}
+        lazyUpdate
+        showLoading
+        loadingOption={chartLoadingOption}
+        onChartReady={onChartReady}
         onEvents={{
           brushEnd: onBrushEnd,
         }}
       />
     </div>
-  )
+  );
 }

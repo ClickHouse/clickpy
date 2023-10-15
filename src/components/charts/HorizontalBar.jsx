@@ -3,12 +3,13 @@ import React, { useRef } from 'react'
 import ReactECharts from 'echarts-for-react'
 import styles from './styles.module.css'
 import { formatNumber } from '@/utils/utils'
+import { chartLoadingOption, onChartReady } from '@/utils/chartsUtils'
 
-export default function HorizontalBar({ data,  title, subtitle, stack=false, onClick}) {
+export default function HorizontalBar({ data, title, subtitle, stack = false, onClick }) {
   const chartRef = useRef()
   const yValues = Array.from(new Set(data.map((p) => p.x)))
   // unique series - we assume they are shorted by series
-  const seriesNames = data.map(p => p.name).filter(function(item, pos, ary) {
+  const seriesNames = data.map(p => p.name).filter(function (item, pos, ary) {
     return !pos || item != ary[pos - 1]
   })
   const values = data.reduce((accumulator, val) => {
@@ -22,11 +23,11 @@ export default function HorizontalBar({ data,  title, subtitle, stack=false, onC
   }, {})
 
   const select = (values) => {
-      onClick(values.name)
+    onClick(values.name)
   }
 
   data.forEach((p) => (values[p.name].data[yValues.indexOf(p.x)] = p.y));
-  const colors = seriesNames.length === 1 ? ['rgba(252, 255, 116, 1.0)']: ['rgba(252, 255, 116, 0.2)','rgba(252, 255, 116, 0.6)','rgba(252, 255, 116, 1.0)']
+  const colors = seriesNames.length === 1 ? ['rgba(252, 255, 116, 1.0)'] : ['rgba(252, 255, 116, 0.2)', 'rgba(252, 255, 116, 0.6)', 'rgba(252, 255, 116, 1.0)']
   const mappedColors = {}
   const series = Object.values(values).map((series, i) => {
     let color = colors[i % colors.length]
@@ -37,18 +38,18 @@ export default function HorizontalBar({ data,  title, subtitle, stack=false, onC
     }
     return stack
       ? {
-          type: 'bar',
-          name: series.name,
-          data: series.data,
-          color: color,
-          stack: 'total',
-        }
+        type: 'bar',
+        name: series.name,
+        data: series.data,
+        color: color,
+        stack: 'total',
+      }
       : {
-          type: 'bar',
-          name: series.name,
-          data: series.data,
-          color: color,
-        }
+        type: 'bar',
+        name: series.name,
+        data: series.data,
+        color: color,
+      }
   })
 
   const options = {
@@ -92,7 +93,7 @@ export default function HorizontalBar({ data,  title, subtitle, stack=false, onC
       },
       axisLabel: {
         formatter: (value, index) => {
-            return formatNumber(value)
+          return formatNumber(value)
         }
       }
     },
@@ -122,10 +123,10 @@ export default function HorizontalBar({ data,  title, subtitle, stack=false, onC
       {
         title && (
           <div className='px-6 pt-4 pb-0 flex-row flex justify-between'>
-              {title}
-              <p className={'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500'}>
-                  {subtitle}
-              </p>
+            {title}
+            <p className={'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500'}>
+              {subtitle}
+            </p>
           </div>
         )
       }
@@ -133,6 +134,10 @@ export default function HorizontalBar({ data,  title, subtitle, stack=false, onC
         ref={chartRef}
         option={options}
         style={{ width: '100%', height: '100%' }}
+        lazyUpdate
+        showLoading
+        loadingOption={chartLoadingOption}
+        onChartReady={onChartReady}
         onEvents={{ click: select }}
       />
     </div>

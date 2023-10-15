@@ -1,8 +1,9 @@
 'use client'
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import ReactECharts from 'echarts-for-react'
 import styles from './styles.module.css'
 import { Suspense } from 'react'
+import { chartLoadingOption, onChartReady } from '@/utils/chartsUtils'
 
 export default function Line({ data, onSelect }) {
 
@@ -140,7 +141,7 @@ export default function Line({ data, onSelect }) {
         params.areas[0].range[1]
       )
       start = start > 0 ? start : 0
-      end = end < xAxis.length ? end: xAxis.length - 1
+      end = end < xAxis.length ? end : xAxis.length - 1
       onSelect &&
         xAxis[start] &&
         xAxis[end] &&
@@ -154,17 +155,18 @@ export default function Line({ data, onSelect }) {
       onMouseMove={onMouseOver}
       onMouseOut={onMouseOut}
     >
-      <Suspense fallback={<div>Loading!</div>}>
-        <ReactECharts
-          ref={chartRef}
-          option={options}
-          style={{ width: '100%', height: '100%' }}
-          lazyUpdate={true}
-          onEvents={{
-            brushEnd: onBrushEnd,
-          }}
-        />
-      </Suspense>
+      <ReactECharts
+        ref={chartRef}
+        option={options}
+        style={{ width: '100%', height: '100%' }}
+        lazyUpdate
+        showLoading
+        loadingOption={chartLoadingOption}
+        onChartReady={onChartReady}
+        onEvents={{
+          brushEnd: onBrushEnd,
+        }}
+      />
     </div>
   )
 }

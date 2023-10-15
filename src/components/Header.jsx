@@ -1,4 +1,4 @@
-import QueryToggle from './toggle'
+import QueryToggle from './QueryToggle'
 import Image from 'next/image'
 
 export default function Header() {

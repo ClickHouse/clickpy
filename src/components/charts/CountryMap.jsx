@@ -1,10 +1,11 @@
 'use client';
 import ReactECharts from 'echarts-for-react';
 import 'echarts-countries-js/echarts-countries-js/world';
+import { chartLoadingOption, onChartReady } from '@/utils/chartsUtils'
 export default function CountryMap({ data, selected, onClick }) {
 
   const scaledValues = data.map((p) => {
-    return  {
+    return {
       name: p.name,
       value: Math.sqrt(p.value),
       label: p.value,
@@ -15,8 +16,8 @@ export default function CountryMap({ data, selected, onClick }) {
 
   const values = scaledValues.map((p) => Number(p.value));
   const options = {
-    colorBy: selected == null ? 'series': 'data',
-    color: selected ? ['#2F2F2F']: ['#FAFF69', '#DDE26B', '#B2B661', '#8A8C5A', '#51523B', '#2F2F2F'],
+    colorBy: selected == null ? 'series' : 'data',
+    color: selected ? ['#2F2F2F'] : ['#FAFF69', '#DDE26B', '#B2B661', '#8A8C5A', '#51523B', '#2F2F2F'],
     animation: false,
     tooltip: {
       trigger: 'item',
@@ -50,11 +51,11 @@ export default function CountryMap({ data, selected, onClick }) {
           show: false,
         },
         select: {
-            disabled: false,
-            itemStyle: {
-              areaColor: '#FFFFFF'
-            },
-            label: { show: false },
+          disabled: false,
+          itemStyle: {
+            areaColor: '#FFFFFF'
+          },
+          label: { show: false },
         },
         itemStyle: {
           borderWidth: 0.5,
@@ -82,7 +83,7 @@ export default function CountryMap({ data, selected, onClick }) {
       max: Math.max(...values),
       text: ['Max', 'Min'],
       realtime: false,
-      calculable: false,  
+      calculable: false,
       color: ['#FAFF69', '#DDE26B', '#B2B661', '#8A8C5A', '#51523B', '#2F2F2F'],
       left: 32,
     }
@@ -97,7 +98,10 @@ export default function CountryMap({ data, selected, onClick }) {
       <ReactECharts
         option={options}
         style={{ width: '100%', height: '100%' }}
-        lazyUpdate={false}
+        lazyUpdate
+        showLoading
+        loadingOption={chartLoadingOption}
+        onChartReady={onChartReady}
         onEvents={{ click: select }}
       />
     </div>
