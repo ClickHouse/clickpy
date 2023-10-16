@@ -1,7 +1,7 @@
-import React, { Suspense } from 'react';
+import React, { Suspense } from 'react'
 import Charts from "./Charts"
-import { getTopVersions } from '@/utils/clickhouse';
-import Loading from './Loading';
+import { getTopVersions } from '@/utils/clickhouse'
+import Loading from './Loading'
 
 const options = { filter_name: 'version' }
 
@@ -14,7 +14,7 @@ async function DashboardTopVersions(props) {
         <Charts type="pie" options={options} data={data} />
       </Suspense>
     </>
-  );
+  )
 }
 
-export default DashboardTopVersions;
+export default DashboardTopVersions

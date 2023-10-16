@@ -1,22 +1,22 @@
-'use client';
-import ReactECharts from 'echarts-for-react';
+'use client'
+import ReactECharts from 'echarts-for-react'
 import isEqual from 'lodash/isEqual'
-import Loading from '../Loading';
-import { useState } from 'react';
+import Loading from '../Loading'
+import { useState } from 'react'
 
 export default function Radar({ data, onClick }) {
   const [loading, setLoading] = useState(true)
   const maxValues = data.reduce((acc, obj) => {
-    let { name, value } = obj;
-    value = Number(value);
+    let { name, value } = obj
+    value = Number(value)
     if (!(name in acc) || value > acc[name]) {
-      acc[name] = value;
+      acc[name] = value
     }
-    return acc;
-  }, {});
-  const xValues = Object.keys(maxValues);
-  const yValues = Array.from(new Set(data.map((p) => p.y)));
-  const colors = ['#FCFF74', '#FC74FF', '#74ACFF', '#74FFD5'];
+    return acc
+  }, {})
+  const xValues = Object.keys(maxValues)
+  const yValues = Array.from(new Set(data.map((p) => p.y)))
+  const colors = ['#FCFF74', '#FC74FF', '#74ACFF', '#74FFD5']
   const options = {
     animation: false,
     tooltip: {
@@ -52,7 +52,7 @@ export default function Radar({ data, onClick }) {
         return {
           name: x,
           value: maxValues[x],
-        };
+        }
       }),
     },
     series: [
@@ -68,9 +68,9 @@ export default function Radar({ data, onClick }) {
           const values = data
             .filter((obj) => obj.y === y)
             .reduce((acc, obj) => {
-              acc[obj.name] = (obj.value);
-              return acc;
-            }, {});
+              acc[obj.name] = (obj.value)
+              return acc
+            }, {})
           return {
             value: xValues.map((x) => (x in values ? values[x] : 0)),
             name: y,
@@ -80,14 +80,14 @@ export default function Radar({ data, onClick }) {
             itemStyle: {
               color: colors[i],
             },
-          };
+          }
         }),
       },
     ],
-  };
+  }
 
   const select = (params) => {
-    onClick && onClick(params.name);
+    onClick && onClick(params.name)
   }
 
   const onChartReady = (echarts) => {

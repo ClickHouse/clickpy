@@ -19,7 +19,7 @@ export default function HorizontalBar({ data, title, subtitle, stack = false, on
       accumulator[val.name] = {
         name: val.name,
         data: new Array(yValues.length).fill(0),
-      };
+      }
     }
     return accumulator
   }, {})
@@ -28,7 +28,7 @@ export default function HorizontalBar({ data, title, subtitle, stack = false, on
     onClick(values.name)
   }
 
-  data.forEach((p) => (values[p.name].data[yValues.indexOf(p.x)] = p.y));
+  data.forEach((p) => (values[p.name].data[yValues.indexOf(p.x)] = p.y))
   const colors = seriesNames.length === 1 ? ['rgba(252, 255, 116, 1.0)'] : ['rgba(252, 255, 116, 0.2)', 'rgba(252, 255, 116, 0.6)', 'rgba(252, 255, 116, 1.0)']
   const mappedColors = {}
   const series = Object.values(values).map((series, i) => {
@@ -154,5 +154,5 @@ export default function HorizontalBar({ data, title, subtitle, stack = false, on
       />
       {loading && <Loading />}
     </div>
-  );
+  )
 }

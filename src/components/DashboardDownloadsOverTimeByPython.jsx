@@ -1,7 +1,7 @@
-import React, { Suspense } from 'react';
+import React, { Suspense } from 'react'
 import Charts from "./Charts"
-import { getDownloadsOverTimeByPython } from '@/utils/clickhouse';
-import Loading from './Loading';
+import { getDownloadsOverTimeByPython } from '@/utils/clickhouse'
+import Loading from './Loading'
 
 const options = { stack: true }
 
@@ -14,7 +14,7 @@ async function DashboardDownloadsOverTimeByPython({ package_name, version, min_d
         <Charts type='bar' data={data} options={options} />
       </Suspense>
     </>
-  );
+  )
 }
 
-export default DashboardDownloadsOverTimeByPython;
+export default DashboardDownloadsOverTimeByPython

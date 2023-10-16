@@ -1,5 +1,5 @@
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from 'next/image'
+import Link from 'next/link'
 
 export default async function DashboardLayout({ children }) {
   return (
@@ -21,5 +21,5 @@ export default async function DashboardLayout({ children }) {
       </div>
       {children}
     </div>
-  );
+  )
 }

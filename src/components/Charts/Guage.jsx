@@ -63,9 +63,9 @@ export default function Guage({ data }) {
               value === 0.5 ||
               value === 0.25
             ) {
-              return Math.round(value * 100) + '%';
+              return Math.round(value * 100) + '%'
             }
-            return '';
+            return ''
           },
         },
         detail: {
@@ -95,7 +95,7 @@ export default function Guage({ data }) {
         ],
       },
     ],
-  };
+  }
 
   const select = (params) => {
     onClick && onClick(params.name)

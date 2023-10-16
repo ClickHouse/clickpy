@@ -103,9 +103,7 @@ export default function PunchCard({ data, title, subtitle, onClick, scale = 'lin
             if (Number(val[2]) <= 0) {
               return 0
             }
-            console.log(Number(val[2]))
             const scaleFactor = (Math.log(Number(val[2])) / Math.log(maxValue)) * maxSymbolSize
-            console.log(scaleFactor)
             return Math.min(30, Math.max(0, scaleFactor))
           } else if (scale === 'sqrt') {
             // Calculate the squared scaling factor.
@@ -154,5 +152,5 @@ export default function PunchCard({ data, title, subtitle, onClick, scale = 'lin
       />
       {loading && <Loading />}
     </div>
-  );
+  )
 }

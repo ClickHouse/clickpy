@@ -1,11 +1,11 @@
 'use client'
 import DateRangePicker from '@gingerwizard/react-daterange-picker'
 import '@gingerwizard/react-daterange-picker/dist/DateRangePicker.css'
-import 'react-calendar/dist/Calendar.css';
+import 'react-calendar/dist/Calendar.css'
 import './datepicker.css'
-import Image from 'next/image';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
+import Image from 'next/image'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 
 function ClearLogo(clearable) {
   return (

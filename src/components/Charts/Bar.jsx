@@ -12,15 +12,15 @@ export default function Bar({ data, stack, onSelect }) {
       accumulator[val.name] = {
         name: val.name,
         data: new Array(xAxis.length).fill(0),
-      };
+      }
     }
-    return accumulator;
+    return accumulator
   }, {})
 
-  data.forEach((p) => (values[p.name].data[xAxis.indexOf(p.x)] = p.y));
+  data.forEach((p) => (values[p.name].data[xAxis.indexOf(p.x)] = p.y))
 
-  const chartRef = useRef();
-  const colors = ['#FCFF74', '#FC74FF', '#74ACFF', '#74FFD5', '#FF7C74', '#74FF9B', '#FFE074', '#CF4B4B'];
+  const chartRef = useRef()
+  const colors = ['#FCFF74', '#FC74FF', '#74ACFF', '#74FFD5', '#FF7C74', '#74FF9B', '#FFE074', '#CF4B4B']
   const mappedColors = {}
   const series = Object.values(values).map((series, i) => {
     let color = colors[i % colors.length]
@@ -124,7 +124,7 @@ export default function Bar({ data, stack, onSelect }) {
       )
       start = start > 0 ? start : 0
       end = end < xAxis.length ? end : xAxis.length - 1
-      onSelect && onSelect(xAxis[start], xAxis[end]);
+      onSelect && onSelect(xAxis[start], xAxis[end])
     }
   }
 
@@ -157,5 +157,5 @@ export default function Bar({ data, stack, onSelect }) {
       />
       {loading && <Loading />}
     </div>
-  );
+  )
 }

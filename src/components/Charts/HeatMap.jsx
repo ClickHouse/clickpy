@@ -68,15 +68,15 @@ export default function HeatMap({ data, title, subtitle, onClick }) {
                       <span class='${styles.tooltiptext}'>${yValues[params.value[1]]} - ${xValues[params.value[0]]} - ${Number(
           params.value[2]
         ).toLocaleString('en-US')}</span>
-                  </div>`;
+                  </div>`
       },
       extraCssText: 'visibility: hidden;padding:0px;',
       position: (point, params, dom, rect, size) => {
-        const echartsInstance = chartRef.current.getEchartsInstance();
+        const echartsInstance = chartRef.current.getEchartsInstance()
         const pos = echartsInstance.convertToPixel({ seriesIndex: 0 }, [
           params.value[0],
           params.value[1],
-        ]);
+        ])
         return [pos[0], pos[1] - size.contentSize[1] * 2]
       },
     },
