@@ -43,7 +43,7 @@ export default function Summary({ packages, recent_releases, emerging_repos, nee
       </div>
       <div className='xl:col-span-2'>
         <SimpleList link_prefix={'/dashboard/'} data={emerging_repos.map(p => { return { title: p.name, subtitle: `${formatNumber(Number(p.c))} downloads in the last 3 months` } })}
-          title={<div className='flex space-x-2'><Image alt='recent' src='./emerging.svg' width={16} height={16} /><span className='text-white font-bold space-x-0.5'>Emerging repos</span></div>} subtitle={`Top ${emerging_repos.length}`} />
+          title={<div className='flex space-x-2'><Image alt='recent' src='/emerging.svg' width={16} height={16} /><span className='text-white font-bold space-x-0.5'>Emerging repos</span></div>} subtitle={`Top ${emerging_repos.length}`} />
       </div>
       <div className='xl:col-span-2'>
         <SimpleList link_prefix={'/dashboard/'} data={needing_refresh.map(p => { return { title: p.name, subtitle: `${formatNumber(Number(p.c))} downloads, last updated on ${p.last_updated}` } })}
@@ -52,7 +52,7 @@ export default function Summary({ packages, recent_releases, emerging_repos, nee
       <div className='xl:col-span-2'>
         <PunchCard
           data={hot_packages}
-          title={<div className='flex space-x-2'><Image alt='recent' src='./hot.svg' width={16} height={16} /><span className='text-white font-bold space-x-0.5'>Hot packages</span></div>}
+          title={<div className='flex space-x-2'><Image alt='recent' src='/hot.svg' width={16} height={16} /><span className='text-white font-bold space-x-0.5'>Hot packages</span></div>}
           subtitle={`${formatNumber(total_hot_downloads)} downloads`}
           stack={true}
           labelMargin={200}
