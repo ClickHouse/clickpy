@@ -1,7 +1,7 @@
-import React, { Suspense } from 'react';
+import React, { Suspense } from 'react'
 import Charts from "./Charts"
-import { getDownloadsOverTimeBySystem } from '@/utils/clickhouse';
-import Loading from './Loading';
+import { getDownloadsOverTimeBySystem } from '@/utils/clickhouse'
+import Loading from './Loading'
 
 const options = { stack: false, fill: false }
 
@@ -14,7 +14,6 @@ async function DashboardSystemOverTime({ package_name, version, min_date, max_da
         <Charts type='multiline' data={data} options={options} />
       </Suspense>
     </>
-  );
+  )
 }
-
-export default DashboardSystemOverTime;
+export default DashboardSystemOverTime

@@ -1,5 +1,5 @@
-import Image from 'next/image';
-import React from 'react';
+import Image from 'next/image'
+import React from 'react'
 
 function Loading() {
   return (
@@ -15,4 +15,4 @@ function Loading() {
     </div>)
 }
 
-export default Loading;
+export default Loading

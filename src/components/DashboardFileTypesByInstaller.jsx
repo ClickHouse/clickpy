@@ -1,7 +1,7 @@
-import React, { Suspense } from 'react';
+import React, { Suspense } from 'react'
 import Charts from "./Charts"
-import { getFileTypesByInstaller } from '@/utils/clickhouse';
-import Loading from './Loading';
+import { getFileTypesByInstaller } from '@/utils/clickhouse'
+import Loading from './Loading'
 
 async function DashboardFileTypesByInstaller({ package_name, version, min_date, max_date, country_code }) {
   const data = await getFileTypesByInstaller(package_name, version, min_date, max_date, country_code)
@@ -13,7 +13,7 @@ async function DashboardFileTypesByInstaller({ package_name, version, min_date, 
       </Suspense>
 
     </>
-  );
+  )
 }
 
-export default DashboardFileTypesByInstaller;
+export default DashboardFileTypesByInstaller

@@ -1,9 +1,9 @@
-'use client';
-import ReactECharts from 'echarts-for-react';
-import 'echarts-countries-js/echarts-countries-js/world';
+'use client'
+import ReactECharts from 'echarts-for-react'
+import 'echarts-countries-js/echarts-countries-js/world'
 import isEqual from 'lodash/isEqual'
-import Loading from '../Loading';
-import { useState } from 'react';
+import Loading from '../Loading'
+import { useState } from 'react'
 
 export default function CountryMap({ data, selected, onClick }) {
   const [loading, setLoading] = useState(true)
@@ -17,7 +17,7 @@ export default function CountryMap({ data, selected, onClick }) {
     }
   })
 
-  const values = scaledValues.map((p) => Number(p.value));
+  const values = scaledValues.map((p) => Number(p.value))
   const options = {
     colorBy: selected == null ? 'series' : 'data',
     color: selected ? ['#2F2F2F'] : ['#FAFF69', '#DDE26B', '#B2B661', '#8A8C5A', '#51523B', '#2F2F2F'],
@@ -38,9 +38,9 @@ export default function CountryMap({ data, selected, onClick }) {
             params.name +
             ': ' +
             Number(params.data.label).toLocaleString('en-US')
-          );
+          )
         }
-        return params.name + ': 0';
+        return params.name + ': 0'
       },
     },
     series: [
@@ -93,7 +93,7 @@ export default function CountryMap({ data, selected, onClick }) {
   }
 
   const select = (params) => {
-    onClick && params.data && onClick(params.data.code);
+    onClick && params.data && onClick(params.data.code)
   }
 
   const onChartReady = (echarts) => {

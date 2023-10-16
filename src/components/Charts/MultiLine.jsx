@@ -12,9 +12,9 @@ export default function MultiLine({ data, stack, fill, onSelect }) {
       accumulator[val.name] = {
         name: val.name,
         data: new Array(xAxis.length).fill(0),
-      };
+      }
     }
-    return accumulator;
+    return accumulator
   }, {})
 
   data.forEach((p) => (values[p.name].data[xAxis.indexOf(p.x)] = p.y))
@@ -103,7 +103,7 @@ export default function MultiLine({ data, stack, fill, onSelect }) {
   }
 
   const onMouseOver = () => {
-    const echartsInstance = chartRef.current.getEchartsInstance();
+    const echartsInstance = chartRef.current.getEchartsInstance()
     echartsInstance.dispatchAction({
       type: 'takeGlobalCursor',
       key: 'brush',
@@ -115,7 +115,7 @@ export default function MultiLine({ data, stack, fill, onSelect }) {
 
   const onBrushEnd = (params) => {
     if (params.areas.length > 0) {
-      const echartsInstance = chartRef.current.getEchartsInstance();
+      const echartsInstance = chartRef.current.getEchartsInstance()
       let start = echartsInstance.convertFromPixel(
         { xAxisIndex: 0 },
         params.areas[0].range[0]
@@ -126,7 +126,7 @@ export default function MultiLine({ data, stack, fill, onSelect }) {
       )
       start = start > 0 ? start : 0
       end = end < xAxis.length ? end : xAxis.length - 1
-      onSelect && onSelect(xAxis[start], xAxis[end]);
+      onSelect && onSelect(xAxis[start], xAxis[end])
     }
   }
 

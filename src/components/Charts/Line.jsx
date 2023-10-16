@@ -38,7 +38,7 @@ export default function Line({ data, onSelect }) {
       },
       opacity: 0.1,
     }
-    echartsInstance.setOption(newOptions);
+    echartsInstance.setOption(newOptions)
     echartsInstance.dispatchAction({
       type: 'takeGlobalCursor',
       key: 'brush',
@@ -113,7 +113,7 @@ export default function Line({ data, onSelect }) {
         const pos = echartsInstance.convertToPixel({ seriesIndex: 0 }, [
           params[0].axisValue,
           params[0].value,
-        ]);
+        ])
         return [pos[0], pos[1] - size.contentSize[1] * 2]
       },
     },
@@ -132,7 +132,7 @@ export default function Line({ data, onSelect }) {
 
   const onBrushEnd = (params) => {
     if (params.areas.length > 0) {
-      const echartsInstance = chartRef.current.getEchartsInstance();
+      const echartsInstance = chartRef.current.getEchartsInstance()
       let start = echartsInstance.convertFromPixel(
         { xAxisIndex: 0 },
         params.areas[0].range[0]
@@ -146,7 +146,7 @@ export default function Line({ data, onSelect }) {
       onSelect &&
         xAxis[start] &&
         xAxis[end] &&
-        onSelect(xAxis[start], xAxis[end]);
+        onSelect(xAxis[start], xAxis[end])
     }
   }
 

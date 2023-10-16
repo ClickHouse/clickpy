@@ -578,7 +578,7 @@ CREATE MATERIALIZED VIEW pypi.pypi_downloads_max_min_mv TO pypi.pypi_downloads_m
 SELECT project, maxSimpleState(date) as max_date, minSimpleState(date) FROM pypi.pypi GROUP BY project
 ```
 
-### Downloads per month (last 3 months)
+### Downloads per month (last 6 months)
 
 ```sql
 CREATE TABLE pypi.pypi_downloads_per_month
@@ -590,8 +590,21 @@ CREATE TABLE pypi.pypi_downloads_per_month
 ENGINE = SummingMergeTree
 ORDER BY (month, project)
 
-
-
+CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_month_mv TO pypi.pypi_downloads_per_month
+(
+    `month` Date,
+    `project` String,
+    `count` Int64
+) AS
+SELECT
+    toStartOfMonth(date) AS month,
+    project,
+    count() AS count
+FROM pypi
+WHERE date > (toStartOfMonth(now()) - toIntervalMonth(6))
+GROUP BY
+    month,
+    project
 ```
 
 

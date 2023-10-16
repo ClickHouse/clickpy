@@ -1,7 +1,7 @@
-import React, { Suspense } from 'react';
+import React, { Suspense } from 'react'
 import Charts from "./Charts"
-import { getDownloadsByCountry } from '@/utils/clickhouse';
-import Loading from './Loading';
+import { getDownloadsByCountry } from '@/utils/clickhouse'
+import Loading from './Loading'
 
 const options = { filter_name: 'version' }
 
@@ -14,7 +14,7 @@ async function DashboardDownloadsByCountry({ package_name, version, min_date, ma
         <Charts type={'map'} data={data} />
       </Suspense>
     </>
-  );
+  )
 }
 
-export default DashboardDownloadsByCountry;
+export default DashboardDownloadsByCountry

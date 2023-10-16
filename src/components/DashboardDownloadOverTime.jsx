@@ -1,7 +1,7 @@
-import React, { Suspense } from 'react';
-import { getDownloadsOverTime } from '@/utils/clickhouse';
-import Charts from '@/components/Charts';
-import Loading from './Loading';
+import React, { Suspense } from 'react'
+import { getDownloadsOverTime } from '@/utils/clickhouse'
+import Charts from '@/components/Charts'
+import Loading from './Loading'
 
 async function DashboardDownloadByTime(props) {
   const data = await getDownloadsOverTime({ period: "Day", ...props })
@@ -12,7 +12,7 @@ async function DashboardDownloadByTime(props) {
         <Charts type="line" data={data} />
       </Suspense>
     </>
-  );
+  )
 }
 
-export default DashboardDownloadByTime;
+export default DashboardDownloadByTime
