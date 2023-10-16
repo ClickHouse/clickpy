@@ -23,7 +23,7 @@ export default function Summary({ packages, recent_releases, emerging_repos, nee
     <div className='flex flex-col grow xl:grid xl:grid-cols-6 gap-4 min-w-[360px] mb-16'>
       <div className='xl:col-span-3 h-[360px]'>
         <HeatMap data={recent_releases}
-          title={<div className='flex space-x-2'><Image alt='recent' src="/recent.svg" width={16} height={16} /><span className='text-white font-bold space-x-0.5'>Recent releases</span></div>}
+          title={<div className='flex space-x-2'><Image alt='recent' src='/recent.svg' width={16} height={16} /><span className='text-white font-bold space-x-0.5'>Recent releases</span></div>}
           subtitle={'On popular packages'}
           onClick={(value) => {
             router.push(`/dashboard/${value[1]}`)
@@ -47,7 +47,7 @@ export default function Summary({ packages, recent_releases, emerging_repos, nee
       </div>
       <div className='xl:col-span-2'>
         <SimpleList link_prefix={'/dashboard/'} data={needing_refresh.map(p => { return { title: p.name, subtitle: `${formatNumber(Number(p.c))} downloads, last updated on ${p.last_updated}` } })}
-          title={<div className='flex space-x-2'><Image alt='recent' src="/refresh.svg" width={16} height={16} /><span className='text-white font-bold space-x-0.5'>Needing a refresh</span></div>} subtitle={`Top ${needing_refresh.length}`} />
+          title={<div className='flex space-x-2'><Image alt='recent' src='/refresh.svg' width={16} height={16} /><span className='text-white font-bold space-x-0.5'>Needing a refresh</span></div>} subtitle={`Top ${needing_refresh.length}`} />
       </div>
       <div className='xl:col-span-2'>
         <PunchCard

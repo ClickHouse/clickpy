@@ -2,20 +2,19 @@ import Version from '@/components/Version'
 import PackageDetails from '@/components/PackageDetails'
 import {
   getPackageDetails, getPackageDateRanges,
+  getDownloadsOverTime,
+  getTopVersions,
+  getDownloadsOverTimeByPython,
   getDownloadsOverTimeBySystem,
+  getDownloadsByCountry,
+  getFileTypesByInstaller
 } from '@/utils/clickhouse'
 import Search from '@/components/Search'
 import Image from 'next/image'
-import DashboardDownloadOverTime from '@/components/DashboardDownloadOverTime'
-import DashboardDownloadList from '@/components/DashboardDownloadList'
+import ChartComponent from '@/components/Chart'
+import DownloadList from '@/components/DownloadList'
 import Filter from '@/components/Filter'
 import DatePicker from '@/components/DatePicker'
-import DashboardTopVersions from '@/components/DashboardTopVersions'
-import DashboardDownloadsByCountry from '@/components/DashboardDownloadsByCountry'
-import DashboardFileTypesByInstaller from '@/components/DashboardFileTypesByInstaller'
-import DashboardDownloadsOverTimeByPython from '@/components/DashboardDownloadsOverTimeByPython'
-import DashboardSystemOverTime from '@/components/DashboardSystemOverTime'
-
 
 
 export default async function Dashboard({ params, searchParams }) {
@@ -31,17 +30,8 @@ export default async function Dashboard({ params, searchParams }) {
 
   const [
     packageDetails,
-    // downloadsOverTime,
-    // versions,
-    downloadsOverTimeBySystem,
-    // percentileRanks,
   ] = await Promise.all([
-    getPackageDetails(params.package_name, version),
-    // getDownloadsOverTime(params.package_name, version,'Day', min_date, max_date, country_code),
-    // getTopDistributionTypes(params.package_name, version, min_date, max_date, country_code),
-    // getTopVersions(params.package_name, version, min_date, max_date, country_code),
-    getDownloadsOverTimeBySystem(params.package_name, version, 'Day', min_date, max_date, country_code),
-    // getPercentileRank(min_date, max_date, country_code)
+    getPackageDetails(params.package_name, version)
   ])
 
   return (
@@ -52,8 +42,8 @@ export default async function Dashboard({ params, searchParams }) {
           <Search package_name={params.package_name} />
         </div>
         <div className='flex growxl:justify-end flex-col items-start md:flex-row md:items-center gap-4 mr-12 ml-8 xl:ml-0 mt-4 xl:mt-0'>
-          <Filter value={country_code} icon={<Image alt='country code' src="/country.svg" width={16} height={16} />} name='country_code' />
-          <Filter value={version} icon={<Image alt='version' src="/version.svg" width={16} height={16} />} name='version' />
+          <Filter value={country_code} icon={<Image alt='country code' src='/country.svg' width={16} height={16} />} name='country_code' />
+          <Filter value={version} icon={<Image alt='version' src='/version.svg' width={16} height={16} />} name='version' />
           <DatePicker dates={[min_date, max_date]} />
           <div className='hidden xl:flex grow width-20 max-w-[80px]'>
             <p className='text-sm text-neutral-0'>
@@ -73,7 +63,7 @@ export default async function Dashboard({ params, searchParams }) {
           }
 
           <div className='flex flex-wrap gap-4 mt-14'>
-            <DashboardDownloadList package_name={params.package_name} version={version} min_date={min_date} max_date={max_date} country_code={country_code} className='flex-1 h-24' />
+            <DownloadList package_name={params.package_name} version={version} min_date={min_date} max_date={max_date} country_code={country_code} className='flex-1 h-24' />
             {packageDetails.length > 0 &&
               <div className='w-full md:w-1/2 lg:w-1/3 h-24'>
                 <Version current={version ? version : 'All'} latest={packageDetails[0].max_version} />
@@ -83,28 +73,34 @@ export default async function Dashboard({ params, searchParams }) {
         </div>
         <div className='mt-20 ml-10 mr-10 lg:h-[480px] lg:grid lg:grid-cols-3 gap-4'>
           <div className='h-[480px] lg:col-span-2'>
-            <DashboardDownloadOverTime package_name={params.package_name} version={version} min_date={min_date} max_date={max_date} country_code={country_code} />
+            <p className='text-2xl font-bold mb-5'>Downloads over time</p>
+            <ChartComponent type='line'  getData={getDownloadsOverTime} params={{ period: 'Day', package_name: params.package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
           </div>
           <div className='h-[480px] mt-32 lg:mt-0'>
-            <DashboardTopVersions package_name={params.package_name} version={version} min_date={min_date} max_date={max_date} country_code={country_code} />
+            <p className='text-2xl font-bold mb-5'>Top versions</p>
+            <ChartComponent type='pie'  getData={getTopVersions} params={{ package_name: params.package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}} options={{ filter_name: 'version' }}/>
           </div>
         </div>
         <div className='mt-32 ml-10 mr-10'>
           <div className='h-[480px]'>
-            <DashboardDownloadsOverTimeByPython package_name={params.package_name} version={version} min_date={min_date} max_date={max_date} country_code={country_code} />
+            <p className='text-2xl font-bold mb-5'>Downloads by Python version over time</p>
+            <ChartComponent type='bar' options={{ stack: true }} getData={getDownloadsOverTimeByPython} params={{ period: 'Day', package_name: params.package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
           </div>
         </div>
         <div className='mt-32 ml-10 mr-10 h-[480px]'>
           <div className='h-[480px]'>
-            <DashboardSystemOverTime package_name={params.package_name} version={version} min_date={min_date} max_date={max_date} country_code={country_code} />
+            <p className='text-2xl font-bold mb-5'>Downloads by system over time</p>
+            <ChartComponent type='multiline' options={{ stack: false, fill: false }} getData={getDownloadsOverTimeBySystem} params={{ period: 'Day', package_name: params.package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
           </div>
         </div>
         <div className='mt-32 ml-10 mr-10 h-[480px] lg:grid xl:grid-cols-3 gap-4 mb-32'>
           <div className='h-[480px] xl:col-span-2'>
-            <DashboardDownloadsByCountry package_name={params.package_name} version={version} min_date={min_date} max_date={max_date} country_code={country_code} />
+            <p className='text-2xl font-bold mb-5'>Downloads by country</p>
+            <ChartComponent type='map' options={{ filter_name: 'version' }} getData={getDownloadsByCountry} params={{ package_name: params.package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
           </div>
           <div className='h-[480px] xl:col-span-1 mt-32 xl:mt-0'>
-            <DashboardFileTypesByInstaller package_name={params.package_name} version={version} min_date={min_date} max_date={max_date} country_code={country_code} />
+            <p className='text-2xl font-bold mb-5'>File types by installer</p>
+            <ChartComponent type='radar' getData={getFileTypesByInstaller} params={{ package_name: params.package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
           </div>
         </div>
       </div>

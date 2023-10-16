@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 
@@ -8,7 +8,7 @@ export default function Filter({ value, name, icon }) {
   const pathname = usePathname()
   const onRemove = () => {
     const current = new URLSearchParams(searchParams.toString())
-    current.delete(options.name)
+    current.delete(name)
     router.push(`${pathname}?${current.toString()}`, { scroll: false })
   }
   const pill = icon ?? `${name}:`

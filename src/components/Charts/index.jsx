@@ -13,8 +13,8 @@ export default function ClientComponent({ type, data = [], options = {} }) {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const current = new URLSearchParams(searchParams.toString())
-  if (type === "bar") {
-    return (
+  return {
+    'bar': (
       <Bar
         data={data}
         stack={options.stack}
@@ -24,10 +24,8 @@ export default function ClientComponent({ type, data = [], options = {} }) {
           router.push(`${pathname}?${current.toString()}`, { scroll: false })
         }}
       />
-    )
-  }
-  if (type === "pie") {
-    return (
+    ),
+    'pie': (
       <Pie
         data={data}
         onClick={(value) => {
@@ -35,10 +33,8 @@ export default function ClientComponent({ type, data = [], options = {} }) {
           router.push(`${pathname}?${current.toString()}`, { scroll: false })
         }}
       />
-    )
-  }
-  if (type === "line") {
-    return (
+    ),
+    'line': (
       <Line
         data={data}
         onSelect={(min_date, max_date) => {
@@ -47,10 +43,8 @@ export default function ClientComponent({ type, data = [], options = {} }) {
           router.push(`${pathname}?${current.toString()}`, { scroll: false })
         }}
       />
-    )
-  }
-  if (type === "map") {
-    return (
+    ),
+    'map': (
       <CountryMap
         data={data}
         selected={current.get('country_code')}
@@ -59,16 +53,10 @@ export default function ClientComponent({ type, data = [], options = {} }) {
           router.push(`${pathname}?${current.toString()}`, { scroll: false })
         }}
       />
-    )
-  }
-  if (type === "radar") {
-    return <Radar data={data} />
-  }
-  if (type === "guage") {
-    return <Guage data={data} />
-  }
-  if (type === "multiline") {
-    return (
+    ),
+    'radar': (<Radar data={data} />),
+    'guage': (<Guage data={data} />),
+    'multiline': (
       <MultiLine
         data={data}
         stack={options.stack}
@@ -80,6 +68,5 @@ export default function ClientComponent({ type, data = [], options = {} }) {
         }}
       />
     )
-  }
-  return null
+  }[type]
 }
