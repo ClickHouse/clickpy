@@ -11,7 +11,7 @@ import {
 } from '@/utils/clickhouse'
 import Search from '@/components/Search'
 import Image from 'next/image'
-import ChartComponent from '@/components/Chart'
+import Chart from '@/components/Chart'
 import DownloadList from '@/components/DownloadList'
 import Filter from '@/components/Filter'
 import DatePicker from '@/components/DatePicker'
@@ -74,33 +74,33 @@ export default async function Dashboard({ params, searchParams }) {
         <div className='mt-20 ml-10 mr-10 lg:h-[480px] lg:grid lg:grid-cols-3 gap-4'>
           <div className='h-[480px] lg:col-span-2'>
             <p className='text-2xl font-bold mb-5'>Downloads over time</p>
-            <ChartComponent type='line'  getData={getDownloadsOverTime} params={{ period: 'Day', package_name: params.package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
+            <Chart type='line'  getData={getDownloadsOverTime} params={{ period: 'Day', package_name: params.package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
           </div>
           <div className='h-[480px] mt-32 lg:mt-0'>
             <p className='text-2xl font-bold mb-5'>Top versions</p>
-            <ChartComponent type='pie'  getData={getTopVersions} params={{ package_name: params.package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}} options={{ filter_name: 'version' }}/>
+            <Chart type='pie'  getData={getTopVersions} params={{ package_name: params.package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}} options={{ filter_name: 'version' }}/>
           </div>
         </div>
         <div className='mt-32 ml-10 mr-10'>
           <div className='h-[480px]'>
             <p className='text-2xl font-bold mb-5'>Downloads by Python version over time</p>
-            <ChartComponent type='bar' options={{ stack: true }} getData={getDownloadsOverTimeByPython} params={{ period: 'Day', package_name: params.package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
+            <Chart type='bar' options={{ stack: true }} getData={getDownloadsOverTimeByPython} params={{ period: 'Day', package_name: params.package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
           </div>
         </div>
         <div className='mt-32 ml-10 mr-10 h-[480px]'>
           <div className='h-[480px]'>
             <p className='text-2xl font-bold mb-5'>Downloads by system over time</p>
-            <ChartComponent type='multiline' options={{ stack: false, fill: false }} getData={getDownloadsOverTimeBySystem} params={{ period: 'Day', package_name: params.package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
+            <Chart type='multiline' options={{ stack: false, fill: false }} getData={getDownloadsOverTimeBySystem} params={{ period: 'Day', package_name: params.package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
           </div>
         </div>
         <div className='mt-32 ml-10 mr-10 h-[480px] lg:grid xl:grid-cols-3 gap-4 mb-32'>
           <div className='h-[480px] xl:col-span-2'>
             <p className='text-2xl font-bold mb-5'>Downloads by country</p>
-            <ChartComponent type='map' options={{ filter_name: 'version' }} getData={getDownloadsByCountry} params={{ package_name: params.package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
+            <Chart type='map' options={{ filter_name: 'version' }} getData={getDownloadsByCountry} params={{ package_name: params.package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
           </div>
           <div className='h-[480px] xl:col-span-1 mt-32 xl:mt-0'>
             <p className='text-2xl font-bold mb-5'>File types by installer</p>
-            <ChartComponent type='radar' getData={getFileTypesByInstaller} params={{ package_name: params.package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
+            <Chart type='radar' getData={getFileTypesByInstaller} params={{ package_name: params.package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
           </div>
         </div>
       </div>
