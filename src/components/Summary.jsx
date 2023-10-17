@@ -34,7 +34,7 @@ export default function Summary({ packages, recent_releases, emerging_repos, nee
           data={packages.map(p => {
             return { x: p.project, y: p.c, name: 'counts' }
           }).reverse()}
-          title={<div className='flex space-x-2'><Image alt='recent' src='./popular.svg' width={16} height={16} /><span className='text-white font-bold space-x-0.5'>Top Repos</span></div>}
+          title={<div className='flex space-x-2'><Image alt='recent' src='/popular.svg' width={16} height={16} /><span className='text-white font-bold space-x-0.5'>Top Repos</span></div>}
           subtitle={`${formatNumber(total_top_downloads)} downloads`}
           onClick={(value) => {
             router.push(`/dashboard/${value}`)
