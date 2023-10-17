@@ -7,7 +7,7 @@ export const clickhouse = createClient({
 })
 
 const PYPI_DATABASE = process.env.PYPI_DATABASE || 'pypi'
-const PYPI_TABLE = process.env.PYPI_TABLE || 'pypi.pypi'
+const PYPI_TABLE = process.env.PYPI_TABLE || 'pypi'
 const materialized_views = [
     { columns: ['project'], table: 'pypi_downloads' },
     { columns: ['project', 'version'], table: 'pypi_downloads_by_version' },
@@ -61,22 +61,25 @@ export async function getTotalDownloads() {
     return results[0]
 }
 
-export async function getDownloadSummary(package_name, version, min_date, max_date, country_code) {
+export async function getDownloadSummary(package_name, version, min_date, max_date, country_code, type) {
     const columns = ['project', 'date']
     if (version) {  columns.push('version') }
     if (country_code) { columns.push('country_code') }
+    if (type) { columns.push('type') }
     const table = findOptimalTable(columns)
     return query('getDownloadSummary',`SELECT sumIf(count, date >= {min_date:String}::Date32 AND date >= {max_date:String}::Date32 - toIntervalDay(1) AND date <= {max_date:String}::Date32) AS last_day,
     sumIf(count, date >= {min_date:String}::Date32 AND date >= {max_date:String}::Date32 - toIntervalWeek(1) AND date <= {max_date:String}::Date32) AS last_week,
     sumIf(count, date >= {min_date:String}::Date32 AND date >= {max_date:String}::Date32 - toIntervalMonth(1) AND date <= {max_date:String}::Date32) AS last_month,
     sumIf(count, date >= {min_date:String}::Date32 AND date >= {min_date:String}::Date32 AND date <= {max_date:String}::Date32) AS total
-    FROM ${PYPI_DATABASE}.${table} WHERE (project = {package_name:String}) AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'}`,
+    FROM ${PYPI_DATABASE}.${table} WHERE (project = {package_name:String}) AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'} 
+    AND ${type ? `type={type:String}`: '1=1'}`,
     {
         min_date: min_date,
         max_date: max_date,
         package_name: package_name,
         version: version,
         country_code: country_code,
+        type: type,
     })
 }
 
@@ -148,23 +151,26 @@ export async function getPackageDetails(package_name, version) {
         })
 }
 
-export async function getDownloadsOverTime({package_name, version, period, min_date, max_date, country_code}) {
+export async function getDownloadsOverTime({package_name, version, period, min_date, max_date, country_code, type}) {
     const columns = ['project', 'date']
     if (version) {  columns.push('version') }
     if (country_code) { columns.push('country_code') }
+    if (type) { columns.push('type')}
     const table = findOptimalTable(columns)
     return query('getDownloadsOverTime',`SELECT
         toStartOf${period}(date)::Date32 AS x,
         sum(count) AS y
-    FROM ${PYPI_DATABASE}.${table}
-    WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'}
+    FROM ${PYPI_DATABASE}.${table} 
+    WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) 
+    AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'}
     GROUP BY x
     ORDER BY x ASC`, {
         package_name: package_name,
         version: version,
         min_date: min_date,
         max_date: max_date,
-        country_code: country_code
+        country_code: country_code,
+        type: type,
     })
 }
 
@@ -173,7 +179,7 @@ export async function getTopDistributionTypes(package_name, version, min_date, m
             type AS name,
             sum(count) AS value
         FROM ${PYPI_DATABASE}.pypi_downloads_per_day_by_version_by_file_type
-        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) AND ${version ? `version={version:String}`: '1=1'}
+        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) AND ${version ? `version={version:String}`: '1=1'} 
         GROUP BY type LIMIT 7`, {
             package_name: package_name,
             version: version,
@@ -182,29 +188,32 @@ export async function getTopDistributionTypes(package_name, version, min_date, m
         })
 }
 
-export async function getTopVersions({package_name, version, min_date, max_date, country_code}) {
+export async function getTopVersions({package_name, version, min_date, max_date, country_code, type}) {
     const columns = ['project', 'date', 'version']
     if (country_code) { columns.push('country_code') }
+    if (type) { columns.push('type') }
     const table = findOptimalTable(columns)
     return query('getTopVersions',`SELECT
             version AS name,
             sum(count) AS value
         FROM ${PYPI_DATABASE}.${table}
         WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) 
-            AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'}
+            AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'}
         GROUP BY version ORDER BY value DESC LIMIT 6`, {
             package_name: package_name,
             version: version,
             min_date: min_date,
             max_date: max_date,
-            country_code: country_code
+            country_code: country_code,
+            type: type,
         })
 }
 
-export async function getDownloadsOverTimeByPython({package_name, version, period, min_date, max_date, country_code}) {
+export async function getDownloadsOverTimeByPython({package_name, version, period, min_date, max_date, country_code, type}) {
     const columns = ['project', 'date', 'python_minor']
     if (country_code) { columns.push('country_code') }
     if (version) { columns.push('version') }
+    if (type) { columns.push('type') }
     const table = findOptimalTable(columns)
     return query('getDownloadsOverTimeByPython',`SELECT
             python_minor as name,
@@ -213,21 +222,23 @@ export async function getDownloadsOverTimeByPython({package_name, version, perio
         FROM ${PYPI_DATABASE}.${table}
         WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) 
         AND ${version ? `version={version:String}`: '1=1'} AND python_minor != '' 
-        AND ${country_code ? `country_code={country_code:String}`: '1=1'}
+        AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'}
         GROUP BY name, x
         ORDER BY x ASC, y DESC LIMIT 4 BY x`, {
             package_name: package_name,
             min_date: min_date,
             max_date: max_date,
             version: version,
-            country_code: country_code
+            country_code: country_code,
+            type: type
         })
 }
 
-export async function getDownloadsOverTimeBySystem({package_name, version, period, min_date, max_date, country_code}) {
+export async function getDownloadsOverTimeBySystem({package_name, version, period, min_date, max_date, country_code, type}) {
     const columns = ['project', 'date', 'system']
     if (country_code) { columns.push('country_code') }
     if (version) { columns.push('version') }
+    if (type) { columns.push('type') }
     const table = findOptimalTable(columns)
     return query('getDownloadsOverTimeBySystem',`WITH systems AS
     (
@@ -244,20 +255,23 @@ export async function getDownloadsOverTimeBySystem({package_name, version, perio
         FROM ${PYPI_DATABASE}.${table}
         WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) 
         AND ${version ? `version={version:String}`: '1=1'} AND system IN systems 
-        AND ${country_code ? `country_code={country_code:String}`: '1=1'}
+        AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'}
         GROUP BY name, x ORDER BY x ASC, y DESC LIMIT 4 BY x`, {
             min_date: min_date,
             max_date: max_date,
             package_name: package_name,
             version: version,
-            country_code: country_code
+            country_code: country_code,
+            type: type
         })
 }
 
-export async function getDownloadsByCountry({package_name, version, min_date, max_date, country_code}) {
+export async function getDownloadsByCountry({package_name, version, min_date, max_date, country_code, type}) {
     const columns = ['project', 'date', 'country_code']
     if (version) { columns.push('version') }
+    if (type) { columns.push('type') }
     const table = findOptimalTable(columns)
+    console.log(table)
     return query('getDownloadsByCountry',`SELECT name, code AS country_code, value 
                     FROM countries AS all 
                     LEFT OUTER JOIN (
@@ -267,18 +281,20 @@ export async function getDownloadsByCountry({package_name, version, min_date, ma
                     WHERE (date >= {min_date:String}::Date32) AND 
                         (date < {max_date:String}::Date32) AND 
                         project = {package_name:String} AND 
-                        ${version ? `version={version:String}`: '1=1'} GROUP BY country_code 
+                        ${version ? `version={version:String}`: '1=1'} AND 
+                        ${type ? `type={type:String}`: '1=1'} GROUP BY country_code 
                     ) AS values ON all.code = values.country_code`, 
             {
             package_name: package_name,
             version: version,
             min_date: min_date,
             max_date: max_date,
-            country_code: country_code
+            country_code: country_code,
+            type: type
         })
 }
 
-export async function getFileTypesByInstaller({package_name, version, min_date, max_date, country_code}) {
+export async function getFileTypesByInstaller({package_name, version, min_date, max_date, country_code, type}) {
     const columns = ['project', 'date', 'installer', 'type']
     if (version) { columns.push('version') }
     if (country_code) { columns.push('country_code') }
@@ -288,7 +304,7 @@ export async function getFileTypesByInstaller({package_name, version, min_date, 
             SELECT installer
             FROM ${PYPI_DATABASE}.${table}
             WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND installer != '' AND (project = {package_name:String}) 
-                    AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'}
+                    AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'}
             GROUP BY installer
             ORDER BY count() DESC
             LIMIT 6
@@ -299,7 +315,7 @@ export async function getFileTypesByInstaller({package_name, version, min_date, 
             sum(count) AS value
         FROM ${PYPI_DATABASE}.${table}
         WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND installer IN installers AND (project = {package_name:String}) 
-                AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'}
+                AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'}
         GROUP BY
             installer,
             type
@@ -310,7 +326,8 @@ export async function getFileTypesByInstaller({package_name, version, min_date, 
                 max_date: max_date,
                 package_name: package_name,
                 version: version,
-                country_code: country_code
+                country_code: country_code,
+                type: type
         })
 }
 
@@ -457,7 +474,7 @@ async function query(query_name, query, query_params) {
     })
     const end = performance.now()
     console.log(`Execution time for ${query_name}: ${end - start} ms`)
-    if (end - start > 1000) {
+    if (end - start > 2000) {
         if (query_params) {
             console.log(query, query_params)
         } else {

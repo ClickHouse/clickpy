@@ -133,12 +133,12 @@ export default function SparkLine({ name, data, total, link }) {
 					lazyUpdate
 					onChartReady={onChartReady}
 					shouldSetOption={(prevProps, currentProps) => {
-						const shoulRender = !isEqual(prevProps, currentProps)
-						if (shoulRender) {
+						const shouldRender = !isEqual(prevProps, currentProps)
+						if (shouldRender) {
 							setLoading(true)
 						}
 
-						return shoulRender
+						return shouldRender
 					}}
 				/>
 				{loading && <Loading />}

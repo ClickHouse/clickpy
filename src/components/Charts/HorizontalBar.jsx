@@ -144,12 +144,12 @@ export default function HorizontalBar({ data, title, subtitle, stack = false, on
         onChartReady={onChartReady}
         onEvents={{ click: select }}
         shouldSetOption={(prevProps, currentProps) => {
-          const shoulRender = !isEqual(prevProps, currentProps)
-          if (shoulRender) {
+          const shouldRender = !isEqual(prevProps, currentProps)
+          if (shouldRender) {
             setLoading(true)
           }
 
-          return shoulRender
+          return shouldRender
         }}
       />
       {loading && <Loading />}

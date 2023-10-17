@@ -3,8 +3,8 @@ import Image from 'next/image'
 import { getDownloadSummary } from '@/utils/clickhouse'
 import { formatNumber } from '@/utils/utils'
 
-async function DownloadList({ package_name, version, max_date, min_date, country_code, ...props }) {
-  const data = await getDownloadSummary(package_name, version, min_date, max_date, country_code)
+async function DownloadList({ package_name, version, max_date, min_date, country_code, type, ...props }) {
+  const data = await getDownloadSummary(package_name, version, min_date, max_date, country_code, type)
   if (data.length === 0) {
     return null
   }

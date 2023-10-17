@@ -123,6 +123,7 @@ export default function PunchCard({ data, title, subtitle, onClick, scale = 'lin
     setLoading(false)
   }
 
+
   return (
     <div className='relative rounded-lg bg-slate-850 border border-slate-700 rounded-l h-full'>
       {
@@ -142,12 +143,12 @@ export default function PunchCard({ data, title, subtitle, onClick, scale = 'lin
         onChartReady={onChartReady}
         onEvents={{ click: select }}
         shouldSetOption={(prevProps, currentProps) => {
-          const shoulRender = !isEqual(prevProps, currentProps)
-          if (shoulRender) {
+          const shouldRender = !isEqual(prevProps, currentProps)
+          if (shouldRender) {
             setLoading(true)
           }
 
-          return shoulRender
+          return shouldRender
         }}
       />
       {loading && <Loading />}

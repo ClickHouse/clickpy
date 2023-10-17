@@ -22,6 +22,7 @@ import { Suspense } from 'react'
 export default async function Dashboard({ params, searchParams }) {
   const version = searchParams.version
   const country_code = searchParams.country_code
+  const file_type = searchParams.type
   let min_date = searchParams.min_date
   let max_date = searchParams.max_date
   const package_name = params.package_name
@@ -42,6 +43,7 @@ export default async function Dashboard({ params, searchParams }) {
         <div className='flex growxl:justify-end flex-col items-start md:flex-row md:items-center gap-4 mr-12 ml-8 xl:ml-0 mt-4 xl:mt-0'>
           <Filter value={country_code} icon={<Image alt='country code' src='/country.svg' width={16} height={16} />} name='country_code' />
           <Filter value={version} icon={<Image alt='version' src='/version.svg' width={16} height={16} />} name='version' />
+          <Filter value={file_type} icon={<Image alt='type' src='/file_type.svg' width={16} height={16} />} name='type' />
           <DatePicker dates={[min_date, max_date]} />
           <div className='hidden xl:flex grow width-20 max-w-[80px]'>
             <p className='text-sm text-neutral-0'>
@@ -59,7 +61,7 @@ export default async function Dashboard({ params, searchParams }) {
             <PackageDetails {...packageDetails[0]} />
           }
           <div className='flex flex-wrap gap-4 mt-14'>
-            <DownloadList package_name={package_name} version={version} min_date={min_date} max_date={max_date} country_code={country_code} className='flex-1 h-24' />
+            <DownloadList package_name={package_name} version={version} min_date={min_date} max_date={max_date} country_code={country_code} type={file_type} className='flex-1 h-24' />
             {packageDetails.length > 0 &&
               <div className='w-full md:w-1/2 lg:w-1/3 h-24'>
                 <Version current={version ? version : 'All'} latest={packageDetails[0].max_version} />
@@ -71,13 +73,13 @@ export default async function Dashboard({ params, searchParams }) {
           <div className='h-[480px] lg:col-span-2'>
             <p className='text-2xl font-bold mb-5'>Downloads over time</p>
             <Suspense key={key} fallback={<Loading/>}>
-              <Chart type='line'  getData={getDownloadsOverTime} params={{ period: 'Day', package_name: package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
+              <Chart type='line'  getData={getDownloadsOverTime} params={{ period: 'Day', package_name: package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code, type: file_type}}/>
             </Suspense>
           </div>
           <div className='h-[480px] mt-32 lg:mt-0'>
             <p className='text-2xl font-bold mb-5'>Top versions</p>
             <Suspense key={key} fallback={<Loading/>}>
-              <Chart type='pie'  getData={getTopVersions} params={{ package_name: package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}} options={{ filter_name: 'version' }}/>
+              <Chart type='pie'  getData={getTopVersions} params={{ package_name: package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code, type: file_type}} options={{ filter_name: 'version' }}/>
             </Suspense>
           </div>
         </div>
@@ -85,7 +87,7 @@ export default async function Dashboard({ params, searchParams }) {
           <div className='h-[480px]'>
             <p className='text-2xl font-bold mb-5'>Downloads by Python version over time</p>
             <Suspense key={key} fallback={<Loading/>}>
-              <Chart type='bar' options={{ stack: true }} getData={getDownloadsOverTimeByPython} params={{ period: 'Day', package_name: package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
+              <Chart type='bar' options={{ stack: true }} getData={getDownloadsOverTimeByPython} params={{ period: 'Day', package_name: package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code, type: file_type}}/>
             </Suspense>
           </div>
         </div>
@@ -93,7 +95,7 @@ export default async function Dashboard({ params, searchParams }) {
           <div className='h-[480px]'>
             <p className='text-2xl font-bold mb-5'>Downloads by system over time</p>
             <Suspense key={key} fallback={<Loading/>}>
-              <Chart type='multiline' options={{ stack: false, fill: false }} getData={getDownloadsOverTimeBySystem} params={{ period: 'Day', package_name: package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
+              <Chart type='multiline' options={{ stack: false, fill: false }} getData={getDownloadsOverTimeBySystem} params={{ period: 'Day', package_name: package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code, type: file_type}}/>
             </Suspense>
           </div>
         </div>
@@ -101,13 +103,13 @@ export default async function Dashboard({ params, searchParams }) {
           <div className='h-[480px] xl:col-span-2'>
             <p className='text-2xl font-bold mb-5'>Downloads by country</p>
             <Suspense key={key} fallback={<Loading/>}>
-              <Chart type='map' options={{ filter_name: 'version' }} getData={getDownloadsByCountry} params={{ package_name: package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
+              <Chart type='map' options={{ filter_name: 'version' }} getData={getDownloadsByCountry} params={{ package_name: package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code, type: file_type}}/>
             </Suspense>
           </div>
           <div className='h-[480px] xl:col-span-1 mt-32 xl:mt-0'>
             <p className='text-2xl font-bold mb-5'>File types by installer</p>
             <Suspense key={key} fallback={<Loading/>}>
-              <Chart type='radar' getData={getFileTypesByInstaller} params={{ package_name: package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code}}/>
+              <Chart type='radar' options={{column: 'type'}} getData={getFileTypesByInstaller} params={{ package_name: package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code, type: file_type}}/>
               </Suspense>
           </div>
         </div>

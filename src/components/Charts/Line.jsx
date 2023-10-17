@@ -170,12 +170,12 @@ export default function Line({ data, onSelect }) {
           brushEnd: onBrushEnd,
         }}
         shouldSetOption={(prevProps, currentProps) => {
-          const shoulRender = !isEqual(prevProps, currentProps)
-          if (shoulRender) {
+          const shouldRender = !isEqual(prevProps, currentProps)
+          if (shouldRender) {
             setLoading(true)
           }
 
-          return shoulRender
+          return shouldRender
         }}
       />
       {loading && <Loading />}

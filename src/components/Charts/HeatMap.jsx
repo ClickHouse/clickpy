@@ -112,7 +112,7 @@ export default function HeatMap({ data, title, subtitle, onClick }) {
   }
 
   return (
-    <div className='rounded-lg bg-slate-850 hover:bg-chart-hover cursor-pointer shadow-inner border border-slate-700 h-full justify-between flex flex-col hover:shadow-xl transition-all duration-300 ease-in-out'>
+    <div className='rounded-lg bg-slate-850 cursor-pointer shadow-inner border border-slate-700 h-full justify-between flex flex-col hover:shadow-xl transition-all duration-300 ease-in-out'>
       <div className='px-6 py-4  flex-row flex justify-between'>
         {title}
         <p className={'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500'}>
@@ -129,12 +129,12 @@ export default function HeatMap({ data, title, subtitle, onClick }) {
           onChartReady={onChartReady}
           onEvents={{ click: select }}
           shouldSetOption={(prevProps, currentProps) => {
-            const shoulRender = !isEqual(prevProps, currentProps)
-            if (shoulRender) {
+            const shouldRender = !isEqual(prevProps, currentProps)
+            if (shouldRender) {
               setLoading(true)
             }
 
-            return shoulRender
+            return shouldRender
           }}
         />
         {loading && <Loading />}

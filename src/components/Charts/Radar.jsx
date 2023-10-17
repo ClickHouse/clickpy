@@ -71,6 +71,7 @@ export default function Radar({ data, onClick }) {
               acc[obj.name] = (obj.value)
               return acc
             }, {})
+
           return {
             value: xValues.map((x) => (x in values ? values[x] : 0)),
             name: y,
@@ -103,12 +104,12 @@ export default function Radar({ data, onClick }) {
         onChartReady={onChartReady}
         onEvents={{ click: select }}
         shouldSetOption={(prevProps, currentProps) => {
-          const shoulRender = !isEqual(prevProps, currentProps)
-          if (shoulRender) {
+          const shouldRender = !isEqual(prevProps, currentProps)
+          if (shouldRender) {
             setLoading(true)
           }
 
-          return shoulRender
+          return shouldRender
         }}
       />
       {loading && <Loading />}
