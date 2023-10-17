@@ -37,7 +37,7 @@ export default async function Dashboard({ params, searchParams }) {
   return (
     <div>
 
-      <div className='flex flex-wrap bg-[#20201D] justify-between items-center pt-6 pb-6 border-b z-20 border-slate-800 fixed top-0 left-0 right-0'>
+      <div className='flex flex-wrap bg-[#20201D] justify-between items-center pt-6 pb-6 border-b z-20 border-slate-800 sticky top-0 left-0 right-0'>
         <div className='ml-8 items-center flex gap-8 mt-2'>
           <Link href='/'>
                 <Image
@@ -64,8 +64,8 @@ export default async function Dashboard({ params, searchParams }) {
           </div>
         </div>
       </div>
-      <div className='top-20 relative isolate z-10'>
-        <div className='ml-10 mt-20 mr-10 relative z-10'>
+      <div className='relative isolate z-10'>
+        <div className='ml-10 mt-10 mr-10 relative z-10'>
           {packageDetails.length > 0 &&
             <PackageDetails {...packageDetails[0]} />
           }
