@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 
 export default function Search({ package_name = '' }) {
 	const [query, setQuery] = useState(package_name)
+	const [cursor, setCursor] = useState(0)
 	const [showPackages, setShowPackages] = useState(false)
 	const [packages, setPackages] = useState([])
 	const router = useRouter()
@@ -41,6 +42,20 @@ export default function Search({ package_name = '' }) {
 		router.push(`/dashboard/${package_name}`)
 	}
 
+	const onKeyDown = (e) => {
+		// arrow up/down button should select next/previous list element
+		if (e.keyCode === 38 && cursor > 0) {
+			setCursor(cursor-1)
+		} else if (e.keyCode === 40 && cursor < packages.length - 1) {
+			setCursor(cursor+1)
+		}  else if (e.keyCode === 13 && cursor > 0 && cursor < packages.length - 1) {
+			// on return
+			const package_name = packages[cursor]
+			router.push(`/dashboard/${package_name.project}`)
+			
+		}
+	}
+
 	useEffect(() => {
 		getPackages().then(results => {
 			setPackages(results)
@@ -58,7 +73,7 @@ export default function Search({ package_name = '' }) {
 								aria-hidden='true'
 							/>
 						</div>
-						<input
+						<input tabIndex='0'
 							type='package'
 							name='package'
 							id='package'
@@ -73,19 +88,16 @@ export default function Search({ package_name = '' }) {
 								setShowPackages(true)
 								setQuery(e.target.value)
 							}}
+							onKeyDown={e => {
+								onKeyDown(e)
+							}}
 						/>
 					</div>
 					{(packages.length > 0 && showPackages) && (
 						<div className='pl-5 -ml-3 bg-neutral-725 font-normal rounded-b-xl border-t border-primary-300 shadow-sm w-full z-10'>
 							<ul role='list' className='divide-y divide-white/5 w-full'>
 								{packages.map((p, i) => (
-									<li
-										onClick={() => {
-											onClick(p.project)
-										}}
-										key={`package-${i}`}
-										className='cursor-pointer flex space-x-2 py-4 hover:bg-[url("/highlight.svg")]'
-									>
+									<li onClick={() => { onClick(p.project) }} key={`package-${i}`} className={`cursor-pointer flex space-x-2 py-4 hover:bg-[url("/highlight.svg")] ${ cursor === i ? 'bg-[url("/highlight.svg")]': null}`}>
 										<div className='flex items-center gap-x-2 w-full pr-2'>
 											<div className='flex items-center flex-auto'>
 												<h2 className='min-w-0 text-sm text-white'>
@@ -95,10 +107,7 @@ export default function Search({ package_name = '' }) {
 											<div className='flex gap-3'>
 												<div>{p.c}</div>
 											</div>
-											<ChevronRightIcon
-												className='h-6 w-6 flex-none text-primary'
-												aria-hidden='true'
-											/>
+											<ChevronRightIcon className='h-6 w-6 flex-none text-primary' aria-hidden='true'/>
 										</div>
 									</li>
 								))}
