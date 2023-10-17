@@ -55,8 +55,9 @@ export default function ClientComponent({ type, data = [], options = {} }) {
       />
     ),
     'radar': (<Radar data={data} onClick={(value) => {
-      current.set(options.column, value)
-      router.push(`${pathname}?${current.toString()}`, { scroll: false })
+      //disable as we need MV
+      // current.set(options.column, value)
+      // router.push(`${pathname}?${current.toString()}`, { scroll: false })
     }}/>),
     'guage': (<Guage data={data} />),
     'multiline': (

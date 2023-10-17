@@ -17,6 +17,7 @@ import DownloadList from '@/components/DownloadList'
 import Filter from '@/components/Filter'
 import DatePicker from '@/components/DatePicker'
 import { Suspense } from 'react'
+import Link from 'next/link'
 
 
 export default async function Dashboard({ params, searchParams }) {
@@ -34,13 +35,21 @@ export default async function Dashboard({ params, searchParams }) {
   }
   const packageDetails = await getPackageDetails(package_name, version)
   return (
-    <div className='xl:ml-24'>
+    <div>
 
       <div className='flex flex-wrap bg-[#20201D] justify-between items-center pt-6 pb-6 border-b z-20 border-slate-800 fixed top-0 left-0 right-0'>
-        <div className='ml-12 xl:ml-36'>
-          <Search package_name={package_name} />
+        <div className='ml-8 items-center flex gap-8 mt-2'>
+          <Link href='/'>
+                <Image
+                  className='h-16 w-16'
+                  src='/logo.svg'
+                  alt='ClickPy'
+                  width={41}
+                  height={42}/>
+            </Link>
+            <Search package_name={package_name} />
         </div>
-        <div className='flex growxl:justify-end flex-col items-start md:flex-row md:items-center gap-4 mr-12 ml-8 xl:ml-0 mt-4 xl:mt-0'>
+        <div className='flex growxl:justify-end flex-col items-start md:flex-row md:items-center gap-4 mr-12 ml-8 xl:ml-0 mt-2'>
           <Filter value={country_code} icon={<Image alt='country code' src='/country.svg' width={16} height={16} />} name='country_code' />
           <Filter value={version} icon={<Image alt='version' src='/version.svg' width={16} height={16} />} name='version' />
           <Filter value={file_type} icon={<Image alt='type' src='/file_type.svg' width={16} height={16} />} name='type' />
@@ -56,7 +65,7 @@ export default async function Dashboard({ params, searchParams }) {
         </div>
       </div>
       <div className='top-20 relative isolate z-10'>
-        <div className='ml-10 mt-10 mr-10 relative z-10'>
+        <div className='ml-10 mt-20 mr-10 relative z-10'>
           {packageDetails.length > 0 &&
             <PackageDetails {...packageDetails[0]} />
           }
@@ -110,7 +119,7 @@ export default async function Dashboard({ params, searchParams }) {
             <p className='text-2xl font-bold mb-5'>File types by installer</p>
             <Suspense key={key} fallback={<Loading/>}>
               <Chart type='radar' options={{column: 'type'}} getData={getFileTypesByInstaller} params={{ package_name: package_name, version: version, min_date: min_date, max_date: max_date, country_code: country_code, type: file_type}}/>
-              </Suspense>
+            </Suspense>
           </div>
         </div>
       </div>
