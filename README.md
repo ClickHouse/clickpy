@@ -8,9 +8,9 @@ Available at [clickpy.clickhouse.com](https://clickpy.clickhouse.com)
 
 ![analytics](./images/analytics.png)
 
-Every Python package download e.g. `pip install`, anywhere, anytime, produces a row. The result is hundreds of billions of rows (closing in on a Trillion at 1.4b a day).
+Every Python package download, e.g. `pip install`, anywhere, anytime, produces a row. The result is hundreds of billions of rows (closing in on a Trillion at 1.4b a day).
 
-Interested to see how your package is being adopted? how its being installed? which countries are popular? Or maybe you're just curious to see which packages are emerging or hot right now?
+Interested to see how your package is being adopted? How often is it being installed? Which countries are popular? Or maybe you're just curious to see which packages are emerging or hot right now?
 
 ClickPy, using ClickHouse, answers these with real-time analytics on PyPI package downloads.
 
@@ -27,7 +27,7 @@ All open-source and reproducible.
 - Download statistics for any Python package over time
 - For any package:
     - Download statistics over time with drill-down
-    - Downloads by python version over time
+    - Downloads by Python version over time
     - Downloads by Python version over time
     - Downloads by system over time
     - Downloads by country
@@ -38,7 +38,7 @@ Powered by ClickHouse. App in NextJS.
 
 ## Motivation
 
-Many of us learn best by example and doing. This app is for those wanting to build a real-time analytics applications.
+Many of us learn best by example and doing. This app is for those wanting to build real-time analytics applications.
 
 Real-time analytics applications have a few requirements:
 
@@ -47,35 +47,34 @@ Real-time analytics applications have a few requirements:
 - High query concurrency
 - A great user experience
 
-Anyone who is building a such an application has similar challenges.
+Anyone who is building such an application has similar challenges.
 
 - Which database to use? ClickHouse obviously :)
 - How to use ClickHouse to get the best performance? ClickPy is your example.
 
 ## PyPI data
 
-Python is ubiquitous and the programming language we often getting started with or turn to for quick tasks.
+Python is ubiquitous and the programming language we often get started with or turn to for quick tasks.
 
-The Python Package Index, abbreviated as PyPI and also known as the Cheese Shop, is the official third-party software repository for Python. Python developers, use this for hosting and installing packages. By default, pip uses PyPI to look for packages.
+The Python Package Index, abbreviated as PyPI and also known as the Cheese Shop, is the official third-party software repository for Python. Python developers use this for hosting and installing packages. By default, pip uses PyPI to look for packages.
 
-Every time a package is downloaded, a log line is generated containing in a CDN logs. This contains the details you would expect:
+Every time a package is downloaded, a log entry is generated in a CDN log. This contains the details you would expect:
 
 - the package name
 - the version
-- ip address of download (obfuscated and resolved to country)
-- python verison used
+- IP address of download (obfuscated and resolved to country)
+- Python version used
 - installer mechanism
 - system used
 - and more..
 
-PyPI does not display download statistics for a number of reasons described [here](https://packaging.python.org/en/latest/guides/analyzing-pypi-package-downloads/#id8) - not least its inefficient and hard to work with a CDN.
+PyPI does not display download statistics for a number of reasons described [here](https://packaging.python.org/en/latest/guides/analyzing-pypi-package-downloads/#id8) - not least, it's inefficient and hard to work with a CDN.
 
-Instead, an [implementation of linehard](https://github.com/pypi/linehaul-cloud-function) feeds this data to BigQuery where its [queryable as a public dataset](https://packaging.python.org/en/latest/guides/analyzing-pypi-package-downloads/#public-dataset).
+Instead, an [implementation of linehard](https://github.com/pypi/linehaul-cloud-function) feeds this data to BigQuery, where it's [queryable as a public dataset](https://packaging.python.org/en/latest/guides/analyzing-pypi-package-downloads/#public-dataset).
 
+BigQuery is great as a data warehouse. But it's neither fast enough nor able to handle the concurrency required to power user-facing analytics.
 
-BigQuery is great as a data warehouse. But its neither fast enough or able to handle the concurrency required to power a user facing analytics.
-
-The solution? ClickHouse - the fastest and most resource efficient open-source database for real-time apps and analytics.
+The solution? ClickHouse - the fastest and most resource-efficient open-source database for real-time apps and analytics.
 
 This requires us to export the BigQuery data to a GCS bucket and import it into ClickHouse.
 
@@ -88,15 +87,15 @@ Two main reasons:
 
 ### What is Materialized view in ClickHouse?
 
-Its a simplest form a Materialized view is simply a query which triggers, when an insert is made to a table. 
+In its simplest form, a Materialized view is simply a query that triggers when an insert is made to a table. 
 
-Key to this, is the idea that MV dont't hold any data themselves. They simply execute on the inserted rows and send the results to another table for storage. 
+Key to this is the idea that Materialized views don't hold any data themselves. They simply execute a query on the inserted rows and send the results to another "target table" for storage. 
 
-Importantly, the query which runs can aggregate the rows into a smaller result set, allowing queries to run faster. This approach effectively moves work from **insert time to query time**.
+Importantly, the query that runs can aggregate the rows into a smaller result set, allowing queries to run faster on the target table. This approach effectively moves work from **insert time to query time**.
 
 #### A real example
 
-Consider our `pypi` table where a row represents a download. Suppose we wish to identify the 5 most popular projects. A naive query might do something like this:
+Consider our `pypi` table, where a row represents a download. Suppose we wish to identify the 5 most popular projects. A naive query might do something like this:
 
 ```sql
 SELECT
@@ -118,7 +117,7 @@ LIMIT 5
 5 rows in set. Elapsed: 182.068 sec. Processed 670.43 billion rows, 12.49 TB (3.68 billion rows/s., 68.63 GB/s.)
 ```
 
-This requires a full table scan. While 180s might be ok (and 4 billion rows/sec is fast!) its not quick enough for ClickPy.
+This requires a full table scan. While 180s might be ok (and 4 billion rows/sec is fast!), it is not quick enough for ClickPy.
 
 A materialized view can help with this query (and many more!). ClickPy uses such a view `pypi_downloads_mv`, shown below.
 
@@ -133,7 +132,7 @@ FROM pypi.pypi
 GROUP BY project
 ```
 
-This view executes the aggregation `SELECT project, count() AS count FROM pypi.pypi GROUP BY project` on data which has been inserted into a row. The result is sent to the "target table" `pypi.pypi_downloads`. This in turn has a special engine configuration:
+This view executes the aggregation `SELECT project, count() AS count FROM pypi.pypi GROUP BY project` on data that has been inserted into a row. The result is sent to the "target table" `pypi.pypi_downloads`. This, in turn, has a special engine configuration:
 
 ```sql
 CREATE TABLE pypi.pypi_downloads
@@ -174,7 +173,7 @@ Peak memory usage: 59.71 MiB.
 
 Note how we use a `sum(count`)` in case all rows have not been merged.
 
-The above represents the simplest example of a Materialized view used by ClickPy. For others, see [ClickHouse](./ClickHouse.md). It also represents the case where our aggregation produces a count or sum. Other aggregations (e.g. averages, quantiles etc) are are supported. In fact, all ClickHouse aggregations can have their state stored by a materialized view!
+The above represents the simplest example of a Materialized view used by ClickPy. For others, see [ClickHouse](./ClickHouse.md). It also represents the case where our aggregation produces a count or sum. Other aggregations (e.g. averages, quantiles etc.) are supported. In fact, all ClickHouse aggregations can have their state stored by a materialized view!
 
 For further details see:
 
@@ -187,6 +186,8 @@ For further details see:
 Dictionaries provide us with an in-memory key-value pair representation of our data, optimized for low latent lookup queries. We can utilize this structure to improve the performance of queries in general, with JOINs particularly benefiting where one side of the JOIN represents a look-up table that fits into memory.
 
 In ClickPy's case we utilize a dictionary `pypi.last_updated_dict` to maintain the last time a package was updated. This is used in several queries to ensure they meet our latency requirements.
+
+For further details on dictionaries see the blog post [Using Dictionaries to Accelerate Queries](https://clickhouse.com/blog/faster-queries-dictionaries-clickhouse).
 
 ### Powering the UI
 
