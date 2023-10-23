@@ -91,7 +91,7 @@ In its simplest form, a Materialized view is simply a query that triggers when a
 
 Key to this is the idea that Materialized views don't hold any data themselves. They simply execute a query on the inserted rows and send the results to another "target table" for storage. 
 
-Importantly, the query that runs can aggregate the rows into a smaller result set, allowing queries to run faster on the target table. This approach effectively moves work from **insert time to query time**.
+Importantly, the query that runs can aggregate the rows into a smaller result set, allowing queries to run faster on the target table. This approach effectively moves work from **query time to insert time**.
 
 #### A real example
 
