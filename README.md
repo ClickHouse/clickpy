@@ -133,7 +133,7 @@ FROM pypi.pypi
 GROUP BY project
 ```
 
-This view executes the aggregation `SELECT project, count() AS count FROM pypi.pypi GROUP BY project` on data which has been inserted into a row. The result is sent to the table `pypi.pypi_downloads`. This in turn has a special engine configuration:
+This view executes the aggregation `SELECT project, count() AS count FROM pypi.pypi GROUP BY project` on data which has been inserted into a row. The result is sent to the "target table" `pypi.pypi_downloads`. This in turn has a special engine configuration:
 
 ```sql
 CREATE TABLE pypi.pypi_downloads
@@ -188,7 +188,29 @@ Dictionaries provide us with an in-memory key-value pair representation of our d
 
 In ClickPy's case we utilize a dictionary `pypi.last_updated_dict` to maintain the last time a package was updated. This is used in several queries to ensure they meet our latency requirements.
 
+### Powering the UI
 
+Broadly, when exploring the ClickPy interface each visualization is powered by one materialized view. The full list of queries can be found in the file [clickhouse.js](./src/utils/clickhouse.js).
+
+Consider the list of "Emerging repos" on the landing page.
+
+![emerging_repos](./images/emerging_repos.png)
+
+This simple visual is powered by two materialized views: `pypi_downloads_per_day` and `pypi_downloads_per_day`. For the full query see [here](https://github.com/ClickHouse/clickpy/blob/12d565202b88b97b51d557da0bc777ad65d5ba60/src/utils/clickhouse.js#L380).
+
+#### Choosing the right query
+
+ClickPy is an interactive application. Users can apply filters on the data. While these filters are currently quite limited, we plan to expand them in the future. While materialized views can power a static visualization, filters may mean that a specific view is no longer usable. For example, consider the following chart showing downloads over time (for the popular `Boto3` package):
+
+![downloads_over_time](./images/downloads_over_time.png),
+
+Initially this chart requires a simple query to the materialized view [`pypi_downloads_per_day`](./ClickHouse.md#pypi_downloads_per_day).
+
+However, if a filter is applied on the `version` column this view is insufficient - it doesn't capture the version column in its aggregation. In this case, we switch to the [`pypi_downloads_per_day_by_version`](./ClickHouse.md#pypi_downloads_per_day_by_version) view.
+
+Why not always use the latter view you ask? Well it contains more columns in its aggregation, and thus the target table is larger and queries possibly alittle slower. Small margins yes, but important for the best user experience.
+
+Selecting the right view for a visualization involves a simple hueristic. We simply select the view which has the fewest number of columns and covers the set of required columns in the query. The complete logic can be found [here](https://github.com/ClickHouse/clickpy/blob/12d565202b88b97b51d557da0bc777ad65d5ba60/src/utils/clickhouse.js#L28).
 
 ## Deployment
 
