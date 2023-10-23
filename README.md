@@ -183,21 +183,21 @@ For further details see:
 
 ### Dictionaries
 
-Dictionaries provide us with an in-memory key-value pair representation of our data, optimized for low latent lookup queries. We can utilize this structure to improve the performance of queries in general, with JOINs particularly benefiting where one side of the JOIN represents a look-up table that fits into memory.
+Dictionaries provide an in-memory key-value pair representation of our data, optimized for low latent look-up queries. We can utilize this structure to improve the performance of queries in general, with JOINs particularly benefiting where one side of the JOIN represents a look-up table that fits into memory.
 
-In ClickPy's case we utilize a dictionary `pypi.last_updated_dict` to maintain the last time a package was updated. This is used in several queries to ensure they meet our latency requirements.
+In ClickPy's case, we utilize a dictionary `pypi.last_updated_dict` to maintain the last time a package was updated. This is used in several queries to ensure they meet our latency requirements.
 
-For further details on dictionaries see the blog post [Using Dictionaries to Accelerate Queries](https://clickhouse.com/blog/faster-queries-dictionaries-clickhouse).
+For further details on dictionaries, see the blog post [Using Dictionaries to Accelerate Queries](https://clickhouse.com/blog/faster-queries-dictionaries-clickhouse).
 
 ### Powering the UI
 
-Broadly, when exploring the ClickPy interface each visualization is powered by one materialized view. The full list of queries can be found in the file [clickhouse.js](./src/utils/clickhouse.js).
+Broadly, when exploring the ClickPy interface, each visualization is powered by one materialized view. The full list of queries can be found in the file [clickhouse.js](./src/utils/clickhouse.js).
 
 Consider the list of "Emerging repos" on the landing page.
 
 ![emerging_repos](./images/emerging_repos.png)
 
-This simple visual is powered by two materialized views: `pypi_downloads_per_day` and `pypi_downloads_per_day`. For the full query see [here](https://github.com/ClickHouse/clickpy/blob/12d565202b88b97b51d557da0bc777ad65d5ba60/src/utils/clickhouse.js#L380).
+This simple visual is powered by two materialized views: `pypi_downloads_per_day` and `pypi_downloads_per_day`. For the full query, see [here](https://github.com/ClickHouse/clickpy/blob/12d565202b88b97b51d557da0bc777ad65d5ba60/src/utils/clickhouse.js#L380).
 
 #### Choosing the right query
 
@@ -205,21 +205,21 @@ ClickPy is an interactive application. Users can apply filters on the data. Whil
 
 ![downloads_over_time](./images/downloads_over_time.png),
 
-Initially this chart requires a simple query to the materialized view [`pypi_downloads_per_day`](./ClickHouse.md#pypi_downloads_per_day).
+Initially, this chart requires a simple query to the materialized view [`pypi_downloads_per_day`](./ClickHouse.md#pypi_downloads_per_day).
 
-However, if a filter is applied on the `version` column this view is insufficient - it doesn't capture the version column in its aggregation. In this case, we switch to the [`pypi_downloads_per_day_by_version`](./ClickHouse.md#pypi_downloads_per_day_by_version) view.
+However, if a filter is applied to the `version` column, this view is insufficient - it doesn't capture the `version` column in its aggregation. In this case, we switch to the [`pypi_downloads_per_day_by_version`](./ClickHouse.md#pypi_downloads_per_day_by_version) view.
 
-Why not always use the latter view you ask? Well it contains more columns in its aggregation, and thus the target table is larger and queries possibly alittle slower. Small margins yes, but important for the best user experience.
+Why not always use the latter view, you ask? Well, it contains more columns in its aggregation, and thus, the target table has more rows, is larger, and queries are possibly a little slower. Small margins, yes, but important for the best user experience.
 
-Selecting the right view for a visualization involves a simple hueristic. We simply select the view which has the fewest number of columns and covers the set of required columns in the query. The complete logic can be found [here](https://github.com/ClickHouse/clickpy/blob/12d565202b88b97b51d557da0bc777ad65d5ba60/src/utils/clickhouse.js#L28).
+Selecting the right view for a visualization involves a simple heuristic. We simply select the view which has the fewest number of columns and covers the set of required columns in the query. The complete logic can be found [here](https://github.com/ClickHouse/clickpy/blob/12d565202b88b97b51d557da0bc777ad65d5ba60/src/utils/clickhouse.js#L28).
 
 ## Deployment
 
 Either go to the public example at [clickpy.clickhouse.com](https://clickpy.clickhouse.com) or deploy yourself.
 
-For the latter you have 2 choices:
+For the latter, you have 2 choices:
 
- - Export the BigQuery data yourself to GCS and import into ClickHouse
+ - Export the BigQuery data yourself to GCS and import it into ClickHouse
  - Use the public instance of ClickHouse with read-only credentials (see below)*
 
 We cover both options below.
@@ -237,7 +237,7 @@ We cover both options below.
 
 ### Public instance
 
-For users wishing to make changes to just the app, and use the existing ClickHouse instance with the data, the following credentials can be used:
+For users wishing to make changes to just the app and use the existing ClickHouse instance with the data, the following credentials can be used:
 
 ```
 host: https://clickpy-clickhouse.clickhouse.com
@@ -250,11 +250,11 @@ See [App Configuration](#app-configuration).
 
 #### Creating tables and views
 
-ClickPy relies on two main tables: `pipi` and `projects` within a `pypi` database. `pypi` is the majority of this with a row for every package download at over 600b rows. The `projects` table contains a row per package and contains < 1m rows.
+ClickPy relies on two main tables: `pipi` and `projects` within a `pypi` database. `pypi` is the majority, with a row for every package download at over 600b rows. The `projects` table contains a row per package and contains < 1m rows.
 
 As well as these two main tables, ClickPy relies on materialized views and dictionaries to provide the sub-second query performance across over 600 billion rows.
 
-Users can either use the script `./scripts/create_tables.sh` to create the required views, dictionaries and tables or perform this step by hand - see [ClickHouse.md](./ClickHouse.md) for full details on the table schemas and DDL required.
+Users can either use the script `./scripts/create_tables.sh` to create the required views, dictionaries, and tables or perform this step by hand - see [ClickHouse.md](./ClickHouse.md) for full details on the table schemas and DDL required.
 
 The `create_tables.sh` assumes the clickhouse instance is secured by SSL, using the `--secure` flag for the `clickhouse-client`. Modify as required.
 
@@ -262,17 +262,17 @@ The `create_tables.sh` assumes the clickhouse instance is secured by SSL, using 
 CLICKHOUSE_USER=default CLICKHOUSE_HOST=example.clickhouse.com CLICKHOUSE_PASSWORD=password ./create_tables.sh
 ```
 
-All schemas assume use of the MergeTree table engine. For users of [ClickHouse Cloud](clickhouse.cloud/), this will automatically replicate the data. Self-managed users maybe need to shard the data (as well associated target tables of Materialized views) across multiple nodes, depending on the size of hardware available. This is left as an exercise for the user.
+All schemas assume the use of the MergeTree table engine. For users of [ClickHouse Cloud](clickhouse.cloud/), this will automatically replicate the data. Self-managed users may need to share the data (as well as the associated target tables of the Materialized views) across multiple nodes, depending on the size of hardware available. This is left as an exercise for the user.
 
 ```
-Note: Although the data is 15TB uncompressed, it less than < 50GB on disk compressed, making this application deployable on moderate hardware as a single node.
+Note: Although the data is 15TB uncompressed, it is less than < 50GB on disk compressed, making this application deployable on moderate hardware as a single node.
 ```
 
 For details on populating the database, see [Importing data](#importing-data) below.
 
 #### Exporting data
 
-For users wanting to host the data themselves, this requires the export of the data from BigQuery - ideally to Parquet, prior to import into ClickHouse. This is significant export (15TB) and can take multiple hours to run. The following query will export the data into a single bucket:
+For users wanting to host the data themselves, this requires the export of the data from BigQuery - ideally to Parquet, prior to import into ClickHouse. This is a significant export (15TB) and can take multiple hours to run. The following query will export the data into a single bucket:
 
 ```sql
 DECLARE export_path string;
@@ -322,9 +322,9 @@ FROM url('https://gist.githubusercontent.com/gingerwizard/963e2aa7b0f65a3e8761ce
 
 A simple `./scripts/populate.sh` replicates these commands.
 
-For the larger `pypi` table we the scripts provided [here](https://github.com/ClickHouse/examples/tree/main/large_data_loads).
+For the larger `pypi` table, we recommend the scripts provided [here](https://github.com/ClickHouse/examples/tree/main/large_data_loads).
 
-Alternatively the following can be used as the basis for importing the data in chunks manually by using glob patterns. In the example below we target the files with a numeric suffix beginning with `-00000000001*`. Provide the locations to your bucket via `<bucket>`:
+Alternatively, the following can be used as the basis for importing the data in chunks manually by using glob patterns. In the example below, we target the files with a numeric suffix beginning with `-00000000001*`. Provide the locations to your bucket via `<bucket>`:
 
 ```sql
 INSERT INTO pypi SELECT timestamp::Date as date, country_code, project, file.type as type, installer.name as installer, arrayStringConcat(arraySlice(splitByChar('.', python), 1, 2), '.') as python_minor, system.name as system, file.version as version FROM s3('https://<bucket>/file_downloads-00000000001*.parquet', 'Parquet', 'timestamp DateTime64(6), country_code LowCardinality(String), url String, project String, `file.filename` String, `file.project` String, `file.version` String, `file.type` String, `installer.name` String, `installer.version` String, python String, `implementation.name` String, `implementation.version` String, `distro.name` String, `distro.version` String, `distro.id` String, `distro.libc.lib` String, `distro.libc.version` String, `system.name` String, `system.release` String, cpu String, openssl_version String, setuptools_version String, rustc_version String,tls_protocol String, tls_cipher String') WHERE python_minor != '' AND system != '' SETTINGS input_format_null_as_default = 1, input_format_parquet_import_nested = 1
@@ -332,11 +332,34 @@ INSERT INTO pypi SELECT timestamp::Date as date, country_code, project, file.typ
 
 For details on tuning insert performance, see [here](https://clickhouse.com/blog/supercharge-your-clickhouse-data-loads-part2).
 
+#### Data size
+
+While the export (as of 15/10/2023 is over 15TB of parquet), this compresses extremely well in ClickHouse by over 320x to deliver a total disk usage of less than 50GB.
+
+```sql
+SELECT
+    table,
+    sum(rows) AS rows,
+    formatReadableSize(sum(data_compressed_bytes)) AS compressed_size,
+    formatReadableSize(sum(data_uncompressed_bytes)) AS uncompressed_size,
+    round(sum(data_uncompressed_bytes) / sum(data_compressed_bytes), 2) AS ratio
+FROM system.parts
+WHERE (table LIKE 'pypi') AND active
+GROUP BY table
+ORDER BY table DESC
+┌─table─┬─────────rows─┬─compressed_size─┬─uncompressed_size─┬──ratio─┐
+│ pypi  │ 670430346833 │ 47.75 GiB       │ 15.26 TiB         │ 327.25 │
+└───────┴──────────────┴─────────────────┴───────────────────┴────────┘
+
+1 row in set. Elapsed: 0.011 sec.
+```
+
+
 ### App Configuration
 
 Copy the file `.env.example` to `.env.local`.
 
-Modify the settings with your clickhouse cluster details e.g.
+Modify the settings with your clickhouse cluster details, e.g.
 
 ```
 CLICKHOUSE_HOST=https://host.clickhouse.com
@@ -355,7 +378,7 @@ npm run dev
 
 The easiest way to deploy the Next.js app is to use the [Vercel Platform](https://vercel.com/new) from the creators of Next.js.
 
-We welcome other contributions helping with deployment.
+We welcome other contributions to helping with deployment.
 
 ## Contributing and Development
 
@@ -371,7 +394,7 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-Please fork and raise PR's to contribute. Changes and ideas welcome.
+Please fork and raise PR's to contribute. Changes and ideas are welcome.
 
 ## License
 
