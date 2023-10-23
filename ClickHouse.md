@@ -1,38 +1,6 @@
 # PYPI table
 
-```sql
-CREATE TABLE pypi
-(
-    `timestamp` DateTime64(6),
-    `date` Date MATERIALIZED timestamp,
-    `country_code` LowCardinality(String),
-    `url` String,
-    `project` String,
-    `file` Tuple(filename String, project String, version String, type Enum8('bdist_wheel' = 0, 'sdist' = 1, 'bdist_egg' = 2, 'bdist_wininst' = 3, 'bdist_dumb' = 4, 'bdist_msi' = 5, 'bdist_rpm' = 6, 'bdist_dmg' = 7)),
-    `installer` Tuple(name LowCardinality(String), version LowCardinality(String)),
-    `python` LowCardinality(String),
-    `implementation` Tuple(name LowCardinality(String), version LowCardinality(String)),
-    `distro` Tuple(name LowCardinality(String), version LowCardinality(String), id LowCardinality(String), libc Tuple(lib Enum8('' = 0, 'glibc' = 1, 'libc' = 2), version LowCardinality(String))),
-    `system` Tuple(name LowCardinality(String), release String),
-    `cpu` LowCardinality(String),
-    `openssl_version` LowCardinality(String),
-    `setuptools_version` LowCardinality(String),
-    `rustc_version` LowCardinality(String),
-    `tls_protocol` LowCardinality(String),
-    `tls_cipher` LowCardinality(String),
-    `version` String,
-    `python_minor` String DEFAULT arrayStringConcat(arraySlice(splitByChar('.', python), 1, 2), '.'),
-    `system_name` String,
-    `_file` String
-)
-ENGINE = MergeTree
-ORDER BY (project, date, version, python_minor, country_code, system_name)
-
- INSERT INTO pypi SELECT timestamp, country_code, url, project, (ifNull(file.filename, ''), ifNull(file.project, ''), ifNull(file.version, ''), ifNull(file.type, '')) AS file, (ifNull(installer.name, ''), ifNull(installer.version, '')) AS installer, python AS python, (ifNull(implementation.name, ''), ifNull(implementation.version, '')) AS implementation, (ifNull(distro.name, ''), ifNull(distro.version, ''), ifNull(distro.id, ''), (ifNull(distro.libc.lib, ''), ifNull(distro.libc.version, ''))) AS distro, (ifNull(system.name, ''), ifNull(system.release, '')) AS system, cpu AS cpu, openssl_version AS openssl_version, setuptools_version AS setuptools_version, rustc_version AS rustc_version, tls_protocol, tls_cipher, file.version as version, system.name as system_name, _file FROM s3('https://storage.googleapis.com/clickhouse_public_datasets/pypi/file_downloads/file_downloads-000000000000.parquet', 'Parquet', 'timestamp DateTime64(6), country_code LowCardinality(String), url String, project String, `file.filename` String, `file.project` String, `file.version` String, `file.type` String, `installer.name` String, `installer.version` String, python String, `implementation.name` String, `implementation.version` String, `distro.name` String, `distro.version` String, `distro.id` String, `distro.libc.lib` String, `distro.libc.version` String, `system.name` String, `system.release` String, cpu String, openssl_version String, setuptools_version String, rustc_version String,tls_protocol String, tls_cipher String') SETTINGS input_format_null_as_default = 1, input_format_parquet_import_nested = 1, max_insert_block_size = 100000000, min_insert_block_size_rows = 100000000, min_insert_block_size_bytes = 500000000, parts_to_throw_insert = 50000, max_insert_threads = 16
-```
-## Compact-table
-
-We use the following more compact table:
+By default we do not import all columns into ClickHouse as most are not required for the application. We thus use the following configuation:
 
 ```sql
 
@@ -49,13 +17,11 @@ CREATE OR REPLACE TABLE pypi
 )
 ENGINE = MergeTree
 ORDER BY (project, date, version, country_code, python_minor, system)
-
-
-INSERT INTO pypi SELECT timestamp::Date as date, country_code, project, file.type as type, installer.name as installer, arrayStringConcat(arraySlice(splitByChar('.', python), 1, 2), '.') as python_minor, system.name as system, file.version as version FROM s3('https://storage.googleapis.com/clickhouse_public_datasets/pypi/file_downloads/file_downloads-000000000000.parquet', 'Parquet', 'timestamp DateTime64(6), country_code LowCardinality(String), url String, project String, `file.filename` String, `file.project` String, `file.version` String, `file.type` String, `installer.name` String, `installer.version` String, python String, `implementation.name` String, `implementation.version` String, `distro.name` String, `distro.version` String, `distro.id` String, `distro.libc.lib` String, `distro.libc.version` String, `system.name` String, `system.release` String, cpu String, openssl_version String, setuptools_version String, rustc_version String,tls_protocol String, tls_cipher String') WHERE python_minor != '' AND system != '' SETTINGS input_format_null_as_default = 1, input_format_parquet_import_nested = 1, max_insert_block_size = 100000000, min_insert_block_size_rows = 100000000, min_insert_block_size_bytes = 500000000, parts_to_throw_insert = 50000, max_insert_threads = 16
-
 ```
 
 ## Materialized views
+
+The following materialized views are required. Create these prior to data load.
 
 ### Downloads
 
@@ -119,8 +85,6 @@ CREATE TABLE pypi_downloads_per_day
 ENGINE = SummingMergeTree
 ORDER BY (project, date)
 
-
-
 CREATE MATERIALIZED VIEW pypi_downloads_per_day_mv TO pypi_downloads_per_day
 (
     `date` Date,
@@ -129,15 +93,6 @@ CREATE MATERIALIZED VIEW pypi_downloads_per_day_mv TO pypi_downloads_per_day
 
 ) AS
 SELECT
-    date,
-    project,
-    count() AS count
-FROM pypi
-GROUP BY
-    date,
-    project
-
-INSERT INTO pypi_downloads SELECT
     date,
     project,
     count() AS count
@@ -160,7 +115,6 @@ CREATE TABLE pypi_downloads_per_day_by_version
 ENGINE = SummingMergeTree
 ORDER BY (project, version, date)
 
-
 CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_mv TO pypi_downloads_per_day_by_version
 (
     `date` Date,
@@ -178,20 +132,7 @@ GROUP BY
     date,
     project,
     version
-
-
-INSERT INTO pypi_downloads_per_day_by_version SELECT
-    date,
-    project,
-    version,
-    count() AS count
-FROM pypi
-GROUP BY
-    date,
-    project,
-    version
 ```
-
 
 ### Downloads per day by version by country
 
@@ -206,8 +147,6 @@ CREATE TABLE pypi_downloads_per_day_by_version_by_country
 )
 ENGINE = SummingMergeTree
 ORDER BY (project, version, date, country_code)
-
-
 
 CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_country_mv TO pypi_downloads_per_day_by_version_by_country
 (
@@ -229,22 +168,7 @@ GROUP BY
     project,
     version,
     country_code
-
-
-INSERT INTO pypi_downloads_per_day_by_version_by_country SELECT
-    date,
-    project,
-    version,
-    country_code,
-    count() AS count
-FROM pypi
-GROUP BY
-    date,
-    project,
-    version,
-    country_code
 ```
-
 
 ### Downloads per day by version by file type
 
@@ -260,8 +184,6 @@ CREATE TABLE pypi_downloads_per_day_by_version_by_file_type
 ENGINE = SummingMergeTree
 ORDER BY (project, version, date, type)
 
-
-
 CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_file_type_mv TO pypi_downloads_per_day_by_version_by_file_type
 (
     `date` Date,
@@ -271,19 +193,6 @@ CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_file_type_mv TO py
     `count` Int64
 ) AS
 SELECT
-    date,
-    project,
-    version,
-    type,
-    count() AS count
-FROM pypi
-GROUP BY
-    date,
-    project,
-    version,
-    type
-
-INSERT INTO pypi_downloads_per_day_by_version_by_file_type SELECT
     date,
     project,
     version,
@@ -331,26 +240,11 @@ GROUP BY
     project,
     version,
     python_minor
-
-
-INSERT INTO pypi_downloads_per_day_by_version_by_python SELECT
-    date,
-    project,
-    version,
-    python_minor,
-    count() AS count
-FROM pypi
-GROUP BY
-    date,
-    project,
-    version,
-    python_minor
 ```
 
 ### Downloads per day by version by installer by type
 
 ```sql
-
 CREATE OR REPLACE TABLE pypi_downloads_per_day_by_version_by_installer_by_type
 (
     `project` String,
@@ -363,7 +257,6 @@ CREATE OR REPLACE TABLE pypi_downloads_per_day_by_version_by_installer_by_type
 ENGINE = SummingMergeTree
 ORDER BY (project, version, date, installer)
 
-
 CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_installer_by_type_mv TO pypi_downloads_per_day_by_version_by_installer_by_type
 (
     `project` String,
@@ -374,23 +267,6 @@ CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_installer_by_type_
     `count` Int64
 ) AS
 SELECT
-    project,
-    version,
-    date,
-    installer,
-    type,
-    count() AS count
-FROM pypi
-GROUP BY
-    project,
-    version,
-    date,
-    installer,
-    type
-
-
-
-INSERT INTO pypi_downloads_per_day_by_version_by_installer_by_type SELECT
     project,
     version,
     date,
@@ -420,7 +296,6 @@ CREATE TABLE pypi_downloads_per_day_by_version_by_system
 ENGINE = SummingMergeTree
 ORDER BY (project, version, date, system)
 
-
 CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_system_mv TO pypi_downloads_per_day_by_version_by_system
 (
     `date` Date,
@@ -430,20 +305,6 @@ CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_system_mv TO pypi_
     `count` Int64
 ) AS
 SELECT
-    date,
-    project,
-    version,
-    system,
-    count() AS count
-FROM pypi
-GROUP BY
-    date,
-    project,
-    version,
-    system
-
-
-INSERT INTO pypi_downloads_per_day_by_version_by_system SELECT
     date,
     project,
     version,
@@ -514,12 +375,6 @@ CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_python_by_country_
     `count` Int64
 ) AS
 SELECT date, project, version,  python_minor, country_code, count() as count FROM pypi GROUP BY date, project, version,  python_minor, country_code
-
-
-INSERT INTO pypi_downloads_per_day_by_version_by_python_by_country 
-SELECT date, project, version,  python_minor, country_code, count() as count FROM pypi GROUP BY date, project, version,  python_minor, country_code
-
-
 ```
 
 ### Downloads per day by version by system by country
@@ -538,7 +393,6 @@ CREATE TABLE pypi_downloads_per_day_by_version_by_system_by_country
 ENGINE = SummingMergeTree
 ORDER BY (project, version, date, country_code, system)
 
-
 CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_system_by_country_mv TO pypi_downloads_per_day_by_version_by_system_by_country
 (
     `date` Date,
@@ -549,10 +403,6 @@ CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_system_by_country_
     `count` Int64
 ) AS
 SELECT date, project, version,  system, country_code, count() as count FROM pypi GROUP BY date, project, version,  system, country_code
-
-
-INSERT INTO pypi_downloads_per_day_by_version_by_system_by_country 
-    SELECT date, project, version,  system, country_code, count() as count FROM pypi GROUP BY date, project, version,  system, country_code
 ```
 
 ### First and Last download 
@@ -607,8 +457,7 @@ GROUP BY
     project
 ```
 
-
-# Packages table
+# Projects table
 
 ```sql
 CREATE TABLE pypi.projects
@@ -653,14 +502,18 @@ CREATE TABLE pypi.projects
 )
 ENGINE = MergeTree
 ORDER BY name
-
-INSERT INTO projects SELECT *
-FROM s3('https://storage.googleapis.com/clickhouse_public_datasets/pypi/packages/packages-*.parquet')
-
 ```
 
+Data is publicaly available for this table here:
+
+```sql
+INSERT INTO projects SELECT *
+FROM s3('https://storage.googleapis.com/clickhouse_public_datasets/pypi/packages/packages-*.parquet')
+```
 
 # Dictionaries
+
+The following dictionaries are required.
 
 ```sql
 CREATE TABLE countries
@@ -670,7 +523,6 @@ CREATE TABLE countries
 )
 ENGINE = MergeTree
 ORDER BY code
-
 
 INSERT INTO countries SELECT
     name,
@@ -687,7 +539,6 @@ SOURCE(CLICKHOUSE(TABLE 'countries'))
 LIFETIME(MIN 0 MAX 300)
 LAYOUT(COMPLEX_KEY_HASHED())
 
-
 CREATE DICTIONARY pypi.last_updated_dict
 (
     `name` String,
@@ -698,33 +549,3 @@ SOURCE(CLICKHOUSE(QUERY 'SELECT name, max(upload_time) AS last_update FROM pypi.
 LIFETIME(MIN 0 MAX 300)
 LAYOUT(COMPLEX_KEY_HASHED())
 ```
-
-# Queries
-
-```sql
-SELECT
-    python_minor as name,
-    toStartOfDay(date)::Date32 AS x,
-    sum(count) AS y
-FROM pypi_downloads_per_day_by_version_by_python_by_country
-WHERE (date >= '2023-05-21'::Date32) AND (date < '2023-08-21'::Date32) AND (project = 'urllib3')
-AND 1=1 AND python_minor != ''
-AND 1=1
-GROUP BY name, x
-ORDER BY x ASC, y DESC LIMIT 4 BY x
-
-
-SELECT
-    python_minor as name,
-    toStartOfDay(date)::Date32 AS x,
-    sum(count) AS y
-FROM pypi
-WHERE (date >= '2023-05-21'::Date32) AND (date < '2023-08-21'::Date32) AND (project = 'urllib3')
-AND 1=1 AND python_minor != ''
-AND 1=1
-GROUP BY name, x
-ORDER BY x ASC, y DESC LIMIT 4 BY x
-
-```
-
-

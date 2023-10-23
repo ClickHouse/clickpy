@@ -378,7 +378,8 @@ export async function getRecentReleases(packages) {
 
 // top repos with no downloads prior to last 3 months
 export async function getPopularEmergingRepos() {
-    return query('getEmergingRepos',`
+    
+    console.log(`
         WITH (
             SELECT max(max_date)
             FROM ${PYPI_DATABASE}.pypi_downloads_max_min
@@ -390,7 +391,7 @@ export async function getPopularEmergingRepos() {
         WHERE project IN (
             SELECT project
             FROM ${PYPI_DATABASE}.pypi_downloads_max_min
-            WHERE min_date >= (max_date - toIntervalMonth(3))
+            WHERE min_date >= (max_date - toIntervalMonth(6))
             GROUP BY project
         )
         GROUP BY project

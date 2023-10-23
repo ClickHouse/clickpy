@@ -1,16 +1,17 @@
 #!/bin/bash
 
+CLICKHOUSE_USER=${CLICKHOUSE_USER:-default}
 CLICKHOUSE_HOST=${CLICKHOUSE_HOST:-localhost}
 CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD:-}
 
 echo "dropping database"
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query 'DROP DATABASE IF EXISTS pypi'
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query 'DROP DATABASE IF EXISTS pypi'
 echo "creating database"
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query 'CREATE DATABASE pypi'
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query 'CREATE DATABASE pypi'
 
 
 echo "creating pypi table"
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE OR REPLACE TABLE pypi.pypi
 (
     `date` Date,
@@ -28,7 +29,7 @@ ORDER BY (project, date, version, country_code, python_minor, system)
 
 echo "creating pypi_downloads view"
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE TABLE pypi.pypi_downloads
 (
     `project` String,
@@ -38,7 +39,7 @@ ENGINE = SummingMergeTree
 ORDER BY project
 '
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE MATERIALIZED VIEW pypi.pypi_downloads_mv TO pypi.pypi_downloads
 (
     `project` String,
@@ -51,7 +52,7 @@ GROUP BY project
 
 echo "creating pypi_downloads_by_version view"
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE TABLE pypi.pypi_downloads_by_version
 (
     `project` String,
@@ -62,7 +63,7 @@ ENGINE = SummingMergeTree
 ORDER BY (project, version)
 '
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE MATERIALIZED VIEW pypi.pypi_downloads_by_version_mv TO pypi.pypi_downloads_by_version
 (
     `project` String,
@@ -82,7 +83,7 @@ GROUP BY
 
 echo "creating pypi_downloads_per_day view"
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE TABLE pypi.pypi_downloads_per_day
 (
     `date` Date,
@@ -93,7 +94,7 @@ ENGINE = SummingMergeTree
 ORDER BY (project, date)
 '
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_mv TO pypi.pypi_downloads_per_day
 (
     `date` Date,
@@ -113,7 +114,7 @@ GROUP BY
 
 echo "creating pypi_downloads_per_day_by_version view"
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE TABLE pypi.pypi_downloads_per_day_by_version
 (
     `date` Date,
@@ -125,7 +126,7 @@ ENGINE = SummingMergeTree
 ORDER BY (project, version, date)
 '
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_by_version_mv TO pypi.pypi_downloads_per_day_by_version
 (
     `date` Date,
@@ -148,7 +149,7 @@ GROUP BY
 
 echo "creating pypi_downloads_per_day_by_version_by_country"
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE TABLE pypi.pypi_downloads_per_day_by_version_by_country
 (
     `date` Date,
@@ -161,7 +162,7 @@ ENGINE = SummingMergeTree
 ORDER BY (project, version, date, country_code)
 '
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_by_version_by_country_mv TO pypi.pypi_downloads_per_day_by_version_by_country
 (
     `date` Date,
@@ -187,7 +188,7 @@ GROUP BY
 
 echo "creating pypi_downloads_per_day_by_version_by_file_type"
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE TABLE pypi.pypi_downloads_per_day_by_version_by_file_type
 (
     `date` Date,
@@ -200,7 +201,7 @@ ENGINE = SummingMergeTree
 ORDER BY (project, version, date, type)
 '
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_by_version_by_file_type_mv TO pypi.pypi_downloads_per_day_by_version_by_file_type
 (
     `date` Date,
@@ -225,7 +226,7 @@ GROUP BY
 
 echo "creating pypi_downloads_per_day_by_version_by_python"
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE TABLE pypi.pypi_downloads_per_day_by_version_by_python
 (
     `date` Date,
@@ -238,7 +239,7 @@ ENGINE = SummingMergeTree
 ORDER BY (project, version, date, python_minor)
 '
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_by_version_by_python_mv TO pypi.pypi_downloads_per_day_by_version_by_python
 (
     `date` Date,
@@ -263,7 +264,7 @@ GROUP BY
 
 echo "creating pypi_downloads_per_day_by_version_by_installer_by_type"
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE OR REPLACE TABLE pypi.pypi_downloads_per_day_by_version_by_installer_by_type
 (
     `project` String,
@@ -277,7 +278,7 @@ ENGINE = SummingMergeTree
 ORDER BY (project, version, date, installer)
 '
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_by_version_by_installer_by_type_mv TO pypi.pypi_downloads_per_day_by_version_by_installer_by_type
 (
     `project` String,
@@ -306,7 +307,7 @@ GROUP BY
 
 echo "creating pypi_downloads_per_day_by_version_by_system"
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE TABLE pypi.pypi_downloads_per_day_by_version_by_system
 (
     `date` Date,
@@ -320,7 +321,7 @@ ORDER BY (project, version, date, system)
 '
 
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_by_version_by_system_mv TO pypi.pypi_downloads_per_day_by_version_by_system
 (
     `date` Date,
@@ -345,7 +346,7 @@ GROUP BY
 
 echo "creating pypi_downloads_per_day_by_version_by_installer_by_type_by_country"
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE TABLE pypi.pypi_downloads_per_day_by_version_by_installer_by_type_by_country
 (
     `project` String,
@@ -360,7 +361,7 @@ ENGINE = SummingMergeTree
 ORDER BY (project, version, date, country_code, installer, type)
 '
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_by_version_by_installer_by_type_by_country_mv TO pypi.pypi_downloads_per_day_by_version_by_installer_by_type_by_country
 (
     `project` String,
@@ -378,7 +379,7 @@ GROUP BY project, version, date, installer, type, country_code
 
 echo "creating pypi_downloads_per_day_by_version_by_python_by_country"
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE TABLE pypi.pypi_downloads_per_day_by_version_by_python_by_country
 (
     `date` Date,
@@ -393,7 +394,7 @@ ORDER BY (project, version, date, country_code, python_minor)
 '
 
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_by_version_by_python_by_country_mv TO pypi.pypi_downloads_per_day_by_version_by_python_by_country
 (
     `date` Date,
@@ -409,7 +410,7 @@ SELECT date, project, version,  python_minor, country_code, count() as count FRO
 
 echo "creating pypi_downloads_per_day_by_version_by_system_by_country"
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE TABLE pypi.pypi_downloads_per_day_by_version_by_system_by_country
 (
     `date` Date,
@@ -424,7 +425,7 @@ ORDER BY (project, version, date, country_code, system)
 '
 
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_by_version_by_system_by_country_mv TO pypi.pypi_downloads_per_day_by_version_by_system_by_country
 (
     `date` Date,
@@ -439,7 +440,7 @@ SELECT date, project, version,  system, country_code, count() as count FROM pypi
 
 echo "creating pypi_downloads_max_min"
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE TABLE pypi.pypi_downloads_max_min
 (
     `project` String,
@@ -450,7 +451,7 @@ ENGINE = AggregatingMergeTree
 ORDER BY project
 '
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE MATERIALIZED VIEW pypi.pypi_downloads_max_min_mv TO pypi.pypi_downloads_max_min
 (
     `project` String,
@@ -462,7 +463,7 @@ SELECT project, maxSimpleState(date) as max_date, minSimpleState(date) FROM pypi
 
 echo "creating pypi_downloads_per_month"
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE TABLE pypi.pypi_downloads_per_month
 (
     `month` Date,
@@ -474,7 +475,7 @@ ORDER BY (month, project)
 '
 
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_month_mv TO pypi.pypi_downloads_per_month
 (
     `month` Date,
@@ -495,7 +496,7 @@ GROUP BY
 
 echo "creating projects table"
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --query '
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE TABLE pypi.projects
 (
     `metadata_version` String,
