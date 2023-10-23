@@ -1,10 +1,18 @@
+# Database
+
+By default, ClickPy uses a `pypi` database.
+
+```sql
+CREATE DATABASE pypi
+```
+
 # PYPI table
 
-By default we do not import all columns into ClickHouse as most are not required for the application. We thus use the following configuation:
+By default we do not import all columns from the source data into ClickHouse, as most are not required for the application. We thus use the following configuation:
 
 ```sql
 
-CREATE OR REPLACE TABLE pypi
+CREATE OR REPLACE TABLE pypi.pypi
 (
     `date` Date,
     `country_code` LowCardinality(String),
@@ -26,7 +34,7 @@ The following materialized views are required. Create these prior to data load.
 ### Downloads
 
 ```sql
-CREATE TABLE pypi_downloads
+CREATE TABLE pypi.pypi_downloads
 (
     `project` String,
     `count` Int64
@@ -34,20 +42,20 @@ CREATE TABLE pypi_downloads
 ENGINE = SummingMergeTree
 ORDER BY project
 
-CREATE MATERIALIZED VIEW pypi_downloads_mv TO pypi_downloads
+CREATE MATERIALIZED VIEW pypi.pypi_downloads_mv TO pypi.pypi_downloads
 (
     `project` String,
     `count` Int64
 
 ) AS SELECT project, count() AS count
-FROM pypi
+FROM pypi.pypi
 GROUP BY project
 ```
 
 ### Downloads by version
 
 ```sql
-CREATE TABLE pypi_downloads_by_version
+CREATE TABLE pypi.pypi_downloads_by_version
 (
     `project` String,
     `version` String,
@@ -56,7 +64,7 @@ CREATE TABLE pypi_downloads_by_version
 ENGINE = SummingMergeTree
 ORDER BY (project, version)
 
-CREATE MATERIALIZED VIEW pypi_downloads_by_version_mv TO pypi_downloads_by_version
+CREATE MATERIALIZED VIEW pypi.pypi_downloads_by_version_mv TO pypi.pypi_downloads_by_version
 (
     `project` String,
     `version` String,
@@ -67,7 +75,7 @@ SELECT
     project,
     version,
     count() AS count
-FROM pypi
+FROM pypi.pypi
 GROUP BY
     project,
     version
@@ -76,7 +84,7 @@ GROUP BY
 ### Downloads per day
 
 ```sql
-CREATE TABLE pypi_downloads_per_day
+CREATE TABLE pypi.pypi_downloads_per_day
 (
     `date` Date,
     `project` String,
@@ -85,7 +93,7 @@ CREATE TABLE pypi_downloads_per_day
 ENGINE = SummingMergeTree
 ORDER BY (project, date)
 
-CREATE MATERIALIZED VIEW pypi_downloads_per_day_mv TO pypi_downloads_per_day
+CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_mv TO pypi.pypi_downloads_per_day
 (
     `date` Date,
     `project` String,
@@ -96,7 +104,7 @@ SELECT
     date,
     project,
     count() AS count
-FROM pypi
+FROM pypi.pypi
 GROUP BY
     date,
     project
@@ -105,7 +113,7 @@ GROUP BY
 ### Downloads per day by version
 
 ```sql
-CREATE TABLE pypi_downloads_per_day_by_version
+CREATE TABLE pypi.pypi_downloads_per_day_by_version
 (
     `date` Date,
     `project` String,
@@ -115,7 +123,7 @@ CREATE TABLE pypi_downloads_per_day_by_version
 ENGINE = SummingMergeTree
 ORDER BY (project, version, date)
 
-CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_mv TO pypi_downloads_per_day_by_version
+CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_by_version_mv TO pypi.pypi_downloads_per_day_by_version
 (
     `date` Date,
     `project` String,
@@ -127,7 +135,7 @@ SELECT
     project,
     version,
     count() AS count
-FROM pypi
+FROM pypi.pypi
 GROUP BY
     date,
     project,
@@ -137,7 +145,7 @@ GROUP BY
 ### Downloads per day by version by country
 
 ```sql
-CREATE TABLE pypi_downloads_per_day_by_version_by_country
+CREATE TABLE pypi.pypi_downloads_per_day_by_version_by_country
 (
     `date` Date,
     `project` String,
@@ -148,7 +156,7 @@ CREATE TABLE pypi_downloads_per_day_by_version_by_country
 ENGINE = SummingMergeTree
 ORDER BY (project, version, date, country_code)
 
-CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_country_mv TO pypi_downloads_per_day_by_version_by_country
+CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_by_version_by_country_mv TO pypi.pypi_downloads_per_day_by_version_by_country
 (
     `date` Date,
     `project` String,
@@ -162,7 +170,7 @@ SELECT
     version,
     country_code,
     count() AS count
-FROM pypi
+FROM pypi.pypi
 GROUP BY
     date,
     project,
@@ -173,7 +181,7 @@ GROUP BY
 ### Downloads per day by version by file type
 
 ```sql
-CREATE TABLE pypi_downloads_per_day_by_version_by_file_type
+CREATE TABLE pypi.pypi_downloads_per_day_by_version_by_file_type
 (
     `date` Date,
     `project` String,
@@ -184,7 +192,7 @@ CREATE TABLE pypi_downloads_per_day_by_version_by_file_type
 ENGINE = SummingMergeTree
 ORDER BY (project, version, date, type)
 
-CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_file_type_mv TO pypi_downloads_per_day_by_version_by_file_type
+CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_by_version_by_file_type_mv TO pypi.pypi_downloads_per_day_by_version_by_file_type
 (
     `date` Date,
     `project` String,
@@ -198,7 +206,7 @@ SELECT
     version,
     type,
     count() AS count
-FROM pypi
+FROM pypi.pypi
 GROUP BY
     date,
     project,
@@ -209,7 +217,7 @@ GROUP BY
 ### Downloads per day by version by python minor
 
 ```sql
-CREATE TABLE pypi_downloads_per_day_by_version_by_python
+CREATE TABLE pypi.pypi_downloads_per_day_by_version_by_python
 (
     `date` Date,
     `project` String,
@@ -220,7 +228,7 @@ CREATE TABLE pypi_downloads_per_day_by_version_by_python
 ENGINE = SummingMergeTree
 ORDER BY (project, version, date, python_minor)
 
-CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_python_mv TO pypi_downloads_per_day_by_version_by_python
+CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_by_version_by_python_mv TO pypi.pypi_downloads_per_day_by_version_by_python
 (
     `date` Date,
     `project` String,
@@ -234,7 +242,7 @@ SELECT
     version,
     python_minor,
     count() AS count
-FROM pypi
+FROM pypi.pypi
 GROUP BY
     date,
     project,
@@ -245,7 +253,7 @@ GROUP BY
 ### Downloads per day by version by installer by type
 
 ```sql
-CREATE OR REPLACE TABLE pypi_downloads_per_day_by_version_by_installer_by_type
+CREATE OR REPLACE TABLE pypi.pypi_downloads_per_day_by_version_by_installer_by_type
 (
     `project` String,
     `version` String,
@@ -257,7 +265,7 @@ CREATE OR REPLACE TABLE pypi_downloads_per_day_by_version_by_installer_by_type
 ENGINE = SummingMergeTree
 ORDER BY (project, version, date, installer)
 
-CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_installer_by_type_mv TO pypi_downloads_per_day_by_version_by_installer_by_type
+CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_by_version_by_installer_by_type_mv TO pypi.pypi_downloads_per_day_by_version_by_installer_by_type
 (
     `project` String,
     `version` String,
@@ -273,7 +281,7 @@ SELECT
     installer,
     type,
     count() AS count
-FROM pypi
+FROM pypi.pypi
 GROUP BY
     project,
     version,
@@ -285,7 +293,7 @@ GROUP BY
 ## Downloads per day by version by system
 
 ```sql
-CREATE TABLE pypi_downloads_per_day_by_version_by_system
+CREATE TABLE pypi.pypi_downloads_per_day_by_version_by_system
 (
     `date` Date,
     `project` String,
@@ -296,7 +304,7 @@ CREATE TABLE pypi_downloads_per_day_by_version_by_system
 ENGINE = SummingMergeTree
 ORDER BY (project, version, date, system)
 
-CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_system_mv TO pypi_downloads_per_day_by_version_by_system
+CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_by_version_by_system_mv TO pypi.pypi_downloads_per_day_by_version_by_system
 (
     `date` Date,
     `project` String,
@@ -310,7 +318,7 @@ SELECT
     version,
     system,
     count() AS count
-FROM pypi
+FROM pypi.pypi
 GROUP BY
     date,
     project,
@@ -321,7 +329,7 @@ GROUP BY
 ### Downloads per day by version by installer by type by country
 
 ```sql
-CREATE TABLE pypi_downloads_per_day_by_version_by_installer_by_type_by_country
+CREATE TABLE pypi.pypi_downloads_per_day_by_version_by_installer_by_type_by_country
 (
     `project` String,
     `version` String,
@@ -335,7 +343,7 @@ ENGINE = SummingMergeTree
 ORDER BY (project, version, date, country_code, installer, type)
 
 
-CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_installer_by_type_by_country_mv TO pypi_downloads_per_day_by_version_by_installer_by_type_by_country
+CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_by_version_by_installer_by_type_by_country_mv TO pypi.pypi_downloads_per_day_by_version_by_installer_by_type_by_country
 (
     `project` String,
     `version` String,
@@ -346,14 +354,14 @@ CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_installer_by_type_
     `count` Int64
 ) AS
 SELECT project, version, date, installer, type, country_code, count() as count
-FROM pypi
+FROM pypi.pypi
 GROUP BY project, version, date, installer, type, country_code
 ```
 
 ### Downloads per day by version by python minor by country
 
 ```sql
-CREATE TABLE pypi_downloads_per_day_by_version_by_python_by_country
+CREATE TABLE pypi.pypi_downloads_per_day_by_version_by_python_by_country
 (
     `date` Date,
     `project` String,
@@ -365,7 +373,7 @@ CREATE TABLE pypi_downloads_per_day_by_version_by_python_by_country
 ENGINE = SummingMergeTree
 ORDER BY (project, version, date, country_code, python_minor)
 
-CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_python_by_country_mv TO pypi_downloads_per_day_by_version_by_python_by_country
+CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_by_version_by_python_by_country_mv TO pypi.pypi_downloads_per_day_by_version_by_python_by_country
 (
     `date` Date,
     `project` String,
@@ -374,14 +382,14 @@ CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_python_by_country_
     `country_code` LowCardinality(String),
     `count` Int64
 ) AS
-SELECT date, project, version,  python_minor, country_code, count() as count FROM pypi GROUP BY date, project, version,  python_minor, country_code
+SELECT date, project, version,  python_minor, country_code, count() as count FROM pypi.pypi GROUP BY date, project, version,  python_minor, country_code
 ```
 
 ### Downloads per day by version by system by country
 
 
 ```sql
-CREATE TABLE pypi_downloads_per_day_by_version_by_system_by_country
+CREATE TABLE pypi.pypi_downloads_per_day_by_version_by_system_by_country
 (
     `date` Date,
     `project` String,
@@ -393,7 +401,7 @@ CREATE TABLE pypi_downloads_per_day_by_version_by_system_by_country
 ENGINE = SummingMergeTree
 ORDER BY (project, version, date, country_code, system)
 
-CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_system_by_country_mv TO pypi_downloads_per_day_by_version_by_system_by_country
+CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_day_by_version_by_system_by_country_mv TO pypi.pypi_downloads_per_day_by_version_by_system_by_country
 (
     `date` Date,
     `project` String,
@@ -402,7 +410,7 @@ CREATE MATERIALIZED VIEW pypi_downloads_per_day_by_version_by_system_by_country_
     `country_code` String,
     `count` Int64
 ) AS
-SELECT date, project, version,  system, country_code, count() as count FROM pypi GROUP BY date, project, version,  system, country_code
+SELECT date, project, version,  system, country_code, count() as count FROM pypi.pypi GROUP BY date, project, version,  system, country_code
 ```
 
 ### First and Last download 
@@ -450,7 +458,7 @@ SELECT
     toStartOfMonth(date) AS month,
     project,
     count() AS count
-FROM pypi
+FROM pypi.pypi
 WHERE date > (toStartOfMonth(now()) - toIntervalMonth(6))
 GROUP BY
     month,

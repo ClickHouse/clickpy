@@ -8,11 +8,9 @@ Available at [clickpy.clickhouse.com](https://clickpy.clickhouse.com)
 
 ![analytics](./images/analytics.png)
 
-
-
 Every Python package download e.g. `pip install`, anywhere, anytime, produces a row. The result is hundreds of billions of rows (closing in on a Trillion at 1.4b a day).
 
-Interested to see how your package is being adopted? how its being installed? which countries are popular? Or maybe you're just curious to see which pacakges are emerging or hot right now?
+Interested to see how your package is being adopted? how its being installed? which countries are popular? Or maybe you're just curious to see which packages are emerging or hot right now?
 
 ClickPy, using ClickHouse, answers these with real-time analytics on PyPI package downloads.
 
@@ -88,12 +86,107 @@ Two main reasons:
 - ClickHouse was designed to be fast for analytics data. See [Why is ClickHouse so fast?](https://clickhouse.com/docs/en/concepts/why-clickhouse-is-so-fast)
 - Materialized views and dictionaries
 
-### Materialized views
+### What is Materialized view in ClickHouse?
 
+Its a simplest form a Materialized view is simply a query which triggers, when an insert is made to a table. 
 
+Key to this, is the idea that MV dont't hold any data themselves. They simply execute on the inserted rows and send the results to another table for storage. 
+
+Importantly, the query which runs can aggregate the rows into a smaller result set, allowing queries to run faster. This approach effectively moves work from **insert time to query time**.
+
+#### A real example
+
+Consider our `pypi` table where a row represents a download. Suppose we wish to identify the 5 most popular projects. A naive query might do something like this:
+
+```sql
+SELECT
+    project,
+    count() AS c
+FROM pypi.pypi
+GROUP BY project
+ORDER BY c DESC
+LIMIT 5
+
+┌─project────┬───────────c─┐
+│ boto3      │ 13564182186 │
+│ urllib3    │ 10994463491 │
+│ botocore   │  9937667176 │
+│ requests   │  8914244571 │
+│ setuptools │  8589052556 │
+└────────────┴─────────────┘
+
+5 rows in set. Elapsed: 182.068 sec. Processed 670.43 billion rows, 12.49 TB (3.68 billion rows/s., 68.63 GB/s.)
+```
+
+This requires a full table scan. While 180s might be ok (and 4 billion rows/sec is fast!) its not quick enough for ClickPy.
+
+A materialized view can help with this query (and many more!). ClickPy uses such a view `pypi_downloads_mv`, shown below.
+
+```sql
+CREATE MATERIALIZED VIEW pypi.pypi_downloads_mv TO pypi.pypi_downloads
+(
+    `project` String,
+    `count` Int64
+
+) AS SELECT project, count() AS count
+FROM pypi.pypi
+GROUP BY project
+```
+
+This view executes the aggregation `SELECT project, count() AS count FROM pypi.pypi GROUP BY project` on data which has been inserted into a row. The result is sent to the table `pypi.pypi_downloads`. This in turn has a special engine configuration:
+
+```sql
+CREATE TABLE pypi.pypi_downloads
+(
+    `project` String,
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY project
+```
+
+The [SummingMergeTree](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/summingmergetree) replaces all the rows with the same `ORDER BY` key (`project` in this case) with one row which contains summarized values for the columns with the numeric data type. Rows with the same `project` value will be asynchronously merged and the `count` summed - hence `SummingMergeTree`.
+
+To query this table, we can use the query below:
+
+```sql
+SELECT
+    project,
+    sum(count) AS c
+FROM pypi.pypi_downloads
+GROUP BY project
+ORDER BY c DESC
+LIMIT 5
+
+┌─project────┬───────────c─┐
+│ boto3      │ 13564182186 │
+│ urllib3    │ 10994463491 │
+│ botocore   │  9937667176 │
+│ requests   │  8914244571 │
+│ setuptools │  8589052556 │
+└────────────┴─────────────┘
+
+5 rows in set. Elapsed: 0.271 sec. Processed 599.09 thousand rows, 18.71 MB (2.21 million rows/s., 69.05 MB/s.)
+Peak memory usage: 59.71 MiB.
+```
+
+180s to 0.27s. Not bad. 
+
+Note how we use a `sum(count`)` in case all rows have not been merged.
+
+The above represents the simplest example of a Materialized view used by ClickPy. For others, see [ClickHouse](./ClickHouse.md). It also represents the case where our aggregation produces a count or sum. Other aggregations (e.g. averages, quantiles etc) are are supported. In fact, all ClickHouse aggregations can have their state stored by a materialized view!
+
+For further details see:
+
+- [Building Real-time Applications with ClickHouse Materialized Views](https://www.youtube.com/watch?v=j_kKKX1bguw) - video, showing ClickPy as an example and how materialized views work.
+- [Using Materialized Views in ClickHouse](https://clickhouse.com/blog/using-materialized-views-in-clickhouse) - blog with examples.
+- [ Materialized Views and Projections Under the Hood ](https://www.youtube.com/watch?v=QDAJTKZT8y4) - Great video for those interested in internals.
 
 ### Dictionaries
 
+Dictionaries provide us with an in-memory key-value pair representation of our data, optimized for low latent lookup queries. We can utilize this structure to improve the performance of queries in general, with JOINs particularly benefiting where one side of the JOIN represents a look-up table that fits into memory.
+
+In ClickPy's case we utilize a dictionary `pypi.last_updated_dict` to maintain the last time a package was updated. This is used in several queries to ensure they meet our latency requirements.
 
 
 
@@ -144,6 +237,12 @@ The `create_tables.sh` assumes the clickhouse instance is secured by SSL, using 
 
 ```bash
 CLICKHOUSE_USER=default CLICKHOUSE_HOST=example.clickhouse.com CLICKHOUSE_PASSWORD=password ./create_tables.sh
+```
+
+All schemas assume use of the MergeTree table engine. For users of [ClickHouse Cloud](clickhouse.cloud/), this will automatically replicate the data. Self-managed users maybe need to shard the data (as well associated target tables of Materialized views) across multiple nodes, depending on the size of hardware available. This is left as an exercise for the user.
+
+```
+Note: Although the data is 15TB uncompressed, it less than < 50GB on disk compressed, making this application deployable on moderate hardware as a single node.
 ```
 
 For details on populating the database, see [Importing data](#importing-data) below.
