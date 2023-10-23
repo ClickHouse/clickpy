@@ -226,16 +226,16 @@ We cover both options below.
 
  * This instance is sufficient to run the application but has quotas applied.
 
-## Dependencies
+### Dependencies
 
 - node >= v16.15
 - npm >= 9.1
 - ClickHouse >= 23.8
 - Python >= 3.8 (if loading data from GCS)
 
-## ClickHouse
+### ClickHouse
 
-### Public instance
+#### Public instance
 
 For users wishing to make changes to just the app and use the existing ClickHouse instance with the data, the following credentials can be used:
 
@@ -246,9 +246,9 @@ user: play
 ```
 See [App Configuration](#app-configuration).
 
-### Self-hosted
+#### Self-hosted
 
-#### Creating tables and views
+##### Creating tables and views
 
 ClickPy relies on two main tables: `pipi` and `projects` within a `pypi` database. `pypi` is the majority, with a row for every package download at over 600b rows. The `projects` table contains a row per package and contains < 1m rows.
 
@@ -270,7 +270,7 @@ Note: Although the data is 15TB uncompressed, it is less than < 50GB on disk com
 
 For details on populating the database, see [Importing data](#importing-data) below.
 
-#### Exporting data
+##### Exporting data
 
 For users wanting to host the data themselves, this requires the export of the data from BigQuery - ideally to Parquet, prior to import into ClickHouse. This is a significant export (15TB) and can take multiple hours to run. The following query will export the data into a single bucket:
 
@@ -306,7 +306,7 @@ The export can also be broken up using techniques described [here](https://click
 
 Files will be exported with a numeric suffix e.g. `file_downloads-000000000012.parquet`.
 
-#### Importing data
+##### Importing data
 
 The `projects` table and dictionary data can be populated with a few simple `INSERT INTO SELECT` statements:
 
@@ -332,7 +332,7 @@ INSERT INTO pypi SELECT timestamp::Date as date, country_code, project, file.typ
 
 For details on tuning insert performance, see [here](https://clickhouse.com/blog/supercharge-your-clickhouse-data-loads-part2).
 
-#### Data size
+##### Data size
 
 While the export (as of 15/10/2023 is over 15TB of parquet), this compresses extremely well in ClickHouse by over 320x to deliver a total disk usage of less than 50GB.
 
@@ -354,27 +354,36 @@ ORDER BY table DESC
 1 row in set. Elapsed: 0.011 sec.
 ```
 
+## Application
 
-### App Configuration
+### Configuration
 
 Copy the file `.env.example` to `.env.local`.
 
-Modify the settings with your clickhouse cluster details, e.g.
+Modify the settings with your clickhouse cluster details, e.g. if using the public instance.
 
 ```
-CLICKHOUSE_HOST=https://host.clickhouse.com
-CLICKHOUSE_USERNAME=default
-CLICKHOUSE_PASSWORD=password
+CLICKHOUSE_HOST=https://clickpy-clickhouse.clickhouse.com
+CLICKHOUSE_USERNAME=play
+CLICKHOUSE_PASSWORD=
 PYPI_DATABASE=pypi
 ```
 
-## Deploying
+### Running
+
+Install dependencies:
+
+```bash
+npm install
+```
 
 To run locally:
 
 ```bash
 npm run dev
 ```
+
+### Deploying to production
 
 The easiest way to deploy the Next.js app is to use the [Vercel Platform](https://vercel.com/new) from the creators of Next.js.
 
