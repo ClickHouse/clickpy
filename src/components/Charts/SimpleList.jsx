@@ -5,11 +5,11 @@ export default function SimpleList({ data, title, subtitle, link_prefix }) {
   return (
     <div className='rounded-lg bg-slate-850 border border-slate-700 h-full justify-start flex flex-col'>
       {title && (
-        <div className='px-6 pt-4 pb-0 flex-row flex justify-between'>
+        <div className='px-6 pt-4 pb-0 flex-row flex justify-between items-end'>
           {title}
           <p
             className={
-              'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500'
+              'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500 text-sm'
             }>
             {subtitle}
           </p>

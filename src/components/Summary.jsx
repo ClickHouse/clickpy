@@ -35,7 +35,7 @@ export default function Summary({
           data={recent_releases}
           title={
             <div className='flex space-x-2'>
-              <Image alt='recent' src='/recent.svg' width={16} height={16} />
+              <Image alt='recent' src='/recent.svg' width={20} height={20} />
               <span className='text-white font-bold space-x-0.5'>
                 Recent releases
               </span>
@@ -56,7 +56,7 @@ export default function Summary({
             .reverse()}
           title={
             <div className='flex space-x-2'>
-              <Image alt='recent' src='/popular.svg' width={16} height={16} />
+              <Image alt='recent' src='/popular.svg' width={20} height={20} />
               <span className='text-white font-bold space-x-0.5'>
                 Top Repos
               </span>
@@ -81,7 +81,7 @@ export default function Summary({
           })}
           title={
             <div className='flex space-x-2'>
-              <Image alt='recent' src='/emerging.svg' width={16} height={16} />
+              <Image alt='recent' src='/emerging.svg' width={20} height={20} />
               <span className='text-white font-bold space-x-0.5'>
                 Emerging repos
               </span>
@@ -103,7 +103,7 @@ export default function Summary({
           })}
           title={
             <div className='flex space-x-2'>
-              <Image alt='recent' src='/refresh.svg' width={16} height={16} />
+              <Image alt='recent' src='/refresh.svg' width={20} height={20} />
               <span className='text-white font-bold space-x-0.5'>
                 Needing a refresh
               </span>
@@ -117,7 +117,7 @@ export default function Summary({
           data={hot_packages}
           title={
             <div className='flex space-x-2'>
-              <Image alt='recent' src='/hot.svg' width={16} height={16} />
+              <Image alt='recent' src='/hot.svg' width={20} height={20} />
               <span className='text-white font-bold space-x-0.5'>
                 Hot packages
               </span>

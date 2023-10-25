@@ -141,11 +141,11 @@ export default function HorizontalBar({
       className='relative rounded-lg bg-slate-850 border border-slate-700 h-full justify-between flex flex-col'
       onMouseOver={onMouseOver}>
       {title && (
-        <div className='px-6 pt-4 pb-0 flex-row flex justify-between'>
+        <div className='px-6 pt-4 pb-0 flex-row flex justify-between items-end'>
           {title}
           <p
             className={
-              'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500'
+              'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500 text-sm'
             }>
             {subtitle}
           </p>

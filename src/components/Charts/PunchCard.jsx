@@ -151,11 +151,11 @@ export default function PunchCard({
   return (
     <div className='relative rounded-lg bg-slate-850 border border-slate-700 h-full'>
       {title && (
-        <div className='px-6 pt-4 pb-0 flex-row flex justify-between'>
+        <div className='px-6 pt-4 pb-0 flex-row flex justify-between items-end'>
           {title}
           <p
             className={
-              'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500'
+              'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500 text-sm'
             }>
             {subtitle}
           </p>
@@ -163,7 +163,12 @@ export default function PunchCard({
       )}
       <ReactECharts
         option={options}
-        style={{ width: '100%', height: '100%', minHeight: '320px' }}
+        style={{
+          width: '100%',
+          height: '100%',
+          minHeight: '320px',
+          marginTop: '16px'
+        }}
         lazyUpdate
         onChartReady={onChartReady}
         onEvents={{ click: select }}

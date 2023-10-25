@@ -136,11 +136,11 @@ export default function HeatMap({ data, title, subtitle, onClick }) {
 
   return (
     <div className='rounded-lg bg-slate-850 cursor-pointer shadow-inner border border-slate-700 h-full justify-between flex flex-col hover:shadow-xl transition-all duration-300 ease-in-out'>
-      <div className='px-6 py-4  flex-row flex justify-between'>
+      <div className='px-6 py-4 flex-row flex justify-between items-end'>
         {title}
         <p
           className={
-            'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500'
+            'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500 text-sm'
           }>
           {subtitle}
         </p>
