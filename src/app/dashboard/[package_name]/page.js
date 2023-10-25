@@ -112,7 +112,7 @@ export default async function Dashboard({ params, searchParams }) {
               max_date={max_date}
               country_code={country_code}
               type={file_type}
-              className='lg:col-span-2'
+              className='md:col-span-2'
             />
             {packageDetails.length > 0 && (
               <div className='mt-4 md:mt-0 h-24'>
