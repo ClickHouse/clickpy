@@ -29,7 +29,7 @@ export default function Summary({
     }, 0);
 
   return (
-    <div className='flex flex-col grow xl:grid xl:grid-cols-6 gap-4 lg:gap-6 min-w-[360px] mb-16'>
+    <div className='flex flex-col grow xl:grid xl:grid-cols-6 gap-6 min-w-[360px] mb-16'>
       <div className='xl:col-span-3 h-[360px]'>
         <HeatMap
           data={recent_releases}

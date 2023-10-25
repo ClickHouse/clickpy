@@ -6,7 +6,7 @@ export default function Version({ current, latest }) {
       <Image
         width={16}
         height={16}
-        className='h-16 w-16 min-w-16 min-h-16'
+        className='h-16 w-16 min-w-16 min-h-16 bg-neutral-850 rounded-lg'
         src='/version.svg'
         alt='Version'
       />

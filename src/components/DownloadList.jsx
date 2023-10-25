@@ -26,7 +26,7 @@ async function DownloadList({
   const { total, last_day, last_week, last_month } = data[0];
   return (
     <div {...props}>
-      <div className='rounded-lg bg-slate-850 flex items-center gap-8 justify-between p-4 h-24 border border-slate-700'>
+      <div className='rounded-lg bg-slate-850 flex items-center gap-8 md:justify-between p-4 h-24 border border-slate-700'>
         <div className='h-16 w-16 flex gap-4'>
           <Image
             className='h-16 w-16 min-w-[64px] min-h-16'
@@ -40,7 +40,7 @@ async function DownloadList({
             <p className='text-slate-200'>by period</p>
           </div>
         </div>
-        <div className='justify-items-end flex flex-row mr-4 gap-4'>
+        <div className='md:justify-items-end flex flex-row mr-4 gap-4'>
           <div className='hidden xl:block'>
             <p className='text-xl mr-2 font-bold'>{formatNumber(last_day)}</p>
             <p className='text-slate-200 text-center'>last day</p>
@@ -55,7 +55,7 @@ async function DownloadList({
           </div>
           <div>
             <p className='text-xl mr-2 font-bold'>{formatNumber(total)}</p>
-            <p className='text-slate-200 text-center'>total</p>
+            <p className='text-slate-200 md:text-center'>total</p>
           </div>
         </div>
       </div>
