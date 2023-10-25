@@ -104,7 +104,7 @@ export default async function Dashboard({ params, searchParams }) {
           {packageDetails.length > 0 && (
             <PackageDetails {...packageDetails[0]} />
           )}
-          <div className='mt-8 md:mt-20 w-full mx-auto md:grid md:grid-cols-3 gap-6'>
+          <div className='mt-8 md:mt-20 w-full mx-auto md:grid md:grid-cols-4 lg:grid-cols-3 gap-6'>
             <DownloadList
               package_name={package_name}
               version={version}
@@ -115,7 +115,7 @@ export default async function Dashboard({ params, searchParams }) {
               className='md:col-span-2'
             />
             {packageDetails.length > 0 && (
-              <div className='mt-4 md:mt-0 h-24'>
+              <div className='mt-4 md:mt-0 h-24 md:col-span-2 lg:col-span-1'>
                 <Version
                   current={version ? version : 'All'}
                   latest={packageDetails[0].max_version}
