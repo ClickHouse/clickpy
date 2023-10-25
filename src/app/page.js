@@ -29,7 +29,7 @@ export default async function Home() {
       <main className='isolate h-screen'>
         <div className='pt-6'>
           <div className='pt-6 md:pt-24'>
-            <div className='lg:px-16 flex justify-center mx-auto w-11/12 lg:w-full xl:w-11/12'>
+            <div className='lg:px-16 flex justify-center mx-auto w-full xl:w-11/12'>
               <div className='text-center flex items-center flex-col justify-center'>
                 <h1 className='text-4xl font-bold font-inter lg:text-5xl'>
                   Analytics for PyPI packages
@@ -48,7 +48,7 @@ export default async function Home() {
                 <div className='mt-10 flex items-center justify-center h-8'>
                   <Search />
                 </div>
-                <div className='mt-16 flow-root sm:mt-24 w-full'>
+                <div className='mt-16 flow-root sm:mt-24 w-11/12 lg:w-full'>
                   <Summary
                     packages={packages}
                     recent_releases={recent_releases}
