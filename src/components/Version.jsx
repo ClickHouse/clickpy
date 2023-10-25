@@ -16,7 +16,7 @@ export default function Version({ current, latest }) {
       </div>
       <div>
         <p className='text-xl mr-2 font-bold'>{latest}</p>
-        <p className='text-slate-200 text-sm'>latest version</p>
+        <p className='text-slate-200'>latest version</p>
       </div>
     </div>
   );

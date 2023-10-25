@@ -35,7 +35,7 @@ async function DownloadList({
             width={16}
             height={16}
           />
-          <div className='hidden 2xl:flex flex-col'>
+          <div className='hidden lg:flex flex-col pt-1.5'>
             <p className='text-xl font-bold'>Downloads</p>
             <p className='text-slate-200'>by period</p>
           </div>
