@@ -1,23 +1,23 @@
-'use client'
-import React, { useRef, useState } from 'react'
-import isEqual from 'lodash/isEqual'
-import ReactECharts from 'echarts-for-react'
-import styles from './styles.module.css'
-import Loading from '../Loading'
+'use client';
+import React, { useRef, useState } from 'react';
+import isEqual from 'lodash/isEqual';
+import ReactECharts from 'echarts-for-react';
+import styles from './styles.module.css';
+import Loading from '../Loading';
 
 export default function Line({ data, onSelect }) {
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
 
-  const chartRef = useRef()
-  const xAxis = data.map((p) => p.x)
+  const chartRef = useRef();
+  const xAxis = data.map((p) => p.x);
   const onMouseOver = () => {
-    const echartsInstance = chartRef.current.getEchartsInstance()
-    const newOptions = echartsInstance.getOption()
-    newOptions.series[0].lineStyle.opacity = 1
-    newOptions.series[0].lineStyle.shadowColor = '#FCFF74'
-    newOptions.series[0].lineStyle.shadowOffsetX = 0
-    newOptions.series[0].lineStyle.shadowOffsetY = 0
-    newOptions.series[0].lineStyle.shadowBlur = 0
+    const echartsInstance = chartRef.current.getEchartsInstance();
+    const newOptions = echartsInstance.getOption();
+    newOptions.series[0].lineStyle.opacity = 1;
+    newOptions.series[0].lineStyle.shadowColor = '#FAFF69';
+    newOptions.series[0].lineStyle.shadowOffsetX = 0;
+    newOptions.series[0].lineStyle.shadowOffsetY = 0;
+    newOptions.series[0].lineStyle.shadowBlur = 0;
     newOptions.series[0].areaStyle = {
       color: {
         type: 'linear',
@@ -28,32 +28,32 @@ export default function Line({ data, onSelect }) {
         colorStops: [
           {
             offset: 0,
-            color: '#FCFF74',
+            color: '#FAFF69'
           },
           {
             offset: 1,
-            color: '#343431',
-          },
-        ],
+            color: '#343431'
+          }
+        ]
       },
-      opacity: 0.1,
-    }
-    echartsInstance.setOption(newOptions)
+      opacity: 0.1
+    };
+    echartsInstance.setOption(newOptions);
     echartsInstance.dispatchAction({
       type: 'takeGlobalCursor',
       key: 'brush',
       brushOption: {
-        brushType: 'lineX',
-      },
-    })
-  }
+        brushType: 'lineX'
+      }
+    });
+  };
 
   const options = {
     animation: false,
     grid: {
       left: '80px',
       right: '24px',
-      bottom: '36px',
+      bottom: '36px'
     },
     xAxis: {
       show: true,
@@ -61,7 +61,7 @@ export default function Line({ data, onSelect }) {
       data: xAxis,
       nameLocation: 'middle',
       min: 0,
-      max: xAxis.length - 1,
+      max: xAxis.length - 1
     },
     yAxis: {
       type: 'value',
@@ -70,8 +70,8 @@ export default function Line({ data, onSelect }) {
         lineStyle: {
           color: '#808691',
           opacity: 0.3
-        },
-      },
+        }
+      }
     },
     series: [
       {
@@ -81,22 +81,18 @@ export default function Line({ data, onSelect }) {
         showSymbol: false,
         areaStyle: null,
         lineStyle: {
-          color: '#FCFF74',
-          width: 3,
-          shadowColor: '#000000',
-          shadowOffsetX: 0,
-          shadowOffsetY: 7,
-          shadowBlur: 10,
-        },
-      },
+          color: '#FAFF69',
+          width: 1.5
+        }
+      }
     ],
     tooltip: {
       trigger: 'axis',
       textStyle: {
-        color: '#FCFF74',
+        color: '#FAFF69',
         fontWeight: 'bold',
         fontSize: 16,
-        lineHeight: 24,
+        lineHeight: 24
       },
       backgroundColor: 'transparent',
       borderWidth: 0,
@@ -105,61 +101,60 @@ export default function Line({ data, onSelect }) {
                     <span class='${styles.tooltiptext}'>${Number(
           params[0].value
         ).toLocaleString('en-US')}</span>
-                </div>`
+                </div>`;
       },
       extraCssText: 'visibility: hidden;padding:0px;',
       position: (point, params, dom, rect, size) => {
-        const echartsInstance = chartRef.current.getEchartsInstance()
+        const echartsInstance = chartRef.current.getEchartsInstance();
         const pos = echartsInstance.convertToPixel({ seriesIndex: 0 }, [
           params[0].axisValue,
-          params[0].value,
-        ])
-        return [pos[0], pos[1] - size.contentSize[1] * 2]
-      },
+          params[0].value
+        ]);
+        return [pos[0], pos[1] - size.contentSize[1] * 2];
+      }
     },
     brush: {
       toolbox: ['lineX', 'clear'],
       brushType: 'lineX',
       brushMode: 'single',
-      transformable: false,
-    },
-  }
+      transformable: false
+    }
+  };
 
   const onMouseOut = () => {
-    const echartsInstance = chartRef.current.getEchartsInstance()
-    echartsInstance.setOption(options)
-  }
+    const echartsInstance = chartRef.current.getEchartsInstance();
+    echartsInstance.setOption(options);
+  };
 
   const onBrushEnd = (params) => {
     if (params.areas.length > 0) {
-      const echartsInstance = chartRef.current.getEchartsInstance()
+      const echartsInstance = chartRef.current.getEchartsInstance();
       let start = echartsInstance.convertFromPixel(
         { xAxisIndex: 0 },
         params.areas[0].range[0]
-      )
+      );
       let end = echartsInstance.convertFromPixel(
         { xAxisIndex: 0 },
         params.areas[0].range[1]
-      )
-      start = start > 0 ? start : 0
-      end = end < xAxis.length ? end : xAxis.length - 1
+      );
+      start = start > 0 ? start : 0;
+      end = end < xAxis.length ? end : xAxis.length - 1;
       onSelect &&
         xAxis[start] &&
         xAxis[end] &&
-        onSelect(xAxis[start], xAxis[end])
+        onSelect(xAxis[start], xAxis[end]);
     }
-  }
+  };
 
   const onChartReady = (echarts) => {
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   return (
     <div
-      className='relative rounded-lg bg-slate-850 border border-slate-700 rounded-l h-full justify-between flex flex-col'
+      className='relative rounded-lg bg-slate-850 border border-slate-700 h-full justify-between flex flex-col'
       onMouseMove={onMouseOver}
-      onMouseOut={onMouseOut}
-    >
+      onMouseOut={onMouseOut}>
       <ReactECharts
         ref={chartRef}
         option={options}
@@ -167,18 +162,18 @@ export default function Line({ data, onSelect }) {
         lazyUpdate
         onChartReady={onChartReady}
         onEvents={{
-          brushEnd: onBrushEnd,
+          brushEnd: onBrushEnd
         }}
         shouldSetOption={(prevProps, currentProps) => {
-          const shouldRender = !isEqual(prevProps, currentProps)
+          const shouldRender = !isEqual(prevProps, currentProps);
           if (shouldRender) {
-            setLoading(true)
+            setLoading(true);
           }
 
-          return shouldRender
+          return shouldRender;
         }}
       />
       {loading && <Loading />}
     </div>
-  )
+  );
 }

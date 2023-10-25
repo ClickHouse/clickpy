@@ -1,34 +1,34 @@
-'use client'
-import ReactECharts from 'echarts-for-react'
-import isEqual from 'lodash/isEqual'
-import Loading from '../Loading'
-import { useState } from 'react'
+'use client';
+import ReactECharts from 'echarts-for-react';
+import isEqual from 'lodash/isEqual';
+import Loading from '../Loading';
+import { useState } from 'react';
 
 export default function Radar({ data, onClick }) {
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
   const maxValues = data.reduce((acc, obj) => {
-    let { name, value } = obj
-    value = Number(value)
+    let { name, value } = obj;
+    value = Number(value);
     if (!(name in acc) || value > acc[name]) {
-      acc[name] = value
+      acc[name] = value;
     }
-    return acc
-  }, {})
-  const xValues = Object.keys(maxValues)
-  const yValues = Array.from(new Set(data.map((p) => p.y)))
-  const colors = ['#FCFF74', '#FC74FF', '#74ACFF', '#74FFD5']
+    return acc;
+  }, {});
+  const xValues = Object.keys(maxValues);
+  const yValues = Array.from(new Set(data.map((p) => p.y)));
+  const colors = ['#FAFF69', '#FC74FF', '#74ACFF', '#74FFD5'];
   const options = {
     animation: false,
     tooltip: {
       trigger: 'item',
       textStyle: {
-        color: '#FCFF74',
+        color: '#FAFF69',
         fontWeight: 'bold',
         fontSize: 14,
-        lineHeight: 24,
+        lineHeight: 24
       },
       backgroundColor: '#181818',
-      borderWidth: 0,
+      borderWidth: 0
     },
     legend: {
       data: yValues,
@@ -43,57 +43,57 @@ export default function Radar({ data, onClick }) {
       padding: 10,
       textStyle: {
         fontSize: 16,
-        color: '#FFFFFFF',
-      },
+        color: '#FFFFFFF'
+      }
     },
     radar: {
       // shape: 'circle',
       indicator: xValues.map((x) => {
         return {
           name: x,
-          value: maxValues[x],
-        }
-      }),
+          value: maxValues[x]
+        };
+      })
     },
     series: [
       {
         type: 'radar',
         lineStyle: {
-          width: 3,
+          width: 3
         },
         areaStyle: {
-          opacity: 0.2,
+          opacity: 0.2
         },
         data: yValues.map((y, i) => {
           const values = data
             .filter((obj) => obj.y === y)
             .reduce((acc, obj) => {
-              acc[obj.name] = (obj.value)
-              return acc
-            }, {})
+              acc[obj.name] = obj.value;
+              return acc;
+            }, {});
 
           return {
             value: xValues.map((x) => (x in values ? values[x] : 0)),
             name: y,
             lineStyle: {
-              color: colors[i],
+              color: colors[i]
             },
             itemStyle: {
-              color: colors[i],
-            },
-          }
-        }),
-      },
-    ],
-  }
+              color: colors[i]
+            }
+          };
+        })
+      }
+    ]
+  };
 
   const select = (params) => {
-    onClick && onClick(params.name)
-  }
+    onClick && onClick(params.name);
+  };
 
   const onChartReady = (echarts) => {
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   return (
     <div className='relative rounded-lg bg-slate-850 border border-slate-700 h-full'>
@@ -104,15 +104,15 @@ export default function Radar({ data, onClick }) {
         onChartReady={onChartReady}
         onEvents={{ click: select }}
         shouldSetOption={(prevProps, currentProps) => {
-          const shouldRender = !isEqual(prevProps, currentProps)
+          const shouldRender = !isEqual(prevProps, currentProps);
           if (shouldRender) {
-            setLoading(true)
+            setLoading(true);
           }
 
-          return shouldRender
+          return shouldRender;
         }}
       />
       {loading && <Loading />}
     </div>
-  )
+  );
 }
