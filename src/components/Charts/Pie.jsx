@@ -1,32 +1,32 @@
-import ReactECharts from 'echarts-for-react'
-import Loading from '../Loading'
-import isEqual from 'lodash/isEqual'
-import { useState } from 'react'
+import ReactECharts from 'echarts-for-react';
+import Loading from '../Loading';
+import isEqual from 'lodash/isEqual';
+import { useState } from 'react';
 
 export default function Pie({ data, onClick }) {
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
   const options = {
     animation: false,
     grid: {
       left: 0,
-      right: 0,
+      right: 0
     },
     tooltip: {
       trigger: 'item',
       textStyle: {
-        color: '#FCFF74',
+        color: '#FAFF69',
         fontWeight: 'bold',
         fontSize: 16,
-        lineHeight: 24,
+        lineHeight: 24
       },
       backgroundColor: '#181818',
-      borderWidth: 0,
+      borderWidth: 0
     },
     legend: {
       bottom: '5%',
       textStyle: {
         color: '#FFFFFFF',
-        fontSize: 18,
+        fontSize: 18
       },
       icon: 'circle',
       icon: 'circle',
@@ -35,7 +35,7 @@ export default function Pie({ data, onClick }) {
       borderRadius: 5,
       borderWidth: 1,
       borderColor: '#626262',
-      padding: 10,
+      padding: 10
     },
     series: [
       {
@@ -45,33 +45,40 @@ export default function Pie({ data, onClick }) {
         avoidLabelOverlap: true,
         center: ['50%', '40%'],
         label: {
-          show: false,
+          show: false
         },
         emphasis: {
           label: {
-            show: false,
-          },
+            show: false
+          }
         },
         labelLine: {
-          show: true,
+          show: true
         },
         z: 2,
-        itemStyle: {
-
-        },
-        color: ['#FCFF74', '#FC74FF', '#74ACFF', '#74FFD5', '#FF7C74', '#74FF9B', '#FFE074', '#CF4B4B'],
-        data: data,
-      },
-    ],
-  }
+        itemStyle: {},
+        color: [
+          '#FAFF69',
+          '#FC74FF',
+          '#74ACFF',
+          '#74FFD5',
+          '#FF7C74',
+          '#74FF9B',
+          '#FFE074',
+          '#CF4B4B'
+        ],
+        data: data
+      }
+    ]
+  };
 
   const select = (params) => {
-    onClick && onClick(params.name)
-  }
+    onClick && onClick(params.name);
+  };
 
   const onChartReady = (echarts) => {
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   return (
     <div className='relative rounded-lg bg-slate-850 border border-slate-700 h-full'>
@@ -83,14 +90,14 @@ export default function Pie({ data, onClick }) {
         onChartReady={onChartReady}
         onEvents={{ click: select }}
         shouldSetOption={(prevProps, currentProps) => {
-          const shouldRender = !isEqual(prevProps, currentProps)
+          const shouldRender = !isEqual(prevProps, currentProps);
           if (shouldRender) {
-            setLoading(true)
+            setLoading(true);
           }
-          return shouldRender
+          return shouldRender;
         }}
       />
       {loading && <Loading />}
     </div>
-  )
+  );
 }
