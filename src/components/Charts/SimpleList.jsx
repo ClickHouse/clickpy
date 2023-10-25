@@ -21,7 +21,7 @@ export default function SimpleList({ data, title, subtitle, link_prefix }) {
             <div className='mb-2 mr-4' key={p.title}>
               <Link
                 href={`${link_prefix}${p.title}`}
-                className='text-[#FAFF69] leading-6'>
+                className='text-[#FAFF69] leading-6 hover:underline'>
                 {p.title}
               </Link>{' '}
               <span className='text-start text-[#696E79]'>{`- ${p.subtitle}`}</span>
