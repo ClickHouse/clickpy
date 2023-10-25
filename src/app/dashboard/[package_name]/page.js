@@ -52,7 +52,7 @@ export default async function Dashboard({ params, searchParams }) {
               <Search package_name={package_name} />
             </div>
           </div>
-          <div className='flex growxl:justify-end flex-col items-start md:flex-row md:items-center gap-4 md:ml-8 xl:ml-0 mt-2'>
+          <div className='flex growxl:justify-end flex-col items-start md:flex-row md:items-center gap-4 md:ml-8 xl:ml-0 my-4 md:mt-2 md:mb-0 '>
             <Filter
               value={country_code}
               icon={
