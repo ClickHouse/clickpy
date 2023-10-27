@@ -6,9 +6,9 @@ export default function Header() {
   return (
     <header className='bg-neutral-800 shadow-lg border-b-2 border-neutral-725 md:sticky md:top-0 z-20 opacity-[98%] backdrop-filter backdrop-blur-lg bg-opacity-90 h-[82px]'>
       <nav
-        className='mx-auto flex items-center justify-between py-5 md:px-4 lg:px-16 w-11/12 lg:w-full xl:w-11/12 h-[82px]'
+        className='mx-auto flex items-center justify-between md:px-4 lg:px-16 w-11/12 lg:w-full xl:w-11/12 h-[82px]'
         aria-label='Global'>
-        <div className='items-center flex gap-8 mt-0.5'>
+        <div className='items-center flex gap-8'>
           <Link href='/'>
             <Image
               className='w-24'

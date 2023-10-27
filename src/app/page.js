@@ -31,7 +31,7 @@ export default async function Home() {
           <div className='pt-6 md:pt-24'>
             <div className='lg:px-16 flex justify-center mx-auto w-full xl:w-11/12'>
               <div className='text-center flex items-center flex-col justify-center'>
-                <h1 className='text-4xl font-bold font-inter lg:text-5xl'>
+                <h1 className='text-4xl font-bold font-inter lg:text-5xl px-4 md:px-0'>
                   Analytics for PyPI packages
                 </h1>
                 <p className='px-4 mt-6 text-lg leading-8 text-white'>
