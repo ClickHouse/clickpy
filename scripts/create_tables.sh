@@ -486,7 +486,7 @@ SELECT
     toStartOfMonth(date) AS month,
     project,
     count() AS count
-FROM pypi
+FROM pypi.pypi
 WHERE date > (toStartOfMonth(now()) - toIntervalMonth(3))
 GROUP BY
     month,
@@ -540,3 +540,41 @@ CREATE TABLE pypi.projects
 ENGINE = MergeTree
 ORDER BY name
 '
+
+echo "creating last_updated_dict dict"
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query "CREATE DICTIONARY pypi.last_updated_dict
+(
+    name String,
+    last_update DateTime64(3)
+)
+PRIMARY KEY name
+SOURCE(CLICKHOUSE(QUERY 'SELECT name, max(upload_time) AS last_update FROM pypi.projects GROUP BY name'))
+LIFETIME(MIN 0 MAX 300)
+LAYOUT(COMPLEX_KEY_HASHED())"
+
+echo "creating countries table & dict"
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query 'CREATE TABLE pypi.countries
+(
+    name String,
+    code String
+)
+ENGINE = MergeTree
+ORDER BY code'
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query "CREATE DICTIONARY pypi.countries_dict
+(
+    \`name\` String,
+    \`code\` String
+)
+PRIMARY KEY code
+SOURCE(CLICKHOUSE(DATABASE 'pypi' TABLE 'countries'))
+LIFETIME(MIN 0 MAX 300)
+LAYOUT(COMPLEX_KEY_HASHED())"
+
+echo "populating countries"
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query "INSERT INTO pypi.countries SELECT name, \`alpha-2\` AS code FROM url('https://gist.githubusercontent.com/gingerwizard/963e2aa7b0f65a3e8761ce2d413ba02c/raw/4b09800f48d932890eedd3ec5f7de380f2067947/country_codes.csv')"
+
+echo "done"

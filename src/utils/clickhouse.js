@@ -273,7 +273,7 @@ export async function getDownloadsByCountry({package_name, version, min_date, ma
     const table = findOptimalTable(columns)
     console.log(table)
     return query('getDownloadsByCountry',`SELECT name, code AS country_code, value 
-                    FROM countries AS all 
+                    FROM pypi.countries AS all 
                     LEFT OUTER JOIN (
                         SELECT country_code, 
                         sum(count) AS value 

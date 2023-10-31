@@ -515,7 +515,7 @@ ORDER BY name
 Data is publicaly available for this table here:
 
 ```sql
-INSERT INTO projects SELECT *
+INSERT INTO pypi.projects SELECT *
 FROM s3('https://storage.googleapis.com/clickhouse_public_datasets/pypi/packages/packages-*.parquet')
 ```
 
@@ -532,7 +532,7 @@ CREATE TABLE countries
 ENGINE = MergeTree
 ORDER BY code
 
-INSERT INTO countries SELECT
+INSERT INTO pypi.countries SELECT
     name,
     `alpha-2` AS code
 FROM url('https://gist.githubusercontent.com/gingerwizard/963e2aa7b0f65a3e8761ce2d413ba02c/raw/4b09800f48d932890eedd3ec5f7de380f2067947/country_codes.csv')

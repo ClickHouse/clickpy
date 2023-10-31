@@ -308,19 +308,14 @@ Files will be exported with a numeric suffix e.g. `file_downloads-000000000012.p
 
 ##### Importing data
 
-The `projects` table and dictionary data can be populated with a few simple `INSERT INTO SELECT` statements:
+The `projects` table can be populated with a few simple `INSERT INTO SELECT` statements:
 
 ```sql
 INSERT INTO projects SELECT *
 FROM s3('https://storage.googleapis.com/clickhouse_public_datasets/pypi/packages/packages-*.parquet')
-
-INSERT INTO countries SELECT
-    name,
-    `alpha-2` AS code
-FROM url('https://gist.githubusercontent.com/gingerwizard/963e2aa7b0f65a3e8761ce2d413ba02c/raw/4b09800f48d932890eedd3ec5f7de380f2067947/country_codes.csv')
 ```
 
-A simple `./scripts/populate.sh` replicates these commands.
+This data is up-to-date as of `2023-08-16`. For more recent versions of the data, users can export the `bigquery-public-data.pypi.distribution_metadata` table to GCS from BigQuery.
 
 For the larger `pypi` table, we recommend the scripts provided [here](https://github.com/ClickHouse/examples/tree/main/large_data_loads).
 
