@@ -1,13 +1,13 @@
-import { createClient } from '@clickhouse/client'
+import { createClient } from '@clickhouse/client';
 
 export const clickhouse = createClient({
     host: process.env.CLICKHOUSE_HOST,
     username: process.env.CLICKHOUSE_USERNAME,
     password: process.env.CLICKHOUSE_PASSWORD,
-})
+});
 
-const PYPI_DATABASE = process.env.PYPI_DATABASE || 'pypi'
-const PYPI_TABLE = process.env.PYPI_TABLE || 'pypi'
+const PYPI_DATABASE = process.env.PYPI_DATABASE || 'pypi';
+const PYPI_TABLE = process.env.PYPI_TABLE || 'pypi';
 const materialized_views = [
     { columns: ['project'], table: 'pypi_downloads' },
     { columns: ['project', 'version'], table: 'pypi_downloads_by_version' },
@@ -22,7 +22,7 @@ const materialized_views = [
     { columns: ['project', 'date', 'version', 'installer', 'type', 'country_code'], table: 'pypi_downloads_per_day_by_version_by_installer_by_type_by_country' },
     { columns: ['project', 'date', 'version', 'type'], table: 'pypi_downloads_per_day_by_version_by_file_type' },
     { columns: ['project','max_date', 'min_date'], table: 'pypi_downloads_max_min' },
-]
+];
 
 // based on required columns we identify the most optimal mv to query - this is the smallest view (least columns) which covers all required columns 
 function findOptimalTable(required_columns) {
@@ -438,7 +438,7 @@ export async function hotPackages() {
             any(c) OVER (PARTITION BY project ORDER BY month ASC ROWS BETWEEN 1 PRECEDING AND 1 PRECEDING) AS previous,
             if(previous > 0, (c - previous) / previous, 0) AS percent_increase
         FROM ${PYPI_DATABASE}.pypi_downloads_per_month
-        WHERE ((month >= (toStartOfMonth(max_date) - toIntervalMonth(7))) AND (month <= (toStartOfMonth(max_date)))) AND (project IN (
+        WHERE ((month > (toStartOfMonth(max_date) - toIntervalMonth(6))) AND (month <= (toStartOfMonth(max_date)))) AND (project IN (
             SELECT project
             FROM pypi.pypi_downloads_per_month
             GROUP BY project
@@ -466,6 +466,8 @@ export async function hotPackages() {
 }
 
 
+export const revalidate = 3600;
+
 async function query(query_name, query, query_params) {
     const start = performance.now()
     const results = await clickhouse.query({
@@ -484,4 +486,3 @@ async function query(query_name, query, query_params) {
     }
     return results.json()
 }
-

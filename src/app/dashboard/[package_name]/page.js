@@ -20,6 +20,8 @@ import DatePicker from '@/components/DatePicker';
 import { Suspense } from 'react';
 import Link from 'next/link';
 
+export const revalidate = 3600;
+
 export default async function Dashboard({ params, searchParams }) {
   const version = searchParams.version;
   const country_code = searchParams.country_code;

@@ -9,24 +9,13 @@ import {
   getPopularReposNeedingRefresh,
   hotPackages
 } from '@/utils/clickhouse';
-import { cache } from 'react';
 import 'server-only';
 
-export const revalidate = 3600;
-
-export const getDownloads = cache(async () => {
-  const total_downloads = await getTotalDownloads();
-  return total_downloads;
-});
-
-export const getProjects = cache(async () => {
-  const projects = await getProjectCount();
-  return projects;
-});
+export const revalidate = 3600
 
 export default async function Home() {
-  const total_downloads = await getDownloads();
-  const projects = await getProjects();
+  const total_downloads = await getTotalDownloads();
+  const projects = await getProjectCount();
   console.log(projects)
   const [recent_releases, emerging_repos, needing_refresh, hot_packages] =
     await Promise.all([
