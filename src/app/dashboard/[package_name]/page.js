@@ -37,8 +37,8 @@ export default async function Dashboard({ params, searchParams }) {
   return (
     <div>
       <header className='bg-neutral-800 shadow-lg border-b-2 border-neutral-725 sticky top-0 z-20 opacity-95 backdrop-filter backdrop-blur-xl bg-opacity-90 lg:h-[82px]'>
-        <div className='mx-auto flex flex-col lg:flex-row lg:items-center justify-between py-2 lg:px-16 w-11/12 lg:w-full xl:w-11/12'>
-          <div className='md:items-center flex flex-col md:flex-row gap-8 mt-1.5 w-full'>
+        <div className='mx-auto flex flex-col lg:flex-row lg:items-center justify-between lg:px-16 w-11/12 lg:w-full xl:w-11/12'>
+          <div className='md:items-center flex flex-col md:flex-row gap-8 w-full lg:h-[82px] pt-[26px] md:pt-0'>
             <Link href='/'>
               <Image
                 className='w-24'
@@ -52,7 +52,7 @@ export default async function Dashboard({ params, searchParams }) {
               <Search package_name={package_name} />
             </div>
           </div>
-          <div className='flex growxl:justify-end flex-col items-start md:flex-row lg:items-center gap-4 lg:ml-8 xl:ml-0 my-4 md:mt-4 md:mb-0 '>
+          <div className='flex growxl:justify-end flex-col items-start md:flex-row lg:items-center gap-4 lg:ml-8 xl:ml-0 my-4 md:mt-0 md:mb-0 '>
             <Filter
               value={country_code}
               icon={
@@ -85,7 +85,7 @@ export default async function Dashboard({ params, searchParams }) {
               name='type'
             />
             <DatePicker dates={[min_date, max_date]} />
-            <div className='hidden xl:flex grow width-20 max-w-[80px]'>
+            <div className='hidden xl:flex grow width-20 max-w-[82px] md:mt-2'>
               <p className='text-sm text-neutral-0'>
                 Powered by &nbsp;
                 <a
