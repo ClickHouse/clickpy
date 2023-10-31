@@ -244,7 +244,7 @@ host: https://clickpy-clickhouse.clickhouse.com
 port: 443
 user: play
 ```
-See [App Configuration](#app-configuration).
+See [App Configuration](#configuration).
 
 #### Self-hosted
 

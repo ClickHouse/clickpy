@@ -55,6 +55,7 @@ export async function getPackages(query_prefix) {
     return []
 }
 
+
 export async function getTotalDownloads() {
     const results = await query('getTotalDownloads',`SELECT
         formatReadableQuantity(sum(count)) AS total, uniqExact(project) as projects FROM ${PYPI_DATABASE}.${findOptimalTable(['project'])}`)
@@ -421,7 +422,7 @@ export async function getPopularReposNeedingRefresh() {
 
 // biggest change in download in the last 6 months
 export async function hotPackages() {
-    const min_downloads = 1000000
+    const min_downloads = 100000
     return query('hotPackages', `
     WITH
     (
@@ -437,7 +438,7 @@ export async function hotPackages() {
             any(c) OVER (PARTITION BY project ORDER BY month ASC ROWS BETWEEN 1 PRECEDING AND 1 PRECEDING) AS previous,
             if(previous > 0, (c - previous) / previous, 0) AS percent_increase
         FROM ${PYPI_DATABASE}.pypi_downloads_per_month
-        WHERE ((month >= (toStartOfMonth(max_date) - toIntervalMonth(7))) AND (month <= (toStartOfMonth(max_date) - toIntervalMonth(1)))) AND (project IN (
+        WHERE ((month >= (toStartOfMonth(max_date) - toIntervalMonth(7))) AND (month <= (toStartOfMonth(max_date)))) AND (project IN (
             SELECT project
             FROM pypi.pypi_downloads_per_month
             GROUP BY project

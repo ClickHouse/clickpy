@@ -487,7 +487,7 @@ SELECT
     project,
     count() AS count
 FROM pypi.pypi
-WHERE date > (toStartOfMonth(now()) - toIntervalMonth(3))
+WHERE date > (toStartOfMonth(now()) - toIntervalMonth(6))
 GROUP BY
     month,
     project

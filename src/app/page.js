@@ -9,14 +9,28 @@ import {
   getPopularReposNeedingRefresh,
   hotPackages
 } from '@/utils/clickhouse';
+import { cache } from 'react';
 import 'server-only';
 
-export default async function Home() {
+export const revalidate = 3600;
+
+export const getDownloads = cache(async () => {
   const total_downloads = await getTotalDownloads();
-  const packages = await getProjectCount();
+  return total_downloads;
+});
+
+export const getProjects = cache(async () => {
+  const projects = await getProjectCount();
+  return projects;
+});
+
+export default async function Home() {
+  const total_downloads = await getDownloads();
+  const projects = await getProjects();
+  console.log(projects)
   const [recent_releases, emerging_repos, needing_refresh, hot_packages] =
     await Promise.all([
-      getRecentReleases(packages.map((p) => p.project)),
+      getRecentReleases(projects.map((p) => p.project)),
       getPopularEmergingRepos(),
       getPopularReposNeedingRefresh(),
       hotPackages()
@@ -43,14 +57,14 @@ export default async function Home() {
                   <span className='text-primary font-bold'>
                     {total_downloads.total}
                   </span>{' '}
-                  downloads
+                  downloads, updated daily
                 </p>
                 <div className='mt-10 flex items-center justify-center h-8'>
                   <Search />
                 </div>
                 <div className='mt-16 flow-root sm:mt-24 w-11/12 lg:w-full'>
                   <Summary
-                    packages={packages}
+                    packages={projects}
                     recent_releases={recent_releases}
                     emerging_repos={emerging_repos}
                     needing_refresh={needing_refresh}
