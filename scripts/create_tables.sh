@@ -458,7 +458,7 @@ CREATE MATERIALIZED VIEW pypi.pypi_downloads_max_min_mv TO pypi.pypi_downloads_m
     `max_date` SimpleAggregateFunction(max, Date),
     `min_date` SimpleAggregateFunction(min, Date)
 ) AS
-SELECT project, maxSimpleState(date) as max_date, minSimpleState(date) FROM pypi.pypi GROUP BY project
+SELECT project, maxSimpleState(date) as max_date, minSimpleState(date) as min_date FROM pypi.pypi GROUP BY project
 '
 
 echo "creating pypi_downloads_per_month"

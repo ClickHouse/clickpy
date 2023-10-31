@@ -94,6 +94,7 @@ export async function getProjectCount() {
 }
 
 export async function getRecentPackageDownloads(package_name) {
+
     return query('getRecentPackageDownloads',`WITH (
         SELECT max(date) AS max_date
         FROM ${PYPI_DATABASE}.${findOptimalTable(['project', 'date'])}
@@ -271,7 +272,6 @@ export async function getDownloadsByCountry({package_name, version, min_date, ma
     if (version) { columns.push('version') }
     if (type) { columns.push('type') }
     const table = findOptimalTable(columns)
-    console.log(table)
     return query('getDownloadsByCountry',`SELECT name, code AS country_code, value 
                     FROM pypi.countries AS all 
                     LEFT OUTER JOIN (
