@@ -12,9 +12,9 @@ previous_day_epoch=$((current_date_epoch - seconds_in_a_day))
 # Calculate the epoch timestamp for midnight UTC
 midnight_utc_epoch=$((previous_day_epoch / seconds_in_a_day * seconds_in_a_day))
 
-CLICKHOUSE_HOST=k5u1q15mc4.us-central1.gcp.clickhouse.cloud
-CLICKHOUSE_PASSWORD=DcqF~pz7h_FN5
-CLICKHOUSE_USER=default
+CLICKHOUSE_USER=${CLICKHOUSE_USER:-default}
+CLICKHOUSE_HOST=${CLICKHOUSE_HOST:-localhost}
+CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD:-}
 
 echo "loading projects data"
 
