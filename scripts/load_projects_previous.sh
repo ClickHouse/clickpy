@@ -15,6 +15,9 @@ midnight_utc_epoch=$((previous_day_epoch / seconds_in_a_day * seconds_in_a_day))
 CLICKHOUSE_USER=${CLICKHOUSE_USER:-default}
 CLICKHOUSE_HOST=${CLICKHOUSE_HOST:-localhost}
 CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD:-}
+ACCESS_KEY=${ACCESS_KEY:-}
+SECRET_KEY=${SECRET_KEY:-}
+
 
 echo "loading projects data"
 
@@ -25,7 +28,7 @@ clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PAS
 
 echo "inserting into temp"
 
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query "INSERT INTO pypi.projects_v2 SELECT * FROM s3('${projects_file_path}', 'GOOG5NPQ7RSHMKHDS6X7773M','0bFjATB38ivIsTIQ+YEweOj8fN7rUTQEpy8PyL+P') SETTINGS max_insert_threads=16"
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query "INSERT INTO pypi.projects_v2 SELECT * FROM s3('${projects_file_path}', '${ACCESS_KEY}','${SECRET_KEY}') SETTINGS max_insert_threads=16"
 
 echo "exchanging tables"
 

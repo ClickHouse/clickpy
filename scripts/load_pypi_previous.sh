@@ -17,6 +17,7 @@ CLICKHOUSE_USER=${CLICKHOUSE_USER:-default}
 CLICKHOUSE_HOST=${CLICKHOUSE_HOST:-localhost}
 CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD:-}
 
+
 gsutil ls "gs://clickhouse-pypi/file_downloads/incremental/${midnight_utc_epoch}-*.parquet" | sed 's|gs://|https://storage.googleapis.com/|' > /opt/pypi/pypi-${midnight_utc_epoch}.txt
 
 echo "scheduling pypi load"
