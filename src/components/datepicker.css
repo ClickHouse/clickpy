@@ -1,0 +1,65 @@
+.date_picker button {
+    @apply text-white;
+}
+
+.date_picker {
+    @apply bg-slate-850 leading-5 rounded-lg font-inter border text-sm mt-1 md:mt-0 font-semibold border-slate-700 p-2 w-full ml-1 md:ml-0;
+}
+
+.date_picker > * > span {
+    @apply mr-2 ml-[-20px];
+}
+
+.calendar {
+    @apply bg-slate-800 rounded-lg leading-5 font-inter text-sm text-white border font-medium border-slate-700 mt-1 p-4;
+}
+
+.react-daterange-picker__range-divider {
+    @apply text-slate-400 font-bold;
+}
+
+.calendar div {
+    @apply bg-slate-800;
+}
+
+.react-daterange-picker__wrapper {
+    @apply border-0;
+}
+
+.react-calendar__tile--now {
+    @apply bg-slate-600;
+}
+
+.react-calendar button {
+    @apply border border-slate-100;
+}
+
+.react-calendar__tile--active {
+    @apply bg-slate-600;
+}
+
+.react-calendar__navigation button:enabled:hover {
+    @apply bg-slate-800;
+}
+
+.react-calendar__navigation button:enabled:focus {
+    @apply bg-slate-800;
+}
+
+.react-calendar__tile--hasActive {
+    @apply bg-slate-800;
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+    @apply bg-slate-600;
+}
+
+.react-calendar--selectRange .react-calendar__tile--hover {
+    @apply bg-slate-600;
+}
+
+.react-calendar__tile:hover {
+    @apply bg-slate-600;
+
+}

@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 31, 31, 31;
+  --background-end-rgb: 31, 31, 31;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background:  #1d1d1d;
+}
+
+.isolate {
+  background-image: url('/dot_grid.svg');
+}
