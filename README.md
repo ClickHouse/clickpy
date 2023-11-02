@@ -244,6 +244,12 @@ host: https://clickpy-clickhouse.clickhouse.com
 port: 443
 user: play
 ```
+Users can connect to this instance with the clickhouse-client and issue queries i.e.
+
+```bash
+clickhouse client -h clickpy-clickhouse.clickhouse.com --user play --secure
+```
+
 See [App Configuration](#configuration).
 
 #### Self-hosted
