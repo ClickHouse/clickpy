@@ -68,10 +68,10 @@ export async function getDownloadSummary(package_name, version, min_date, max_da
     if (country_code) { columns.push('country_code') }
     if (type) { columns.push('type') }
     const table = findOptimalTable(columns)
-    return query('getDownloadSummary',`SELECT sumIf(count, date >= {min_date:String}::Date32 AND date >= {max_date:String}::Date32 - toIntervalDay(1) AND date <= {max_date:String}::Date32) AS last_day,
-    sumIf(count, date >= {min_date:String}::Date32 AND date >= {max_date:String}::Date32 - toIntervalWeek(1) AND date <= {max_date:String}::Date32) AS last_week,
-    sumIf(count, date >= {min_date:String}::Date32 AND date >= {max_date:String}::Date32 - toIntervalMonth(1) AND date <= {max_date:String}::Date32) AS last_month,
-    sumIf(count, date >= {min_date:String}::Date32 AND date >= {min_date:String}::Date32 AND date <= {max_date:String}::Date32) AS total
+    return query('getDownloadSummary',`SELECT sumIf(count, date > {min_date:String}::Date32 AND date > {max_date:String}::Date32 - toIntervalDay(1) AND date <= {max_date:String}::Date32) AS last_day,
+    sumIf(count, date > {min_date:String}::Date32 AND date > {max_date:String}::Date32 - toIntervalWeek(1) AND date <= {max_date:String}::Date32) AS last_week,
+    sumIf(count, date > {min_date:String}::Date32 AND date > {max_date:String}::Date32 - toIntervalMonth(1) AND date <= {max_date:String}::Date32) AS last_month,
+    sumIf(count, date > {min_date:String}::Date32 AND date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32) AS total
     FROM ${PYPI_DATABASE}.${table} WHERE (project = {package_name:String}) AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'} 
     AND ${type ? `type={type:String}`: '1=1'}`,
     {
@@ -477,7 +477,7 @@ async function query(query_name, query, query_params) {
     })
     const end = performance.now()
     console.log(`Execution time for ${query_name}: ${end - start} ms`)
-    if (end - start > 2000) {
+    if (end - start > 0) {
         if (query_params) {
             console.log(query, query_params)
         } else {

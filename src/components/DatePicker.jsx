@@ -56,7 +56,6 @@ export default function DatePicker({ dates }) {
     <div className='width-[320px] max-w-[360px] min-w-[320px]'>
       <Suspense>
         <DateRangePicker
-          portalContainer={null}
           showLeadingZeros={true}
           calendarClassName='calendar'
           className='date_picker'
