@@ -6,6 +6,10 @@ ClickPy, using ClickHouse, answers these with real-time analytics on PyPI packag
 
 Available at [clickpy.clickhouse.com](https://clickpy.clickhouse.com).
 
+![landing_page](./images/landing_page.png)
+
+![analytics](./images/analytics.png)
+
 Every Python package download, e.g. `pip install`, anywhere, anytime, produces a row. The result is hundreds of billions of rows (closing in on a Trillion at 1.4b a day).
 
 The downloads for Python modules are available in BigQuery - a row for every package download in the world and the largest BigQuery public dataset at about 700b rows. Wanting to do some serious analytics leads to a few frustrations, though:
@@ -14,10 +18,6 @@ The downloads for Python modules are available in BigQuery - a row for every pac
 - cost :) especially if i wanna offer this for free as a service.
 
 With ClickHouse we can provide cost-efficient and fast analytics for free.
-
-![landing_page](./images/landing_page.png)
-
-![analytics](./images/analytics.png)
 
 ## Features
 
