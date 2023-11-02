@@ -1,20 +1,23 @@
 # ClickPy - Analytics on Python package downloads powered by ClickHouse
 
-**ClickPy = ClickHouse + PyPI package downloads + NextJS**
+Interested to see how your package is being adopted? How often is it being installed? Which countries are popular? Or maybe you're just curious to see which packages are emerging or hot right now?
 
-Available at [clickpy.clickhouse.com](https://clickpy.clickhouse.com)
+ClickPy, using ClickHouse, answers these with real-time analytics on PyPI package downloads. Available as a service for users to run locally. All open-source and reproducible.
+
+Available at [clickpy.clickhouse.com](https://clickpy.clickhouse.com).
+
+Every Python package download, e.g. `pip install`, anywhere, anytime, produces a row. The result is hundreds of billions of rows (closing in on a Trillion at 1.4b a day).
+
+The downloads for Python modules are available in BigQuery - a row for every package download in the world and the largest BigQuery public dataset at about 700b rows. Wanting to do some serious analytics leads to a few frustrations, though:
+
+- speed for queries - BigQuery is great for complex SQL, less so for fast analytics.
+- cost :) especially if i wanna offer this for free as a service.
+
+With ClickHouse we can provide cost-efficient and fast analytics for free.
 
 ![landing_page](./images/landing_page.png)
 
 ![analytics](./images/analytics.png)
-
-Every Python package download, e.g. `pip install`, anywhere, anytime, produces a row. The result is hundreds of billions of rows (closing in on a Trillion at 1.4b a day).
-
-Interested to see how your package is being adopted? How often is it being installed? Which countries are popular? Or maybe you're just curious to see which packages are emerging or hot right now?
-
-ClickPy, using ClickHouse, answers these with real-time analytics on PyPI package downloads.
-
-All open-source and reproducible.
 
 ## Features
 
