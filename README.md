@@ -1,4 +1,4 @@
-# ClickPy - Analytics on Python package downloads powered by ClickHouse
+# ClickPy - New Python Package Analytics Service Powered by ClickHouse
 
 Interested to see how your package is being adopted? How often is it being installed? Which countries are popular? Or maybe you're just curious to see which packages are emerging or hot right now?
 
@@ -21,8 +21,13 @@ With ClickHouse we can provide cost-efficient and fast analytics for free.
 
 ## Features
 
+Data
+
 - 600+ billion rows
 - Almost 600k packages
+
+Analytics via live dashboards
+
 - Top packages and recent releases
 - Emerging repos - most popular new packages released in the last 6 months
 - Needing a refresh - popular packages not updated in the last 6 months
