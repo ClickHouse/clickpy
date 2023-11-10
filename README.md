@@ -185,7 +185,8 @@ The above represents the simplest example of a Materialized view used by ClickPy
 
 For further details see:
 
-- [Building Real-time Applications with ClickHouse Materialized Views](https://www.youtube.com/watch?v=j_kKKX1bguw) - video, showing ClickPy as an example and how materialized views work.
+- [An intro to Materialized Views in ClickHouse](https://youtu.be/QUigKP7iy7Y?si=AvKnI-UtDbusbk-y) - this uses ClickPy as an example.
+- [Building Real-time Applications with ClickHouse Materialized Views](https://www.youtube.com/watch?v=j_kKKX1bguw) - meetup video, showing ClickPy as an example and how materialized views work.
 - [Using Materialized Views in ClickHouse](https://clickhouse.com/blog/using-materialized-views-in-clickhouse) - blog with examples.
 - [ Materialized Views and Projections Under the Hood ](https://www.youtube.com/watch?v=QDAJTKZT8y4) - Great video for those interested in internals.
 
