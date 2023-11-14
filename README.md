@@ -101,6 +101,9 @@ Key to this is the idea that Materialized views don't hold any data themselves. 
 
 Importantly, the query that runs can aggregate the rows into a smaller result set, allowing queries to run faster on the target table. This approach effectively moves work from **query time to insert time**.
 
+
+[![What is a Materialized View in ClickHouse?](http://img.youtube.com/vi/QUigKP7iy7Y/0.jpg)](http://www.youtube.com/watch?v=QUigKP7iy7Y "What is a Materialized View in ClickHouse?")
+
 #### A real example
 
 Consider our `pypi` table, where a row represents a download. Suppose we wish to identify the 5 most popular projects. A naive query might do something like this:
