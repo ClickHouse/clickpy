@@ -87,7 +87,7 @@ export default async function Dashboard({ params, searchParams }) {
               name='type'
             />
             <DatePicker dates={[min_date, max_date]} />
-            <div className='hidden xl:flex grow width-20 max-w-[82px] md:mt-2'>
+            <div className='hidden xl:flex grow width-20 max-w-[122px] md:mt-2'>
               <p className='text-sm text-neutral-0'>
                 Powered by &nbsp;
                 <a
@@ -97,6 +97,14 @@ export default async function Dashboard({ params, searchParams }) {
                   ClickHouse
                 </a>
               </p>
+              <Link href='https://github.com/ClickHouse/clickpy' target='_blank' className='w-32 ml-4'>
+                <Image
+                  className='w-8 h-8'
+                  src='/github.svg'
+                  alt='ClickPy Github'
+                  width='32'
+                  height='32'/>
+              </Link>
             </div>
           </div>
         </div>

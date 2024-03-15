@@ -37,6 +37,13 @@ export default function ClientComponent({ type, data = [], options = {} }) {
     'line': (
       <Line
         data={data}
+        onClear={
+          () => {
+            current.delete('min_date')
+            current.delete('max_date')
+            router.push(`${pathname}?${current.toString()}`, { scroll: false })
+          }
+        }
         onSelect={(min_date, max_date) => {
           current.set('min_date', min_date)
           current.set('max_date', max_date)

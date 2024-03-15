@@ -46,8 +46,8 @@ export default function DatePicker({ dates }) {
   const onSelectDates = (values) => {
     values
       ? onChange(
-          values[0].toISOString().split('T')[0],
-          values[1].toISOString().split('T')[0]
+        `${values[0].getFullYear()}-${(values[0].getMonth() + 1).toString().padStart(2, '0')}-${values[0].getDate().toString().padStart(2, '0')}`,
+        `${values[1].getFullYear()}-${(values[1].getMonth() + 1).toString().padStart(2, '0')}-${values[1].getDate().toString().padStart(2, '0')}`
         )
       : onChange();
   };
@@ -56,6 +56,7 @@ export default function DatePicker({ dates }) {
     <div className='width-[320px] max-w-[360px] min-w-[320px]'>
       <Suspense>
         <DateRangePicker
+          format='y-MM-dd'
           showLeadingZeros={true}
           calendarClassName='calendar'
           className='date_picker'
