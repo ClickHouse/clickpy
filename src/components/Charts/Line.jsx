@@ -5,7 +5,7 @@ import ReactECharts from 'echarts-for-react';
 import styles from './styles.module.css';
 import Loading from '../Loading';
 
-export default function Line({ data, onSelect }) {
+export default function Line({ data, onSelect, onClear }) {
   const [loading, setLoading] = useState(true);
 
   const chartRef = useRef();
@@ -98,7 +98,7 @@ export default function Line({ data, onSelect }) {
       borderWidth: 0,
       formatter: (params) => {
         return `<div class='${styles.tooltip}'>
-                    <span class='${styles.tooltiptext}'>${Number(
+                    <span class='${styles.tooltiptext}'>${params[0].axisValue}: ${Number(
           params[0].value
         ).toLocaleString('en-US')}</span>
                 </div>`;
@@ -120,6 +120,10 @@ export default function Line({ data, onSelect }) {
       transformable: false
     }
   };
+
+  const onDoubleClick = () => {
+    onClear && onClear();
+  }
 
   const onMouseOut = () => {
     const echartsInstance = chartRef.current.getEchartsInstance();
@@ -154,7 +158,8 @@ export default function Line({ data, onSelect }) {
     <div
       className='relative rounded-lg bg-slate-850 border border-slate-700 h-full justify-between flex flex-col'
       onMouseMove={onMouseOver}
-      onMouseOut={onMouseOut}>
+      onMouseOut={onMouseOut}
+      onDoubleClickCapture={onDoubleClick}>
       <ReactECharts
         ref={chartRef}
         option={options}
@@ -169,7 +174,6 @@ export default function Line({ data, onSelect }) {
           if (shouldRender) {
             setLoading(true);
           }
-
           return shouldRender;
         }}
       />
