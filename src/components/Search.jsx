@@ -27,13 +27,15 @@ export default function Search({ package_name = '' }) {
   const useDebounce = (value, timeout) => {
     const [state, setState] = useState(value);
     useEffect(() => {
-      const handler = setTimeout(() => setState(value), timeout);
+      const handler = setTimeout(() => {
+          setState(value)
+      }, timeout);
       return () => clearTimeout(handler);
     }, [value, timeout]);
     return state;
   };
 
-  const debouncedQuery = useDebounce(query, 100);
+  const debouncedQuery = useDebounce(query, 300);
 
   const onClick = (package_name) => {
     setQuery(package_name);
@@ -58,8 +60,9 @@ export default function Search({ package_name = '' }) {
   useEffect(() => {
     getPackages().then((results) => {
       setPackages(results);
+
     });
-  }, [debouncedQuery, getPackages]);
+  }, [debouncedQuery]);
 
   useEffect(() => {
     function handleClickOutside(event) {
