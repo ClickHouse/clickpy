@@ -21,20 +21,31 @@ export default function Header() {
         </div>
 
         <div className='lg:flex lg:flex-1 lg:justify-end items-center'>
-          <div className='mr-2 hidden lg:flex'>
+          {/* <div className='mr-2 hidden lg:flex'>
             <QueryToggle />
-          </div>
+          </div> */}
 
-          <div className='flex grow width-20 max-w-[80px] lg:mt-2'>
-            <p className='text-sm text-neutral-0'>
-              Powered by &nbsp;
-              <a
-                className='text-primary-300 hover:underline'
-                href='http://clickhouse.com/'
-                target='_blank'>
-                ClickHouse
-              </a>
-            </p>
+          <div className='flex width-20 max-w-[140px] lg:mt-2'>
+            <div className='grow width-20 max-w-[100px]'>
+              <p className='text-sm text-neutral-0'>
+                Powered by &nbsp;
+                <a
+                  className='text-primary-300 hover:underline'
+                  href='http://clickhouse.com/'
+                  target='_blank'>
+                  ClickHouse
+                </a>
+              </p>
+            </div>
+            <Link href='https://github.com/ClickHouse/clickpy' target='_blank'>
+                  <Image
+                    className='w-8 h-8'
+                    src='/github.svg'
+                    alt='ClickPy Github'
+                    width='32'
+                    height='32'
+                  />
+            </Link>
           </div>
         </div>
       </nav>
