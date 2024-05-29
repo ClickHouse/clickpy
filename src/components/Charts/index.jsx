@@ -8,7 +8,7 @@ import CountryMap from './CountryMap'
 import Radar from './Radar'
 import Guage from './Guage'
 
-export default function ClientComponent({ type, data = [], options = {} }) {
+export default function ClientComponent({ type, data = [], options = {}, link }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const pathname = usePathname()
@@ -23,6 +23,7 @@ export default function ClientComponent({ type, data = [], options = {} }) {
           current.set('max_date', max_date)
           router.push(`${pathname}?${current.toString()}`, { scroll: false })
         }}
+        link={link}
       />
     ),
     'pie': (
@@ -32,6 +33,7 @@ export default function ClientComponent({ type, data = [], options = {} }) {
           current.set(options.filter_name, value)
           router.push(`${pathname}?${current.toString()}`, { scroll: false })
         }}
+        link={link}
       />
     ),
     'line': (
@@ -49,6 +51,7 @@ export default function ClientComponent({ type, data = [], options = {} }) {
           current.set('max_date', max_date)
           router.push(`${pathname}?${current.toString()}`, { scroll: false })
         }}
+        link={link}
       />
     ),
     'map': (
@@ -59,9 +62,10 @@ export default function ClientComponent({ type, data = [], options = {} }) {
           current.set('country_code', country_code)
           router.push(`${pathname}?${current.toString()}`, { scroll: false })
         }}
+        link={link}
       />
     ),
-    'radar': (<Radar data={data} onClick={(value) => {
+    'radar': (<Radar data={data} link={link} onClick={(value) => {
       //disable as we need MV
       // current.set(options.column, value)
       // router.push(`${pathname}?${current.toString()}`, { scroll: false })
@@ -77,6 +81,7 @@ export default function ClientComponent({ type, data = [], options = {} }) {
           current.set('max_date', max_date)
           router.push(`${pathname}?${current.toString()}`, { scroll: false })
         }}
+        link={link}
       />
     )
   }[type]

@@ -16,13 +16,13 @@ export default function Summary({
 }) {
   const router = useRouter();
 
-  const total_top_downloads = packages
+  const total_top_downloads = packages[1]
     .map((p) => p.c)
     .reduce((ps, a) => {
       return Number(ps) + Number(a);
     }, 0);
 
-  const total_hot_downloads = hot_packages
+  const total_hot_downloads = hot_packages[1]
     .map((p) => p.z)
     .reduce((ps, a) => {
       return Number(ps) + Number(a);
@@ -32,7 +32,7 @@ export default function Summary({
     <div className='flex flex-col grow xl:grid xl:grid-cols-6 gap-6 min-w-[360px] mb-16'>
       <div className='xl:col-span-3 h-[360px]'>
         <HeatMap
-          data={recent_releases}
+          data={recent_releases[1]}
           title={
             <div className='flex space-x-2'>
               <Image alt='recent' src='/recent.svg' width={20} height={20} />
@@ -45,11 +45,12 @@ export default function Summary({
           onClick={(value) => {
             router.push(`/dashboard/${value[1]}`);
           }}
+          link={recent_releases[0]}
         />
       </div>
       <div className='justify-self align-self xl:col-span-3 h-[360px]'>
         <HorizontalBar
-          data={packages
+          data={packages[1]
             .map((p) => {
               return { x: p.project, y: p.c, name: 'counts' };
             })
@@ -66,12 +67,13 @@ export default function Summary({
           onClick={(value) => {
             router.push(`/dashboard/${value}`);
           }}
+          link = {packages[0]}
         />
       </div>
       <div className='xl:col-span-2'>
         <SimpleList
           link_prefix={'/dashboard/'}
-          data={emerging_repos.map((p) => {
+          data={emerging_repos[1].map((p) => {
             return {
               title: p.name,
               subtitle: `${formatNumber(
@@ -87,13 +89,14 @@ export default function Summary({
               </span>
             </div>
           }
-          subtitle={`Top ${emerging_repos.length}`}
+          subtitle={`Top ${emerging_repos[1].length}`}
+          link = {emerging_repos[0]}
         />
       </div>
       <div className='xl:col-span-2'>
         <SimpleList
           link_prefix={'/dashboard/'}
-          data={needing_refresh.map((p) => {
+          data={needing_refresh[1].map((p) => {
             return {
               title: p.name,
               subtitle: `${formatNumber(
@@ -109,12 +112,13 @@ export default function Summary({
               </span>
             </div>
           }
-          subtitle={`Top ${needing_refresh.length}`}
+          subtitle={`Top ${needing_refresh[1].length}`}
+          link = {needing_refresh[0]}
         />
       </div>
       <div className='xl:col-span-2'>
         <PunchCard
-          data={hot_packages}
+          data={hot_packages[1]}
           title={
             <div className='flex space-x-2'>
               <Image alt='recent' src='/hot.svg' width={20} height={20} />
@@ -130,6 +134,7 @@ export default function Summary({
             router.push(`/dashboard/${value[1]}`);
           }}
           scale='log'
+          link = {hot_packages[0]}
         />
       </div>
     </div>

@@ -2,8 +2,12 @@ import ReactECharts from 'echarts-for-react';
 import Loading from '../Loading';
 import isEqual from 'lodash/isEqual';
 import { useState } from 'react';
+import Link from 'next/link';
+import {
+  ArrowTopRightOnSquareIcon,
+} from '@heroicons/react/20/solid';
 
-export default function Pie({ data, onClick }) {
+export default function Pie({ data, onClick, link }) {
   const [loading, setLoading] = useState(true);
   const options = {
     animation: false,
@@ -23,7 +27,7 @@ export default function Pie({ data, onClick }) {
       borderWidth: 0
     },
     legend: {
-      bottom: '5%',
+      bottom: '10%',
       textStyle: {
         color: '#FFFFFFF',
         fontSize: 18
@@ -82,6 +86,11 @@ export default function Pie({ data, onClick }) {
 
   return (
     <div className='relative rounded-lg bg-slate-850 border border-slate-700 h-full'>
+      <div className='px-[4px] pt-[4px] flex-row flex justify-end'>
+          { link && <Link href={link} target='_blank' className='w-5 ml-5'>
+              <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none text-primary' aria-hidden='true'/>
+          </Link>}   
+      </div>    
       <ReactECharts
         option={options}
         notMerge={true}

@@ -4,8 +4,12 @@ import isEqual from 'lodash/isEqual';
 import ReactECharts from 'echarts-for-react';
 import styles from './styles.module.css';
 import Loading from '../Loading';
+import Link from 'next/link';
+import {
+  ArrowTopRightOnSquareIcon,
+} from '@heroicons/react/20/solid';
 
-export default function HeatMap({ data, title, subtitle, onClick }) {
+export default function HeatMap({ data, title, subtitle, onClick, link }) {
   const chartRef = useRef();
   const [loading, setLoading] = useState(true);
 
@@ -138,12 +142,20 @@ export default function HeatMap({ data, title, subtitle, onClick }) {
     <div className='rounded-lg bg-slate-850 cursor-pointer shadow-inner border border-slate-700 h-full justify-between flex flex-col hover:shadow-xl transition-all duration-300 ease-in-out'>
       <div className='px-6 py-4 flex-row flex justify-between items-end'>
         {title}
-        <p
-          className={
-            'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500 text-sm'
-          }>
-          {subtitle}
-        </p>
+        <div className='flex flex-row justify-center items-center'>
+          <p
+            className={
+              'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500 text-sm'
+            }>
+            {subtitle}
+          </p>
+          { link && <Link href={link} target='_blank' className='w-4 ml-4'>
+                <ArrowTopRightOnSquareIcon
+                        className='h-4 w-4 flex-none text-primary'
+                        aria-hidden='true'
+                />
+            </Link>}    
+        </div>
       </div>
 
       <div className='relative justify-self-stretch h-full'>

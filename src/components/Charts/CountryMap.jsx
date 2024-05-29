@@ -4,8 +4,12 @@ import 'echarts-countries-js/echarts-countries-js/world';
 import isEqual from 'lodash/isEqual';
 import Loading from '../Loading';
 import { useState } from 'react';
+import Link from 'next/link';
+import {
+  ArrowTopRightOnSquareIcon,
+} from '@heroicons/react/20/solid';
 
-export default function CountryMap({ data, selected, onClick }) {
+export default function CountryMap({ data, selected, onClick, link }) {
   const [loading, setLoading] = useState(true);
   const scaledValues = data.map((p) => {
     return {
@@ -87,10 +91,14 @@ export default function CountryMap({ data, selected, onClick }) {
       min: Math.min(...values),
       max: Math.max(...values),
       text: ['Max', 'Min'],
+      textStyle: {
+        color: '#626262'
+      },
       realtime: false,
       calculable: false,
       color: ['#FAFF69', '#DDE26B', '#B2B661', '#8A8C5A', '#51523B', '#2F2F2F'],
-      left: 32
+      left: 32,
+      bottom: 60,
     };
   }
 
@@ -104,6 +112,13 @@ export default function CountryMap({ data, selected, onClick }) {
 
   return (
     <div className='relative rounded-lg bg-slate-850 border border-slate-700 h-full'>
+
+      <div className='px-[4px] pt-[4px] flex-row flex justify-end'>
+          { link && <Link href={link} target='_blank' className='w-5 ml-5'>
+              <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none text-primary' aria-hidden='true'/>
+          </Link>}   
+      </div>   
+
       <ReactECharts
         option={options}
         style={{ width: '100%', height: '100%' }}

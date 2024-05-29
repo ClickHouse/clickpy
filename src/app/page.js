@@ -11,19 +11,23 @@ import {
 } from '@/utils/clickhouse';
 import 'server-only';
 
+export const metadata = {
+  title: 'ClickPy - Python package analytics',
+  description: 'Free Analytics service for Python package downloads, powered by ClickHouse',
+}
+
 export const revalidate = 3600
 
 export default async function Home() {
   const total_downloads = await getTotalDownloads();
   const projects = await getProjectCount();
-  console.log(projects)
   const [recent_releases, emerging_repos, needing_refresh, hot_packages] =
     await Promise.all([
-      getRecentReleases(projects.map((p) => p.project)),
+      getRecentReleases(projects[1].map((p) => p.project)),
       getPopularEmergingRepos(),
       getPopularReposNeedingRefresh(),
       hotPackages()
-    ]);
+  ]);
 
   return (
     <div>
@@ -40,11 +44,11 @@ export default async function Home() {
                 <p className='px-4 mt-6 text-lg leading-8 text-white'>
                   Browse through{' '}
                   <span className='text-primary-300'>
-                    {Number(total_downloads.projects).toLocaleString('en-US')}
+                    {Number(total_downloads[1][0].projects).toLocaleString('en-US')}
                   </span>{' '}
                   Python packages from PyPI and over{' '}
                   <span className='text-primary font-bold'>
-                    {total_downloads.total}
+                    {total_downloads[1][0].total}
                   </span>{' '}
                   downloads, updated daily
                 </p>

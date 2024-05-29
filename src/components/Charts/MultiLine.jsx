@@ -3,8 +3,12 @@ import React, { useRef, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import isEqual from 'lodash/isEqual';
 import Loading from '../Loading';
+import Link from 'next/link';
+import {
+  ArrowTopRightOnSquareIcon,
+} from '@heroicons/react/20/solid';
 
-export default function MultiLine({ data, stack, fill, onSelect }) {
+export default function MultiLine({ data, stack, fill, onSelect, link }) {
   const [loading, setLoading] = useState(true);
   const xAxis = Array.from(new Set(data.map((p) => p.x)));
   const values = data.reduce((accumulator, val) => {
@@ -147,6 +151,13 @@ export default function MultiLine({ data, stack, fill, onSelect }) {
     <div
       className='relative rounded-lg bg-slate-850 border border-slate-700 h-full justify-between flex flex-col'
       onMouseOver={onMouseOver}>
+
+      <div className='px-[4px] pt-[4px] flex-row flex justify-end'>
+          { link && <Link href={link} target='_blank' className='w-5 ml-5'>
+              <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none text-primary' aria-hidden='true'/>
+          </Link>}   
+      </div>   
+        
       <ReactECharts
         ref={chartRef}
         option={options}
