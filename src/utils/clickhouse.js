@@ -479,14 +479,6 @@ async function query(query_name, query, query_params) {
         format: 'JSONEachRow',
     })
     const end = performance.now()
-    //console.log(`Execution time for ${query_name}: ${end - start} ms`)
-    // if (end - start > 0) {
-    //     if (query_params) {
-    //         console.log(query, query_params)
-    //     } else {
-    //         console.log(query)
-    //     }
-    // }
     let url = `${process.env.CLICKHOUSE_HOST}`
     if (query_params != undefined) {
         const prefixedParams = Object.fromEntries(
@@ -497,6 +489,7 @@ async function query(query_name, query, query_params) {
           
         url = `${url}?${encodeURIComponent(new URLSearchParams(prefixedParams).toString())}`
     }
+    
     const query_link = `${process.env.CLICKHOUSE_HOST}/play?user=${process.env.CLICKHOUSE_USERNAME}&url=${url}&password=${process.env.CLICKHOUSE_PASSWORD}#${btoa(query)}`
     return Promise.all([Promise.resolve(query_link),  results.json()]);
 }
