@@ -27,7 +27,7 @@ export default function Version({ current, latest, link }) {
 
       <div className='flex-row flex justify-end w-4 mt-[-12px] mr-[-12px]'>
         { link && <Link href={link} target='_blank' className='w-5 ml-5'>
-            <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none text-primary' aria-hidden='true'/>
+            <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
         </Link>} 
       </div>
     </div>

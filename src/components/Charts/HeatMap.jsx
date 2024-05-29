@@ -151,7 +151,7 @@ export default function HeatMap({ data, title, subtitle, onClick, link }) {
           </p>
           { link && <Link href={link} target='_blank' className='w-4 ml-4'>
                 <ArrowTopRightOnSquareIcon
-                        className='h-4 w-4 flex-none text-primary'
+                        className='h-4 w-4 flex-none icon-hover'
                         aria-hidden='true'
                 />
             </Link>}    

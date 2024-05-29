@@ -16,3 +16,11 @@ body {
 .isolate {
   background-image: url('/dot_grid.svg');
 }
+
+.icon-hover {
+  color: #808691;
+}
+
+.icon-hover:hover {
+  color: #FAFF69;
+}

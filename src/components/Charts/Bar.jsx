@@ -152,7 +152,7 @@ export default function Bar({ data, stack, onSelect, link }) {
 
       <div className='px-[4px] pt-[4px] flex-row flex justify-end'>
           { link && <Link href={link} target='_blank' className='w-5 ml-5'>
-              <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none text-primary' aria-hidden='true'/>
+              <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
           </Link>}   
       </div>
 
