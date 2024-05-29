@@ -5,13 +5,18 @@ import ReactECharts from 'echarts-for-react';
 import styles from './styles.module.css';
 import { formatNumber } from '@/utils/utils';
 import Loading from '../Loading';
+import Link from 'next/link';
+import {
+  ArrowTopRightOnSquareIcon,
+} from '@heroicons/react/20/solid';
 
 export default function HorizontalBar({
   data,
   title,
   subtitle,
   stack = false,
-  onClick
+  onClick,
+  link
 }) {
   const chartRef = useRef();
   const [loading, setLoading] = useState(true);
@@ -143,12 +148,20 @@ export default function HorizontalBar({
       {title && (
         <div className='px-6 pt-4 pb-0 flex-row flex justify-between items-end'>
           {title}
-          <p
-            className={
-              'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500 text-sm'
-            }>
-            {subtitle}
-          </p>
+          <div className='flex flex-row justify-center items-center'>
+            <p
+              className={
+                'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500 text-sm'
+              }>
+              {subtitle}
+            </p>
+            { link && <Link href={link} target='_blank' className='w-4 ml-4'>
+                <ArrowTopRightOnSquareIcon
+                        className='h-4 w-4 flex-none icon-hover'
+                        aria-hidden='true'
+                />
+            </Link>}    
+          </div>
         </div>
       )}
       <ReactECharts

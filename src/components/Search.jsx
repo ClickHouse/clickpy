@@ -59,8 +59,9 @@ export default function Search({ package_name = '' }) {
 
   useEffect(() => {
     getPackages().then((results) => {
-      setPackages(results);
-
+      if (query === results.query) {
+        setPackages(results.response);
+      }
     });
   }, [debouncedQuery]);
 
@@ -71,6 +72,7 @@ export default function Search({ package_name = '' }) {
         !containerRef.current.contains(event.target)
       ) {
         setShowPackages(false);
+        setPackages([]);
       }
     }
 

@@ -4,8 +4,12 @@ import isEqual from 'lodash/isEqual';
 import ReactECharts from 'echarts-for-react';
 import styles from './styles.module.css';
 import Loading from '../Loading';
+import Link from 'next/link';
+import {
+  ArrowTopRightOnSquareIcon,
+} from '@heroicons/react/20/solid';
 
-export default function Line({ data, onSelect, onClear }) {
+export default function Line({ data, onSelect, onClear, link }) {
   const [loading, setLoading] = useState(true);
 
   const chartRef = useRef();
@@ -160,6 +164,12 @@ export default function Line({ data, onSelect, onClear }) {
       onMouseMove={onMouseOver}
       onMouseOut={onMouseOut}
       onDoubleClickCapture={onDoubleClick}>
+      <div className='px-[4px] pt-[4px] flex-row flex justify-end'>
+          { link && <Link href={link} target='_blank' className='w-5 ml-5 icon-hover'>
+              <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
+          </Link>}   
+      </div>    
+
       <ReactECharts
         ref={chartRef}
         option={options}

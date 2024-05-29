@@ -24,6 +24,11 @@ const materialized_views = [
     { columns: ['project','max_date', 'min_date'], table: 'pypi_downloads_max_min' },
 ];
 
+
+export async function getGithubStatistics(package_name) {
+
+}
+
 // based on required columns we identify the most optimal mv to query - this is the smallest view (least columns) which covers all required columns 
 function findOptimalTable(required_columns) {
 
@@ -46,20 +51,18 @@ function findOptimalTable(required_columns) {
 
 export async function getPackages(query_prefix) {
     if (query_prefix != '') { 
-        const res = await query('getPackages',`SELECT project, sum(count) AS c FROM ${PYPI_DATABASE}.${findOptimalTable(['project'])} WHERE project LIKE {query_prefix:String} GROUP BY project ORDER BY c DESC LIMIT 6`, {
+        return await query('getPackages',`SELECT project, sum(count) AS c FROM ${PYPI_DATABASE}.${findOptimalTable(['project'])} WHERE project LIKE {query_prefix:String} GROUP BY project ORDER BY c DESC LIMIT 6`, {
                 query_prefix: `${query_prefix.toLowerCase().trim()}%`
             }
         )
-        return res
     }
     return []
 }
 
 
 export async function getTotalDownloads() {
-    const results = await query('getTotalDownloads',`SELECT
+    return query('getTotalDownloads',`SELECT
         formatReadableQuantity(sum(count)) AS total, uniqExact(project) as projects FROM ${PYPI_DATABASE}.${findOptimalTable(['project'])}`)
-    return results[0]
 }
 
 export async function getDownloadSummary(package_name, version, min_date, max_date, country_code, type) {
@@ -116,7 +119,7 @@ export async function getPackageDateRanges(package_name, version) {
     const columns = ['project', 'date']
     if (version) {  columns.push('version') }
     const table = findOptimalTable(columns)
-    const results = await query('getPackageDateRanges',`SELECT
+    const [_, results] = await query('getPackageDateRanges',`SELECT
             max(date) AS max_date,
             min(date) AS min_date
         FROM ${PYPI_DATABASE}.${table}
@@ -476,13 +479,24 @@ async function query(query_name, query, query_params) {
         format: 'JSONEachRow',
     })
     const end = performance.now()
-    console.log(`Execution time for ${query_name}: ${end - start} ms`)
-    if (end - start > 0) {
-        if (query_params) {
-            console.log(query, query_params)
-        } else {
-            console.log(query)
-        }
+    //console.log(`Execution time for ${query_name}: ${end - start} ms`)
+    // if (end - start > 0) {
+    //     if (query_params) {
+    //         console.log(query, query_params)
+    //     } else {
+    //         console.log(query)
+    //     }
+    // }
+    let url = `${process.env.CLICKHOUSE_HOST}`
+    if (query_params != undefined) {
+        const prefixedParams = Object.fromEntries(
+            Object.entries(query_params)
+              .filter(([, value]) => value !== undefined)
+              .map(([key, value]) => [`param_${key}`, Array.isArray(value) ? `['${value.join("','")}']` : value])
+          );
+          
+        url = `${url}?${encodeURIComponent(new URLSearchParams(prefixedParams).toString())}`
     }
-    return results.json()
+    const query_link = `${process.env.CLICKHOUSE_HOST}/play?user=${process.env.CLICKHOUSE_USERNAME}&url=${url}&password=${process.env.CLICKHOUSE_PASSWORD}#${btoa(query)}`
+    return Promise.all([Promise.resolve(query_link),  results.json()]);
 }

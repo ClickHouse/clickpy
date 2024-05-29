@@ -22,6 +22,15 @@ import Link from 'next/link';
 
 export const revalidate = 3600;
 
+export async function generateMetadata({ params, searchParams }, parent) {
+  const package_name = params.package_name;
+
+  return {
+    title: `ClickPy - Download analytics for ${package_name}`,
+    description: `Analytics for the python package ${package_name}, powered by ClickHouse`,
+  }
+}
+
 export default async function Dashboard({ params, searchParams }) {
   const version = searchParams.version;
   const country_code = searchParams.country_code;
@@ -35,6 +44,7 @@ export default async function Dashboard({ params, searchParams }) {
     min_date = ranges.min_date;
     max_date = ranges.max_date;
   }
+
   const packageDetails = await getPackageDetails(package_name, version);
   return (
     <div>
@@ -111,8 +121,8 @@ export default async function Dashboard({ params, searchParams }) {
       </header>
       <div className='relative isolate'>
         <div className='pt-16 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 relative'>
-          {packageDetails.length > 0 && (
-            <PackageDetails {...packageDetails[0]} />
+          {packageDetails[1].length > 0 && (
+            <PackageDetails {...packageDetails[1][0]} />
           )}
           <div className='mt-8 md:mt-20 w-full mx-auto md:grid md:grid-cols-4 lg:grid-cols-3 gap-6'>
             <DownloadList
@@ -124,11 +134,12 @@ export default async function Dashboard({ params, searchParams }) {
               type={file_type}
               className='md:col-span-2'
             />
-            {packageDetails.length > 0 && (
+            {packageDetails[1].length > 0 && (
               <div className='mt-4 md:mt-0 h-24 md:col-span-2 lg:col-span-1'>
                 <Version
                   current={version ? version : 'All'}
-                  latest={packageDetails[0].max_version}
+                  latest={packageDetails[1][0].max_version}
+                  link = {packageDetails[0]}
                 />
               </div>
             )}
