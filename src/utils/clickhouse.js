@@ -514,6 +514,6 @@ async function query(query_name, query, query_params) {
           
         url = `${url}?${encodeURIComponent(new URLSearchParams(prefixedParams).toString())}`
     }
-    const query_link = `${process.env.CLICKHOUSE_HOST}/play?user=${process.env.CLICKHOUSE_USERNAME}&url=${url}&password=${process.env.CLICKHOUSE_PASSWORD}#${btoa(query)}`
+    const query_link = `${process.env.CLICKHOUSE_HOST}/play?user=play&url=${url}#${btoa(query)}`
     return Promise.all([Promise.resolve(query_link),  results.json()]);
 }
