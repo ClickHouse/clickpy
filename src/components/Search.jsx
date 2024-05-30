@@ -85,7 +85,7 @@ export default function Search({ package_name = '' }) {
 
   return (
     <div
-      className='sm:w-[400px] min-w-[300px] h-[50px] max-w-[400px]'
+      className='sm:w-[400px] min-w-[280px] h-[50px] max-w-[400px]'
       ref={containerRef}>
       <div className='flex'>
         <div className='relative flex flex-grow flex-col items-stretch'>

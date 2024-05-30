@@ -1,4 +1,5 @@
 import { createClient } from '@clickhouse/client';
+import { headers } from 'next/headers';
 
 export const clickhouse = createClient({
     host: process.env.CLICKHOUSE_HOST,
@@ -24,9 +25,25 @@ const materialized_views = [
     { columns: ['project','max_date', 'min_date'], table: 'pypi_downloads_max_min' },
 ];
 
-
-export async function getGithubStatistics(package_name) {
-
+export async function getGithubStats(package_name, min_date, max_date) {
+    const url = 'https://console-api.clickhouse.cloud/.api/query-endpoints/45265a2b-1edf-4fd5-8d69-c43f6ed5a8f5/run';
+    const data = {
+      queryVariables: {
+        projectName: package_name
+      },
+      format: 'JSONEachRow'
+    };
+    console.log(data)
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${btoa(`${process.env.API_KEY_ID}:${process.env.API_KEY_SECRET}`)}`
+      },
+      body: JSON.stringify(data)
+    })
+    return response.json()
 }
 
 // based on required columns we identify the most optimal mv to query - this is the smallest view (least columns) which covers all required columns 
@@ -479,6 +496,14 @@ async function query(query_name, query, query_params) {
         format: 'JSONEachRow',
     })
     const end = performance.now()
+    //console.log(`Execution time for ${query_name}: ${end - start} ms`)
+    // if (end - start > 0) {
+    //     if (query_params) {
+    //         console.log(query, query_params)
+    //     } else {
+    //         console.log(query)
+    //     }
+    // }
     let url = `${process.env.CLICKHOUSE_HOST}`
     if (query_params != undefined) {
         const prefixedParams = Object.fromEntries(
@@ -489,7 +514,6 @@ async function query(query_name, query, query_params) {
           
         url = `${url}?${encodeURIComponent(new URLSearchParams(prefixedParams).toString())}`
     }
-    
     const query_link = `${process.env.CLICKHOUSE_HOST}/play?user=${process.env.CLICKHOUSE_USERNAME}&url=${url}&password=${process.env.CLICKHOUSE_PASSWORD}#${btoa(query)}`
     return Promise.all([Promise.resolve(query_link),  results.json()]);
 }

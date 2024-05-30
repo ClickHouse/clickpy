@@ -15,7 +15,7 @@ export default function Filter({ value, name, icon }) {
 
   return (
     value && (
-      <span className='flex items-center gap-2 rounded-lg bg-slate-850 pl-4 pr-6 py-2 text font-medium text-white border border-slate-700 h-[50px] ml-1 md:ml-0'>
+      <div className='flex self-start items-center gap-2 rounded-lg bg-slate-850 pl-4 pr-6 py-2 text font-medium text-white border border-slate-700 h-[50px] ml-1 md:ml-0'>
         {pill} {value}
         <button
           onClick={() => onRemove && onRemove()}
@@ -41,7 +41,7 @@ export default function Filter({ value, name, icon }) {
           </svg>
           <span className='absolute -inset-1' />
         </button>
-      </span>
+      </div>
     )
   );
 }

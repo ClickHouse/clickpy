@@ -312,6 +312,10 @@ module.exports = {
         enterFromRight: 'enterFromRight 250ms ease',
         exitToLeft: 'exitToLeft 250ms ease',
         exitToRight: 'exitToRight 250ms ease'
+      },
+      screens: {
+        'xsm': '340px'
+        // => @media (min-width: 340px) { ... }
       }
     }
   },
