@@ -165,7 +165,7 @@ export default function PunchCard({
               }>
               {subtitle}
             </p>
-            { link && <Link href={link} target='_blank' className='w-4 ml-4'>
+            { link && <Link href={link} target='_blank' className='w-4 ml-2'>
                   <ArrowTopRightOnSquareIcon
                           className='h-4 w-4 flex-none icon-hover'
                           aria-hidden='true'

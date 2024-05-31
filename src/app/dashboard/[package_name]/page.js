@@ -131,7 +131,9 @@ export default async function Dashboard({ params, searchParams }) {
             <PackageDetails {...packageDetails[1][0]} />
           )}
           <div className='mt-4 md:mt-12'>
-             <GithubStats package_name={package_name}/>
+            <Suspense key={key} fallback={<Loading />}>
+              <GithubStats package_name={package_name} min_date={min_date} max_date={max_date}/>
+            </Suspense>
           </div>
           <div className='mt-4 md:mt-12 w-full mx-auto md:grid md:grid-cols-4 lg:grid-cols-3 gap-6'>
             <DownloadList

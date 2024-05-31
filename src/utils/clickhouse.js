@@ -8,6 +8,8 @@ export const clickhouse = createClient({
 });
 
 const PYPI_DATABASE = process.env.PYPI_DATABASE || 'pypi';
+const GITHUB_DATABASE = process.env.GITHUB_DATABASE || 'github'
+
 const PYPI_TABLE = process.env.PYPI_TABLE || 'pypi';
 const materialized_views = [
     { columns: ['project'], table: 'pypi_downloads' },
@@ -26,16 +28,27 @@ const materialized_views = [
 ];
 
 export async function getGithubStats(package_name, min_date, max_date) {
-    const url = 'https://console-api.clickhouse.cloud/.api/query-endpoints/45265a2b-1edf-4fd5-8d69-c43f6ed5a8f5/run';
+    return query('getDownloadSummary',`WITH (
+        SELECT argMax(home_page, upload_time) as homepage FROM pypi.projects WHERE name={projectName: String} HAVING homepage LIKE 'https://github.com/%') as link
+            SELECT sum(stars) as stars, sum(prs) as prs, sum(issues) as issues, sum(forks) as forks FROM ${GITHUB_DATABASE}.stats_per_repo 
+            WHERE repo_name = replaceOne(link, 'https://github.com/', '') AND date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 GROUP BY repo_name`,
+    {
+        min_date: min_date,
+        max_date: max_date,
+        projectName: package_name
+    })
+}
+
+export async function getGithubStatsEndpoint(package_name, min_date, max_date) {
     const data = {
       queryVariables: {
-        projectName: package_name
+        projectName: package_name,
+        min_date: min_date,
+        max_date: max_date
       },
       format: 'JSONEachRow'
-    };
-    console.log(data)
-    
-    const response = await fetch(url, {
+    };    
+    const response = await fetch(`${process.env.GITHUB_STATS_API}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
