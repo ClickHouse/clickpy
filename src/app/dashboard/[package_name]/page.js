@@ -14,6 +14,7 @@ import Search from '@/components/Search';
 import Image from 'next/image';
 import Chart from '@/components/Chart';
 import Loading from '@/components/Loading';
+import Footer from '@/components/Footer';
 import DownloadList from '@/components/DownloadList';
 import GithubStats from '@/components/GithubStats';
 import Filter from '@/components/Filter';
@@ -49,7 +50,6 @@ export default async function Dashboard({ params, searchParams }) {
   const packageDetails = await getPackageDetails(package_name, version);
   return (
     <div>
-      
       <header className='bg-neutral-800 shadow-lg border-b-2 border-neutral-725 sticky top-0 z-20 opacity-95 backdrop-filter backdrop-blur-xl bg-opacity-90 2xl:h-[82px]'>
         <div className='mx-auto flex flex-col 2xl:flex-row 2xl:items-center justify-between px-4 sm:px-8 xsm:px-6 lg:px-16 lg:w-full xl:w-11/12 lg:mb-0'>
           <div className='md:items-center flex flex-col md:flex-row gap-4 md:gap-8 md:h-[82px] pt-[26px] md:pt-0 ml-0 w-full'>
@@ -122,9 +122,6 @@ export default async function Dashboard({ params, searchParams }) {
           </div>
         </div>
       </header>
-
-
-
       <div className='relative isolate'>
         <div className='pt-16 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 relative'>
           {packageDetails[1].length > 0 && (
@@ -279,6 +276,10 @@ export default async function Dashboard({ params, searchParams }) {
           </div>
         </div>
       </div>
+      <div className='mb-8 w-10/12 flex justify-center mx-auto h-[640px] xl:h-full items-end'>
+        <Footer/>
+      </div>
     </div>
+    
   );
 }
