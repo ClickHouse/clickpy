@@ -1,4 +1,6 @@
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+
 import Search from '@/components/Search';
 import Summary from '@/components/Summary';
 import {
@@ -66,9 +68,16 @@ export default async function Home() {
                 </div>
               </div>
             </div>
+            <div className='mb-8 w-10/12 flex justify-center mx-auto max-w-[1680px]'>
+              <Footer/>
+            </div>
+            
           </div>
+          
         </div>
+        
       </main>
+
     </div>
   );
 }
