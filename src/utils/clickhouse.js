@@ -1,4 +1,5 @@
 import { createClient } from '@clickhouse/client';
+import { headers } from 'next/headers';
 
 export const clickhouse = createClient({
     host: process.env.CLICKHOUSE_HOST,
@@ -7,6 +8,8 @@ export const clickhouse = createClient({
 });
 
 const PYPI_DATABASE = process.env.PYPI_DATABASE || 'pypi';
+const GITHUB_DATABASE = process.env.GITHUB_DATABASE || 'github'
+
 const PYPI_TABLE = process.env.PYPI_TABLE || 'pypi';
 const materialized_views = [
     { columns: ['project'], table: 'pypi_downloads' },
@@ -24,9 +27,36 @@ const materialized_views = [
     { columns: ['project','max_date', 'min_date'], table: 'pypi_downloads_max_min' },
 ];
 
+export async function getGithubStats(package_name, min_date, max_date) {
+    return query('getDownloadSummary',`WITH (
+        SELECT argMax(home_page, upload_time) as homepage FROM pypi.projects WHERE name={projectName: String} HAVING homepage LIKE 'https://github.com/%') as link
+            SELECT sum(stars) as stars, sum(prs) as prs, sum(issues) as issues, sum(forks) as forks FROM ${GITHUB_DATABASE}.stats_per_repo 
+            WHERE repo_name = replaceOne(link, 'https://github.com/', '') AND date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 GROUP BY repo_name`,
+    {
+        min_date: min_date,
+        max_date: max_date,
+        projectName: package_name
+    })
+}
 
-export async function getGithubStatistics(package_name) {
-
+export async function getGithubStatsEndpoint(package_name, min_date, max_date) {
+    const data = {
+      queryVariables: {
+        projectName: package_name,
+        min_date: min_date,
+        max_date: max_date
+      },
+      format: 'JSONEachRow'
+    };    
+    const response = await fetch(`${process.env.GITHUB_STATS_API}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${btoa(`${process.env.API_KEY_ID}:${process.env.API_KEY_SECRET}`)}`
+      },
+      body: JSON.stringify(data)
+    })
+    return response.json()
 }
 
 // based on required columns we identify the most optimal mv to query - this is the smallest view (least columns) which covers all required columns 
@@ -479,6 +509,14 @@ async function query(query_name, query, query_params) {
         format: 'JSONEachRow',
     })
     const end = performance.now()
+    //console.log(`Execution time for ${query_name}: ${end - start} ms`)
+    // if (end - start > 0) {
+    //     if (query_params) {
+    //         console.log(query, query_params)
+    //     } else {
+    //         console.log(query)
+    //     }
+    // }
     let url = `${process.env.CLICKHOUSE_HOST}`
     if (query_params != undefined) {
         const prefixedParams = Object.fromEntries(
@@ -489,7 +527,6 @@ async function query(query_name, query, query_params) {
           
         url = `${url}?${encodeURIComponent(new URLSearchParams(prefixedParams).toString())}`
     }
-    
     const query_link = `${process.env.CLICKHOUSE_HOST}/play?user=play&url=${url}#${btoa(query)}`
     return Promise.all([Promise.resolve(query_link),  results.json()]);
 }

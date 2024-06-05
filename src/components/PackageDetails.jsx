@@ -1,4 +1,5 @@
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
+import Image from 'next/image';
 
 export default function PackageDetails({
   name,
@@ -21,7 +22,19 @@ export default function PackageDetails({
               />
             </button>
           </a>
-        )}
+        )
+        }
+        {
+          home_page.startsWith('') && (
+            <Image
+              width={16}
+              height={16}
+              className='h-6 w-6 min-w-6 min-h-6 bg-neutral-850 rounded-lg ml-2'
+              src={'/github.svg'}
+              alt={`${name} Github`}
+            />
+          ) 
+        }
       </div>
       {
         <div className='mt-5 leading-6 tracking-wide text-slate-200'>

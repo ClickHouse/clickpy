@@ -14,7 +14,9 @@ import Search from '@/components/Search';
 import Image from 'next/image';
 import Chart from '@/components/Chart';
 import Loading from '@/components/Loading';
+import Footer from '@/components/Footer';
 import DownloadList from '@/components/DownloadList';
+import GithubStats from '@/components/GithubStats';
 import Filter from '@/components/Filter';
 import DatePicker from '@/components/DatePicker';
 import { Suspense } from 'react';
@@ -41,17 +43,17 @@ export default async function Dashboard({ params, searchParams }) {
   const key = JSON.stringify({ ...searchParams });
   if (min_date == null || max_date == null) {
     const ranges = await getPackageDateRanges(package_name, version);
-    min_date = ranges.min_date;
+    min_date = version ? ranges.min_date : '2011-01-01';
     max_date = ranges.max_date;
   }
 
   const packageDetails = await getPackageDetails(package_name, version);
   return (
     <div>
-      <header className='bg-neutral-800 shadow-lg border-b-2 border-neutral-725 sticky top-0 z-20 opacity-95 backdrop-filter backdrop-blur-xl bg-opacity-90 lg:h-[82px]'>
-        <div className='mx-auto flex flex-col lg:flex-row lg:items-center justify-between lg:px-16 w-11/12 lg:w-full xl:w-11/12'>
-          <div className='md:items-center flex flex-col md:flex-row gap-8 w-full lg:h-[82px] pt-[26px] md:pt-0'>
-            <Link href='/'>
+      <header className='bg-neutral-800 shadow-lg border-b-2 border-neutral-725 sticky top-0 z-20 opacity-95 backdrop-filter backdrop-blur-xl bg-opacity-90 2xl:h-[82px]'>
+        <div className='mx-auto flex flex-col 2xl:flex-row 2xl:items-center justify-between px-4 sm:px-8 xsm:px-6 lg:px-16 lg:w-full xl:w-11/12 lg:mb-0'>
+          <div className='md:items-center flex flex-col md:flex-row gap-4 md:gap-8 md:h-[82px] pt-[26px] md:pt-0 ml-0 w-full'>
+            <Link href='/' className='min-w-[96px]'>
               <Image
                 className='w-24'
                 src='/click_py.svg'
@@ -60,11 +62,11 @@ export default async function Dashboard({ params, searchParams }) {
                 height='32'
               />
             </Link>
-            <div className='ml-4 md:ml-0'>
+            <div className='ml-2 md:mb-0 mb-4'>
               <Search package_name={package_name} />
             </div>
           </div>
-          <div className='flex growxl:justify-end flex-col items-start md:flex-row lg:items-center gap-4 lg:ml-8 xl:ml-0 my-4 md:mt-0 md:mb-0 '>
+          <div className='flex flex-col sm:flex-row sm:items-center gap-4 2xl:ml-4 mb-4 2xl:mt-4 -ml-[8px] md:ml-0'>
             <Filter
               value={country_code}
               icon={
@@ -97,7 +99,9 @@ export default async function Dashboard({ params, searchParams }) {
               name='type'
             />
             <DatePicker dates={[min_date, max_date]} />
-            <div className='hidden xl:flex grow width-20 max-w-[122px] md:mt-2'>
+            
+          </div> 
+          <div className='hidden 2xl:flex grow width-20 max-w-[122px] md:mt-2 ml-4'>
               <p className='text-sm text-neutral-0'>
                 Powered by &nbsp;
                 <a
@@ -115,7 +119,6 @@ export default async function Dashboard({ params, searchParams }) {
                   width='32'
                   height='32'/>
               </Link>
-            </div>
           </div>
         </div>
       </header>
@@ -124,7 +127,12 @@ export default async function Dashboard({ params, searchParams }) {
           {packageDetails[1].length > 0 && (
             <PackageDetails {...packageDetails[1][0]} />
           )}
-          <div className='mt-8 md:mt-20 w-full mx-auto md:grid md:grid-cols-4 lg:grid-cols-3 gap-6'>
+          <div className='mt-4 md:mt-12'>
+            <Suspense key={key} fallback={<Loading />}>
+              <GithubStats package_name={package_name} min_date={min_date} max_date={max_date}/>
+            </Suspense>
+          </div>
+          <div className='mt-4 md:mt-12 w-full mx-auto md:grid md:grid-cols-4 lg:grid-cols-3 gap-6'>
             <DownloadList
               package_name={package_name}
               version={version}
@@ -268,6 +276,10 @@ export default async function Dashboard({ params, searchParams }) {
           </div>
         </div>
       </div>
+      <div className='mb-8 w-10/12 flex justify-center mx-auto h-[640px] xl:h-full items-end'>
+        <Footer/>
+      </div>
     </div>
+    
   );
 }
