@@ -43,7 +43,7 @@ export default async function Dashboard({ params, searchParams }) {
   const key = JSON.stringify({ ...searchParams });
   if (min_date == null || max_date == null) {
     const ranges = await getPackageDateRanges(package_name, version);
-    min_date = ranges.min_date;
+    min_date = version ? ranges.min_date : '2011-01-01';
     max_date = ranges.max_date;
   }
 
