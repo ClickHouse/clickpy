@@ -39,24 +39,28 @@ export async function getGithubStats(package_name, min_date, max_date) {
     })
 }
 
-export async function getGithubStatsEndpoint(package_name, min_date, max_date) {
+export async function runAPIEndpoint(endpoint, params) {
     const data = {
-      queryVariables: {
+        queryVariables: params,
+        format: 'JSONEachRow'
+      };    
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Basic ${btoa(`${process.env.API_KEY_ID}:${process.env.API_KEY_SECRET}`)}`
+        },
+        body: JSON.stringify(data)
+      })
+      return response.json()
+}
+
+export async function getGithubStatsEndpoint(package_name, min_date, max_date) {
+    return runAPIEndpoint(process.env.GITHUB_STATS_API, {
         projectName: package_name,
         min_date: min_date,
         max_date: max_date
-      },
-      format: 'JSONEachRow'
-    };    
-    const response = await fetch(`${process.env.GITHUB_STATS_API}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Basic ${btoa(`${process.env.API_KEY_ID}:${process.env.API_KEY_SECRET}`)}`
-      },
-      body: JSON.stringify(data)
     })
-    return response.json()
 }
 
 // based on required columns we identify the most optimal mv to query - this is the smallest view (least columns) which covers all required columns 
@@ -424,8 +428,8 @@ export async function getPopularEmergingRepos() {
         WHERE project IN (
             SELECT project
             FROM ${PYPI_DATABASE}.pypi_downloads_max_min
-            WHERE min_date >= (max_date - toIntervalMonth(3))
             GROUP BY project
+            HAVING min(min_date) >= (max_date - toIntervalMonth(3))
         )
         GROUP BY project
         ORDER BY c DESC
