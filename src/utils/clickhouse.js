@@ -28,14 +28,18 @@ const materialized_views = [
 ];
 
 export async function getGithubStats(package_name, min_date, max_date) {
-    return query('getDownloadSummary',`WITH (
-        SELECT argMax(home_page, upload_time) as homepage FROM pypi.projects WHERE name={projectName: String} HAVING homepage LIKE 'https://github.com/%') as link
+    return query('getGitubStats',`WITH (
+            SELECT regexpExtract(arrayFilter(l -> (l LIKE '%https://github.com/%'), arrayConcat(project_urls, [home_page]))[1], '.*https://github.com/(.*)')
+            FROM pypi.projects
+            WHERE name = {package_name:String}
+            ORDER BY upload_time DESC
+            LIMIT 1) as repo
             SELECT sum(stars) as stars, sum(prs) as prs, sum(issues) as issues, sum(forks) as forks FROM ${GITHUB_DATABASE}.stats_per_repo 
-            WHERE repo_name = replaceOne(link, 'https://github.com/', '') AND date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 GROUP BY repo_name`,
+            WHERE repo_name = repo AND date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 GROUP BY repo_name`,
     {
         min_date: min_date,
         max_date: max_date,
-        projectName: package_name
+        package_name: package_name
     })
 }
 
@@ -180,7 +184,8 @@ export async function getPackageDetails(package_name, version) {
             author_email,
             license,
             home_page,
-            max_version
+            max_version,
+            regexpExtract(arrayFilter(l -> (l LIKE '%https://github.com/%'), arrayConcat(project_urls, [home_page]))[1], '.*(https://github.com/.*).*') as github_link
         FROM ${PYPI_DATABASE}.projects
         WHERE (name = {package_name:String}) AND ${version ? `version={version:String}`: '1=1'} 
         ORDER BY upload_time DESC
