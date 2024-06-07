@@ -31,7 +31,7 @@ export async function getGithubStats(package_name, min_date, max_date) {
     return query('getGitubStats',`WITH (
             SELECT regexpExtract(arrayFilter(l -> (l LIKE '%https://github.com/%'), arrayConcat(project_urls, [home_page]))[1], '.*https://github.com/(.*)')
             FROM pypi.projects
-            WHERE name = {package_name:String}
+            WHERE name = {package_name:String} AND length(arrayFilter(l -> (l LIKE '%https://github.com/%'), arrayConcat(project_urls, [home_page]))) >= 1
             ORDER BY upload_time DESC
             LIMIT 1) as repo
             SELECT sum(stars) as stars, sum(prs) as prs, sum(issues) as issues, sum(forks) as forks FROM ${GITHUB_DATABASE}.stats_per_repo 
