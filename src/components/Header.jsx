@@ -1,4 +1,3 @@
-import QueryToggle from './QueryToggle';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -21,9 +20,6 @@ export default function Header() {
         </div>
 
         <div className='lg:flex lg:flex-1 lg:justify-end items-center'>
-          {/* <div className='mr-2 hidden lg:flex'>
-            <QueryToggle />
-          </div> */}
 
           <div className='flex width-20 max-w-[140px] lg:mt-2'>
             <div className='grow width-20 max-w-[100px]'>

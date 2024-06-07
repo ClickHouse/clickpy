@@ -7,7 +7,8 @@ export default function PackageDetails({
   author_email,
   license,
   summary,
-  home_page
+  home_page,
+  github_link
 }) {
   return (
     <div>
@@ -25,14 +26,18 @@ export default function PackageDetails({
         )
         }
         {
-          home_page.startsWith('') && (
-            <Image
-              width={16}
-              height={16}
-              className='h-6 w-6 min-w-6 min-h-6 bg-neutral-850 rounded-lg ml-2'
-              src={'/github.svg'}
-              alt={`${name} Github`}
-            />
+          github_link != '' && (
+            <a href={github_link} target='_blank' className='text-center pt-2'>
+              <button type='button'>
+                <Image
+                  width={16}
+                  height={16}
+                  className='h-6 w-6 min-w-6 min-h-6 bg-neutral-850 rounded-lg ml-2 hover:fill-[#faff69] fill-white'
+                  src={'/github.svg'}
+                  alt={`${name} Github`}
+                />
+              </button>
+          </a>
           ) 
         }
       </div>
