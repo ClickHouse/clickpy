@@ -29,7 +29,7 @@ const materialized_views = [
 
 export async function getGithubStats(package_name, min_date, max_date) {
     return query('getGitubStats',`WITH (
-            SELECT regexpExtract(arrayFilter(l -> (l LIKE '%https://github.com/%'), arrayConcat(project_urls, [home_page]))[1], '.*https://github.com/(.*)')
+            SELECT trim(TRAILING '/' FROM regexpExtract(arrayFilter(l -> (l LIKE '%https://github.com/%'), arrayConcat(project_urls, [home_page]))[1], '.*https://github.com/(.*)'))
             FROM pypi.projects
             WHERE name = {package_name:String} AND length(arrayFilter(l -> (l LIKE '%https://github.com/%'), arrayConcat(project_urls, [home_page]))) >= 1
             ORDER BY upload_time DESC
