@@ -577,4 +577,56 @@ echo "populating countries"
 
 clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query "INSERT INTO pypi.countries SELECT name, \`alpha-2\` AS code FROM url('https://gist.githubusercontent.com/gingerwizard/963e2aa7b0f65a3e8761ce2d413ba02c/raw/4b09800f48d932890eedd3ec5f7de380f2067947/country_codes.csv')"
 
+
+echo "creating github tables"
+
+echo "dropping database"
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query 'DROP DATABASE IF EXISTS github'
+echo "creating database"
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query 'CREATE DATABASE github'
+
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE TABLE github.github_issues
+(
+    `month` Date,
+    `project` String,
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY (month, project)
+'
+
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE TABLE github.stats_per_repo
+(
+    `month` Date,
+    `project` String,
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY (month, project)
+'
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE MATERIALIZED VIEW pypi.pypi_downloads_per_month_mv TO pypi.pypi_downloads_per_month
+(
+    `month` Date,
+    `project` String,
+    `count` Int64
+) AS
+SELECT
+    toStartOfMonth(date) AS month,
+    project,
+    count() AS count
+FROM pypi.pypi
+WHERE date > (toStartOfMonth(now()) - toIntervalMonth(6))
+GROUP BY
+    month,
+    project
+'
+
+
+
 echo "done"

@@ -37,7 +37,7 @@ export default function PackageDetails({
                   alt={`${name} Github`}
                 />
               </button>
-          </a>
+            </a>
           ) 
         }
       </div>
