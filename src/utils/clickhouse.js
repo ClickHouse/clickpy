@@ -63,6 +63,7 @@ export async function getGithubStats(package_name, min_date, max_date) {
             WHERE (event_type = 'ForkEvent') AND (repo_id = id) AND created_at > {min_date:String}::Date32 AND created_at <= {max_date:String}::Date32
         ) AS forks
     SELECT
+        repo,
         stars,
         prs,
         issues,
@@ -208,7 +209,6 @@ export async function getPackageDetails(package_name, version) {
                 LIMIT 1
             ) AS max_version
         SELECT
-            name,
             version,
             summary,
             author,

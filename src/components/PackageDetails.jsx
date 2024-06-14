@@ -26,7 +26,7 @@ export default function PackageDetails({
         )
         }
         {
-          github_link != '' && (
+          github_link && github_link != '' && (
             <a href={github_link} target='_blank' className='text-center pt-2'>
               <button type='button'>
                 <Image
@@ -41,13 +41,18 @@ export default function PackageDetails({
           ) 
         }
       </div>
-      {
-        <div className='mt-5 leading-6 tracking-wide text-slate-200'>
+      { author || author_email || license || summary ? (
+          <div className='mt-5 leading-6 tracking-wide text-slate-200'>
           {author && <p>Author: {author}</p>}
           {author_email && <p>Author Email: {author_email}</p>}
           {license && <p>License: {license}</p>}
           {summary && <p>Summary: {summary}</p>}
         </div>
+      ) : (
+        <div className='mt-5 leading-6 tracking-wide text-slate-200'>
+          No package details available
+        </div>
+      )
       }
     </div>
   );

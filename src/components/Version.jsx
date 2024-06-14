@@ -19,10 +19,14 @@ export default function Version({ current, latest, link }) {
           <p className='text-xl mr-2 font-bold'>{current}</p>
           <p className='text-slate-200'>version</p>
         </div>
-        <div>
-          <p className='text-xl mr-2 font-bold'>{latest}</p>
-          <p className='text-slate-200'>latest version</p>
-        </div>
+        {
+          latest && (
+            <div>
+              <p className='text-xl mr-2 font-bold'>{latest}</p>
+              <p className='text-slate-200'>latest version</p>
+            </div>
+          )
+        }
       </div>
 
       <div className='flex-row flex justify-end w-4 mt-[-12px] mr-[-12px]'>

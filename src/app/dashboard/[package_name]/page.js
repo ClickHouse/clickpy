@@ -124,10 +124,9 @@ export default async function Dashboard({ params, searchParams }) {
       </header>
       <div className='relative isolate'>
         <div className='pt-16 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 relative'>
-          {packageDetails[1].length > 0 && (
-            <PackageDetails {...packageDetails[1][0]} />
-          )}
-          <div className='mt-4 md:mt-12 h-24'>
+          <PackageDetails name={package_name} {...packageDetails[1][0]} />
+          
+          <div className={`mt-4 md:mt-12 ${packageDetails[1].length > 0 && packageDetails[1][0].github_link && packageDetails[1][0].github_link != '' ? 'h-24': ''}`}>
             <Suspense key={key} fallback={<Loading/>}>
               <GithubStats package_name={package_name} min_date={min_date} max_date={max_date}/>
             </Suspense>
@@ -142,15 +141,13 @@ export default async function Dashboard({ params, searchParams }) {
               type={file_type}
               className='md:col-span-2'
             />
-            {packageDetails[1].length > 0 && (
-              <div className='mt-4 md:mt-0 h-24 md:col-span-2 lg:col-span-1'>
-                <Version
-                  current={version ? version : 'All'}
-                  latest={packageDetails[1][0].max_version}
-                  link = {packageDetails[0]}
-                />
-              </div>
-            )}
+            <div className='mt-4 md:mt-0 h-24 md:col-span-2 lg:col-span-1'>
+              <Version
+                current={version ? version : 'All'}
+                latest={packageDetails[1].length > 0 ? packageDetails[1][0].max_version: null}
+                link = {packageDetails[1].length > 0 ? packageDetails[0]: null}
+              />
+            </div>
           </div>
         </div>
         <div className='mt-20 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 lg:h-[480px] lg:grid lg:grid-cols-3 gap-6'>

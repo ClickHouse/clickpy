@@ -13,7 +13,7 @@ async function getStats(package_name, min_date, max_date) {
   } 
   let sResp = await getGithubStats(package_name, min_date, max_date)
   if (sResp[1].length > 0){
-    return [sResp[0], sResp[1][0].stars, sResp[1][0].prs, sResp[1][0].issues,sResp[1][0].forks]
+    return [sResp[0], sResp[1][0].repo, sResp[1][0].stars, sResp[1][0].prs, sResp[1][0].issues, sResp[1][0].forks]
   }
   return []
 }
@@ -22,16 +22,16 @@ async function GithubStats({
   package_name, min_date, max_date
 }) {
   const stats = await getStats(package_name, min_date, max_date)
-  return stats.length > 0 ?  (
+  return stats.length > 0 && stats[1] ?  (
     <div className='flex h-full gap-4 flex-row flex-wrap xl:flex-nowrap'>
         <div className='flex gap-4 w-full sm:flex-row flex-col'>
-            <SimpleStat value={stats[1]} subtitle={'# Github stars'} logo={'/stars.svg'} link={stats[0]}/>
-            <SimpleStat value={stats[2]} subtitle={'# Pull requests'} logo={'/prs.svg'} link={stats[0]}/>
+            <SimpleStat value={stats[2]} subtitle={'# Github stars'} logo={'/stars.svg'} link={stats[0]}/>
+            <SimpleStat value={stats[3]} subtitle={'# Pull requests'} logo={'/prs.svg'} link={stats[0]}/>
 
         </div>
         <div className='flex gap-4 w-full sm:flex-row flex-col'>
-            <SimpleStat value={stats[3]} subtitle={'# Issues'} logo={'/issues.svg'} link={stats[0]}/>
-            <SimpleStat value={stats[4]} subtitle={'# Forks'} logo={'/fork.svg'} link={stats[0]}/>
+            <SimpleStat value={stats[4]} subtitle={'# Issues'} logo={'/issues.svg'} link={stats[0]}/>
+            <SimpleStat value={stats[5]} subtitle={'# Forks'} logo={'/fork.svg'} link={stats[0]}/>
         </div>
     </div>
   ) : null;
