@@ -127,8 +127,8 @@ export default async function Dashboard({ params, searchParams }) {
           {packageDetails[1].length > 0 && (
             <PackageDetails {...packageDetails[1][0]} />
           )}
-          <div className='mt-4 md:mt-12'>
-            <Suspense key={key} fallback={<Loading />}>
+          <div className='mt-4 md:mt-12 h-24'>
+            <Suspense key={key} fallback={<Loading/>}>
               <GithubStats package_name={package_name} min_date={min_date} max_date={max_date}/>
             </Suspense>
           </div>
@@ -161,7 +161,6 @@ export default async function Dashboard({ params, searchParams }) {
                 type='line'
                 getData={getDownloadsOverTime}
                 params={{
-                  period: 'Day',
                   package_name: package_name,
                   version: version,
                   min_date: min_date,
@@ -202,7 +201,6 @@ export default async function Dashboard({ params, searchParams }) {
                 options={{ stack: true }}
                 getData={getDownloadsOverTimeByPython}
                 params={{
-                  period: 'Day',
                   package_name: package_name,
                   version: version,
                   min_date: min_date,
@@ -225,7 +223,6 @@ export default async function Dashboard({ params, searchParams }) {
                 options={{ stack: false, fill: false }}
                 getData={getDownloadsOverTimeBySystem}
                 params={{
-                  period: 'Day',
                   package_name: package_name,
                   version: version,
                   min_date: min_date,

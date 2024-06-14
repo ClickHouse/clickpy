@@ -226,17 +226,17 @@ export async function getPackageDetails(package_name, version) {
         })
 }
 
-export async function getDownloadsOverTime({package_name, version, period, min_date, max_date, country_code, type}) {
+export async function getDownloadsOverTime({package_name, version, min_date, max_date, country_code, type}) {
     const columns = ['project', 'date']
     if (version) {  columns.push('version') }
     if (country_code) { columns.push('country_code') }
     if (type) { columns.push('type')}
     const table = findOptimalTable(columns)
     return query('getDownloadsOverTime',`SELECT
-        toStartOf${period}(date)::Date32 AS x,
+        if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay(date)::Date32, toStartOfWeek(date)::Date32) AS x,
         sum(count) AS y
     FROM ${PYPI_DATABASE}.${table} 
-    WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) 
+    WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (project = {package_name:String}) 
     AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'}
     GROUP BY x
     ORDER BY x ASC`, {
@@ -284,7 +284,7 @@ export async function getTopVersions({package_name, version, min_date, max_date,
         })
 }
 
-export async function getDownloadsOverTimeByPython({package_name, version, period, min_date, max_date, country_code, type}) {
+export async function getDownloadsOverTimeByPython({package_name, version, min_date, max_date, country_code, type}) {
     const columns = ['project', 'date', 'python_minor']
     if (country_code) { columns.push('country_code') }
     if (version) { columns.push('version') }
@@ -292,10 +292,10 @@ export async function getDownloadsOverTimeByPython({package_name, version, perio
     const table = findOptimalTable(columns)
     return query('getDownloadsOverTimeByPython',`SELECT
             python_minor as name,
-            toStartOf${period}(date)::Date32 AS x,
+            if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay(date)::Date32, toStartOfWeek(date)::Date32) AS x,
             ${table == PYPI_TABLE ? 'count()': 'sum(count)'} AS y
         FROM ${PYPI_DATABASE}.${table}
-        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) 
+        WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (project = {package_name:String}) 
         AND ${version ? `version={version:String}`: '1=1'} AND python_minor != '' 
         AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'}
         GROUP BY name, x
@@ -309,7 +309,7 @@ export async function getDownloadsOverTimeByPython({package_name, version, perio
         })
 }
 
-export async function getDownloadsOverTimeBySystem({package_name, version, period, min_date, max_date, country_code, type}) {
+export async function getDownloadsOverTimeBySystem({package_name, version, min_date, max_date, country_code, type}) {
     const columns = ['project', 'date', 'system']
     if (country_code) { columns.push('country_code') }
     if (version) { columns.push('version') }
@@ -325,10 +325,10 @@ export async function getDownloadsOverTimeBySystem({package_name, version, perio
         LIMIT 4
     ) SELECT
         system as name,
-        toStartOf${period}(date)::Date32 AS x,
+        if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay(date)::Date32, toStartOfWeek(date)::Date32) AS x,
         ${table == PYPI_TABLE ? 'count()': 'sum(count)'} AS y
         FROM ${PYPI_DATABASE}.${table}
-        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) 
+        WHERE (date >= {min_date:String}::Date32) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (project = {package_name:String}) 
         AND ${version ? `version={version:String}`: '1=1'} AND system IN systems 
         AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'}
         GROUP BY name, x ORDER BY x ASC, y DESC LIMIT 4 BY x`, {
