@@ -126,7 +126,7 @@ export default async function Dashboard({ params, searchParams }) {
         <div className='pt-16 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 relative'>
           <PackageDetails name={package_name} {...packageDetails[1][0]} />
           
-          <div className={`mt-4 md:mt-12 ${packageDetails[1].length > 0 && packageDetails[1][0].github_link && packageDetails[1][0].github_link != '' ? 'h-24': ''}`}>
+          <div className={`mt-4 md:mt-12 ${packageDetails[1].length > 0 && packageDetails[1][0].github_link && packageDetails[1][0].github_link != '' ? 'min-h-24': ''}`}>
             <Suspense key={key} fallback={<Loading/>}>
               <GithubStats package_name={package_name} min_date={min_date} max_date={max_date}/>
             </Suspense>
