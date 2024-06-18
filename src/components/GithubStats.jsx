@@ -1,6 +1,7 @@
 import React from 'react';
-import { getGithubStats, getGithubStatsEndpoint } from '@/utils/clickhouse';
+import { getGithubStats, getGithubStatsEndpoint, getGithubStarsOverTime } from '@/utils/clickhouse';
 import SimpleStat from './Charts/SimpleStat';
+import Chart from './Chart';
 
 async function getStats(package_name, min_date, max_date) {
   if (process.env.USE_ENDPOINT == 'true') {
@@ -23,15 +24,31 @@ async function GithubStats({
 }) {
   const stats = await getStats(package_name, min_date, max_date)
   return stats.length > 0 && stats[1] ?  (
-    <div className='flex h-full gap-4 flex-row flex-wrap xl:flex-nowrap'>
-        <div className='flex gap-4 w-full sm:flex-row flex-col'>
-            <SimpleStat value={stats[2]} subtitle={'# Github stars'} logo={'/stars.svg'} link={stats[0]}/>
-            <SimpleStat value={stats[3]} subtitle={'# Pull requests'} logo={'/prs.svg'} link={stats[0]}/>
+    <div className='flex h-full w-full mx-auto md:grid md:grid-cols-4 lg:grid-cols-3 gap-6'>
+        <div className='flex flex-col gap-4 md:col-span-2'>
+          <div className='flex gap-4 w-full sm:flex-row flex-col'>
+              <SimpleStat value={stats[2]} subtitle={'# Github stars'} logo={'/stars.svg'} link={stats[0]}/>
+              <SimpleStat value={stats[3]} subtitle={'# Pull requests'} logo={'/prs.svg'} link={stats[0]}/>
 
+          </div>
+          <div className='flex gap-4 w-full sm:flex-row flex-col'>
+              <SimpleStat value={stats[4]} subtitle={'# Issues'} logo={'/issues.svg'} link={stats[0]}/>
+              <SimpleStat value={stats[5]} subtitle={'# Forks'} logo={'/fork.svg'} link={stats[0]}/>
+          </div>
         </div>
-        <div className='flex gap-4 w-full sm:flex-row flex-col'>
-            <SimpleStat value={stats[4]} subtitle={'# Issues'} logo={'/issues.svg'} link={stats[0]}/>
-            <SimpleStat value={stats[5]} subtitle={'# Forks'} logo={'/fork.svg'} link={stats[0]}/>
+        <div className='md:col-span-2 lg:col-span-1'>
+          <Chart
+            type='spark'
+            getData={getGithubStarsOverTime}
+            params={
+              {
+                package_name: package_name,
+                min_date: min_date,
+                max_date: max_date,
+                
+              }
+            }
+          />
         </div>
     </div>
   ) : null;

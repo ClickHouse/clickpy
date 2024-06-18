@@ -131,7 +131,7 @@ export default async function Dashboard({ params, searchParams }) {
               <GithubStats package_name={package_name} min_date={min_date} max_date={max_date}/>
             </Suspense>
           </div>
-          <div className='mt-4 md:mt-12 w-full mx-auto md:grid md:grid-cols-4 lg:grid-cols-3 gap-6'>
+          <div className='mt-4 md:mt-8 w-full mx-auto md:grid md:grid-cols-4 lg:grid-cols-3 gap-6'>
             <DownloadList
               package_name={package_name}
               version={version}

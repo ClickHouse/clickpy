@@ -1,5 +1,4 @@
 import { createClient } from '@clickhouse/client';
-import { headers } from 'next/headers';
 
 export const clickhouse = createClient({
     host: process.env.CLICKHOUSE_HOST,
@@ -45,22 +44,22 @@ export async function getGithubStats(package_name, min_date, max_date) {
         (
             SELECT uniqExact(actor_login) AS stars
             FROM ${GITHUB_DATABASE}.github_events
-            WHERE (event_type = 'WatchEvent') AND (action = 'started') AND (repo_id = id) AND created_at > {min_date:String}::Date32 AND created_at <= {max_date:String}::Date32
+            WHERE (event_type = 'WatchEvent') AND (action = 'started') AND (repo_id = id) AND created_at > {min_date:Date32} AND created_at <= {max_date:Date32}
         ) AS stars,
         (
             SELECT uniqExact(number) AS prs
             FROM ${GITHUB_DATABASE}.github_events
-            WHERE (event_type = 'PullRequestEvent') AND (repo_id = id) AND created_at > {min_date:String}::Date32 AND created_at <= {max_date:String}::Date32
+            WHERE (event_type = 'PullRequestEvent') AND (repo_id = id) AND created_at > {min_date:Date32} AND created_at <= {max_date:Date32}
         ) AS prs,
         (
             SELECT uniqExact(number) AS issues
             FROM ${GITHUB_DATABASE}.github_events
-            WHERE (event_type = 'IssuesEvent') AND (repo_id = id) AND created_at > {min_date:String}::Date32 AND created_at <= {max_date:String}::Date32
+            WHERE (event_type = 'IssuesEvent') AND (repo_id = id) AND created_at > {min_date:Date32} AND created_at <= {max_date:Date32}
         ) AS issues,
         (
             SELECT uniqExact(actor_login) AS forks
             FROM ${GITHUB_DATABASE}.github_events
-            WHERE (event_type = 'ForkEvent') AND (repo_id = id) AND created_at > {min_date:String}::Date32 AND created_at <= {max_date:String}::Date32
+            WHERE (event_type = 'ForkEvent') AND (repo_id = id) AND created_at > {min_date:Date32} AND created_at <= {max_date:Date32}
         ) AS forks
     SELECT
         repo,
@@ -72,6 +71,42 @@ export async function getGithubStats(package_name, min_date, max_date) {
         min_date: min_date,
         max_date: max_date,
         package_name: package_name
+    })
+}
+
+export async function getGithubStarsOverTime({package_name, min_date, max_date}) {
+    return query('getGithubStarsOverTime', `WITH (
+        SELECT regexpExtract(arrayFilter(l -> (l LIKE '%https://github.com/%'), arrayConcat(project_urls, [home_page]))[1], '.*https://github.com/([^/]+/[^/]+)')
+        FROM ${PYPI_DATABASE}.projects
+        WHERE (name = {package_name:String}) AND (length(arrayFilter(l -> (l LIKE '%https://github.com/%'), arrayConcat(project_urls, [home_page]))) >= 1)
+        ORDER BY upload_time DESC
+        LIMIT 1
+      ) AS repo,
+      (
+        SELECT repo_id
+        FROM ${GITHUB_DATABASE}.repo_name_to_id
+        WHERE repo_name = repo
+        LIMIT 1
+      ) AS id,
+      (
+          SELECT groupArrayDistinct(actor_login) FROM ${GITHUB_DATABASE}.github_events WHERE repo_id = id AND (event_type = 'WatchEvent') AND (action = 'started') AND (created_at <= {min_date:Date32})
+      ) AS initial
+      SELECT
+          x,
+          arrayUniq(y) AS y
+      FROM
+      (
+          SELECT
+              x,
+              groupArrayDistinctArray(arrayConcat(initial,groupArrayDistinct(actor_login))) OVER (ORDER BY x ASC) AS y
+          FROM ${GITHUB_DATABASE}.github_events
+          WHERE repo_id = id AND (event_type = 'WatchEvent') AND (action = 'started') AND (created_at > {min_date:Date32}) AND (created_at <= {max_date:Date32})
+          GROUP BY multiIf(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 3,toStartOfDay(created_at)::Date32, date_diff('month', {min_date:Date32},{max_date:Date32}) <= 12, toStartOfWeek(created_at), date_diff('month', {min_date:Date32},{max_date:Date32}) <= 60, toStartOfMonth(created_at), toStartOfYear(created_at)) AS x
+          ORDER BY x ASC
+      )`, {
+        package_name: package_name,
+        min_date: min_date,
+        max_date: max_date
     })
 }
 
@@ -128,7 +163,6 @@ export async function getPackages(query_prefix) {
     }
     return []
 }
-
 
 export async function getTotalDownloads() {
     return query('getTotalDownloads',`SELECT

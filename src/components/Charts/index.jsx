@@ -7,6 +7,7 @@ import Pie from './Pie'
 import CountryMap from './CountryMap'
 import Radar from './Radar'
 import Guage from './Guage'
+import Spark from './Spark'
 
 export default function ClientComponent({ type, data = [], options = {}, link }) {
   const router = useRouter()
@@ -82,6 +83,12 @@ export default function ClientComponent({ type, data = [], options = {}, link })
           router.push(`${pathname}?${current.toString()}`, { scroll: false })
         }}
         link={link}
+      />
+    ),
+    'spark': (
+      <Spark
+          data = {data}
+          link={link}
       />
     )
   }[type]
