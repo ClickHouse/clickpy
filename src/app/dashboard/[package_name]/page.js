@@ -8,7 +8,8 @@ import {
   getDownloadsOverTimeByPython,
   getDownloadsOverTimeBySystem,
   getDownloadsByCountry,
-  getFileTypesByInstaller
+  getFileTypesByInstaller,
+  hasGithubRepo
 } from '@/utils/clickhouse';
 import Search from '@/components/Search';
 import Image from 'next/image';
@@ -48,6 +49,7 @@ export default async function Dashboard({ params, searchParams }) {
   }
 
   const packageDetails = await getPackageDetails(package_name, version);
+
   return (
     <div>
       <header className='bg-neutral-800 shadow-lg border-b-2 border-neutral-725 sticky top-0 z-20 opacity-95 backdrop-filter backdrop-blur-xl bg-opacity-90 2xl:h-[82px]'>
@@ -126,12 +128,15 @@ export default async function Dashboard({ params, searchParams }) {
         <div className='pt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16'>
           <PackageDetails name={package_name} {...packageDetails[1][0]} />
         </div>
-        
-        <div className='mt-4 md:mt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16'>
-          <Suspense key={key} fallback={<Loading/>}>
-            <GithubStats package_name={package_name} min_date={min_date} max_date={max_date}/>
-          </Suspense>
-        </div>
+        {
+          packageDetails[1][0]?.repo_name && (
+            <div className='mt-4 md:mt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16'>
+              <Suspense key={key} fallback={<Loading height='208px'/>}>
+                <GithubStats package_name={package_name} min_date={min_date} max_date={max_date}/>
+              </Suspense>
+            </div>
+          )
+        }
         <div className='mt-4 md:mt-8 w-11/12 xl:w-11/12 lg:w-full mx-auto md:grid md:grid-cols-4 lg:grid-cols-3 gap-6 lg:px-16'>
           <DownloadList
             package_name={package_name}

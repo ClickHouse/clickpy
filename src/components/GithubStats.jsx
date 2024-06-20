@@ -15,7 +15,7 @@ async function getStats(package_name, min_date, max_date) {
   } 
   let sResp = await getGithubStats(package_name, min_date, max_date)
   if (sResp[1].length > 0){
-    return [sResp[0], sResp[1][0].repo, sResp[1][0].stars, sResp[1][0].prs, sResp[1][0].issues, sResp[1][0].forks]
+    return [sResp[0], sResp[1][0].id, sResp[1][0].stars, sResp[1][0].prs, sResp[1][0].issues, sResp[1][0].forks]
   }
   return []
 }

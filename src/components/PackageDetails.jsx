@@ -8,7 +8,7 @@ export default function PackageDetails({
   license,
   summary,
   home_page,
-  github_link
+  repo_name
 }) {
   return (
     <div>
@@ -26,8 +26,8 @@ export default function PackageDetails({
         )
         }
         {
-          github_link && github_link != '' && (
-            <a href={github_link} target='_blank' className='text-center pt-2'>
+          repo_name && repo_name != '' && (
+            <a href={`https://github.com/${repo_name}`} target='_blank' className='text-center pt-2'>
               <button type='button'>
                 <Image
                   width={16}

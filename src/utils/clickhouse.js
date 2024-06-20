@@ -28,19 +28,7 @@ const materialized_views = [
 
 export async function getGithubStats(package_name, min_date, max_date) {
     return query('getGitubStats',`WITH
-        (
-            SELECT regexpExtract(arrayFilter(l -> (l LIKE '%https://github.com/%'), arrayConcat(project_urls, [home_page]))[1], '.*https:\/\/github\.com\/([^\/]+\/[^\/]+)')
-            FROM ${PYPI_DATABASE}.projects
-            WHERE (name = {package_name:String}) AND (length(arrayFilter(l -> (l LIKE '%https://github.com/%'), arrayConcat(project_urls, [home_page]))) >= 1)
-            ORDER BY upload_time DESC
-            LIMIT 1
-        ) AS repo,
-        (
-            SELECT repo_id
-            FROM ${GITHUB_DATABASE}.repo_name_to_id
-            WHERE repo_name = repo
-            LIMIT 1
-        ) AS id,
+        getRepoId({package_name:String}) AS id,
         (
             SELECT uniqExact(actor_login) AS stars
             FROM ${GITHUB_DATABASE}.github_events
@@ -62,7 +50,7 @@ export async function getGithubStats(package_name, min_date, max_date) {
             WHERE (event_type = 'ForkEvent') AND (repo_id = id) AND created_at > {min_date:Date32} AND created_at <= {max_date:Date32}
         ) AS forks
     SELECT
-        repo,
+        id,
         stars,
         prs,
         issues,
@@ -75,19 +63,8 @@ export async function getGithubStats(package_name, min_date, max_date) {
 }
 
 export async function getGithubStarsOverTime(package_name, min_date, max_date) {
-    return query('getGithubStarsOverTime', `WITH (
-        SELECT regexpExtract(arrayFilter(l -> (l LIKE '%https://github.com/%'), arrayConcat(project_urls, [home_page]))[1], '.*https://github.com/([^/]+/[^/]+)')
-        FROM ${PYPI_DATABASE}.projects
-        WHERE (name = {package_name:String}) AND (length(arrayFilter(l -> (l LIKE '%https://github.com/%'), arrayConcat(project_urls, [home_page]))) >= 1)
-        ORDER BY upload_time DESC
-        LIMIT 1
-      ) AS repo,
-      (
-        SELECT repo_id
-        FROM ${GITHUB_DATABASE}.repo_name_to_id
-        WHERE repo_name = repo
-        LIMIT 1
-      ) AS id,
+    return query('getGithubStarsOverTime', `WITH
+      getRepoId({package_name:String}) AS id,
       (
           SELECT groupArrayDistinct(actor_login) FROM ${GITHUB_DATABASE}.github_events WHERE repo_id = id AND (event_type = 'WatchEvent') AND (action = 'started') AND (created_at <= {min_date:Date32})
       ) AS initial
@@ -250,7 +227,7 @@ export async function getPackageDetails(package_name, version) {
             license,
             home_page,
             max_version,
-            regexpExtract(arrayFilter(l -> (l LIKE '%https://github.com/%'), arrayConcat(project_urls, [home_page]))[1], '.*(https://github.com/.*).*') as github_link
+            getRepoName({package_name:String}) as repo_name
         FROM ${PYPI_DATABASE}.projects
         WHERE (name = {package_name:String}) AND ${version ? `version={version:String}`: '1=1'} 
         ORDER BY upload_time DESC
