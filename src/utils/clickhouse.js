@@ -39,7 +39,7 @@ export async function getGithubStats(package_name, min_date, max_date) {
         (
             SELECT repo_id
             FROM ${GITHUB_DATABASE}.repo_name_to_id
-            WHERE repo_name = repo
+            WHERE repo_name = repo AND repo_id != ''
             LIMIT 1
         ) AS id,
         (
