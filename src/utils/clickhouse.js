@@ -30,10 +30,10 @@ export async function getGithubStats(package_name, min_date, max_date) {
     return query('getGitubStats',`WITH
         getRepoId({package_name:String}) AS id,
         (
-            SELECT uniqExact(actor_login) AS stars
+            SELECT uniqExact(actor_login) AS pr_creators
             FROM ${GITHUB_DATABASE}.github_events
-            WHERE (event_type = 'WatchEvent') AND (action = 'started') AND (repo_id = id) AND created_at > {min_date:Date32} AND created_at <= {max_date:Date32}
-        ) AS stars,
+            WHERE (event_type = 'PullRequestEvent') AND (action = 'opened') AND (repo_id = id) AND created_at > {min_date:Date32} AND created_at <= {max_date:Date32}
+        ) AS pr_creators,
         (
             SELECT uniqExact(number) AS prs
             FROM ${GITHUB_DATABASE}.github_events
@@ -51,7 +51,7 @@ export async function getGithubStats(package_name, min_date, max_date) {
         ) AS forks
     SELECT
         id,
-        stars,
+        pr_creators,
         prs,
         issues,
         forks`,

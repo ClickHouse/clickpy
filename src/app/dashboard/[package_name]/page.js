@@ -137,7 +137,7 @@ export default async function Dashboard({ params, searchParams }) {
             </div>
           )
         }
-        <div className='mt-4 md:mt-8 w-11/12 xl:w-11/12 lg:w-full mx-auto md:grid md:grid-cols-4 lg:grid-cols-3 gap-6 lg:px-16'>
+        <div className='mt-4 md:mt-12 w-11/12 xl:w-11/12 lg:w-full mx-auto md:grid md:grid-cols-4 lg:grid-cols-3 gap-6 lg:px-16'>
           <DownloadList
             package_name={package_name}
             version={version}
@@ -156,7 +156,7 @@ export default async function Dashboard({ params, searchParams }) {
           </div>
         </div>
 
-        <div className='mt-20 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 lg:h-[480px] lg:grid lg:grid-cols-3 gap-6'>
+        <div className='mt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 lg:h-[480px] lg:grid lg:grid-cols-3 gap-6'>
           <div className='h-[480px] lg:col-span-2'>
             <p className='text-2xl font-bold mb-5'>Downloads over time</p>
             <Suspense key={key} fallback={<Loading />}>
@@ -193,7 +193,7 @@ export default async function Dashboard({ params, searchParams }) {
             </Suspense>
           </div>
         </div>
-        <div className='mt-32 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16'>
+        <div className='mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16'>
           <div className='h-[480px]'>
             <p className='text-2xl font-bold mb-5'>
               Downloads by Python version over time
@@ -215,7 +215,7 @@ export default async function Dashboard({ params, searchParams }) {
             </Suspense>
           </div>
         </div>
-        <div className='mt-32 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 h-[480px]'>
+        <div className='mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 h-[480px]'>
           <div className='h-[480px]'>
             <p className='text-2xl font-bold mb-5'>
               Downloads by system over time
@@ -237,7 +237,7 @@ export default async function Dashboard({ params, searchParams }) {
             </Suspense>
           </div>
         </div>
-        <div className='mt-32 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 h-[480px] lg:grid xl:grid-cols-3 gap-6 mb-32'>
+        <div className='mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 h-[480px] lg:grid xl:grid-cols-3 gap-6 mb-32'>
           <div className='h-[480px] xl:col-span-2'>
             <p className='text-2xl font-bold mb-5'>Downloads by country</p>
             <Suspense key={key} fallback={<Loading />}>
