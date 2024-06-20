@@ -1,12 +1,17 @@
+'use client';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
   ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/20/solid';
+import React, { useState } from 'react';
 
 export default function SimpleStat({ value, subtitle, logo, link }) {
+
+  const [selected, setSelected] = useState(false);
+
   return (
-    <div className='min-w-[250px] rounded-lg bg-slate-850 flex gap-4 p-4 h-24  w-full min-w-72 border border-slate-700'>
+    <div className='min-w-[250px] rounded-lg bg-slate-850 flex gap-4 p-4 h-24  w-full min-w-72 border border-slate-700' onMouseEnter={() => setSelected(true)} onMouseLeave={() => setSelected(false)}>
       <div className='items-center flex grow'>
         <Image
           width={16}
@@ -22,7 +27,7 @@ export default function SimpleStat({ value, subtitle, logo, link }) {
       </div>
 
       <div className='flex-row flex justify-end w-4 mt-[-12px] mr-[-12px]'>
-        { link && <Link href={link} target='_blank' className='w-5 ml-5'>
+        { selected && link && <Link href={link} target='_blank' className='w-5 ml-5'>
             <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
         </Link>} 
       </div>
