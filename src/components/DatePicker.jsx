@@ -6,6 +6,7 @@ import './datepicker.css';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
+import { parseDate} from '@/utils/utils';
 
 function ClearLogo(clearable) {
   return (
@@ -37,10 +38,19 @@ export default function DatePicker({ dates }) {
   const pathname = usePathname();
   const current = new URLSearchParams(searchParams.toString());
   const clearable = current.get('min_date') || current.get('max_date');
+
   const onChange = (min_date, max_date) => {
-    min_date ? current.set('min_date', min_date) : current.delete('min_date');
-    max_date ? current.set('max_date', max_date) : current.delete('max_date');
-    router.push(`${pathname}?${current.toString()}`, { scroll: false });
+    if (min_date === undefined && max_date === undefined) {
+      current.delete('min_date');
+      current.delete('max_date');
+      router.push(`${pathname}?${current.toString()}`, { scroll: false });
+    }
+    else if (parseDate(min_date, undefined) && parseDate(max_date, undefined)) {
+      min_date ? current.set('min_date', min_date) : current.delete('min_date');
+      max_date ? current.set('max_date', max_date) : current.delete('max_date');
+      router.push(`${pathname}?${current.toString()}`, { scroll: false });
+    }
+    
   };
 
   const onSelectDates = (values) => {

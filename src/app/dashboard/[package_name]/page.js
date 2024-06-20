@@ -8,9 +8,9 @@ import {
   getDownloadsOverTimeByPython,
   getDownloadsOverTimeBySystem,
   getDownloadsByCountry,
-  getFileTypesByInstaller,
-  hasGithubRepo
+  getFileTypesByInstaller
 } from '@/utils/clickhouse';
+import { parseDate} from '@/utils/utils';
 import Search from '@/components/Search';
 import Image from 'next/image';
 import Chart from '@/components/Chart';
@@ -34,12 +34,13 @@ export async function generateMetadata({ params, searchParams }, parent) {
   }
 }
 
+
 export default async function Dashboard({ params, searchParams }) {
   const version = searchParams.version;
   const country_code = searchParams.country_code;
   const file_type = searchParams.type;
-  let min_date = searchParams.min_date;
-  let max_date = searchParams.max_date;
+  let min_date = parseDate(searchParams.min_date, null);
+  let max_date = parseDate(searchParams.max_date, null);
   const package_name = params.package_name;
   const key = JSON.stringify({ ...searchParams });
   if (min_date == null || max_date == null) {
@@ -49,7 +50,6 @@ export default async function Dashboard({ params, searchParams }) {
   }
 
   const packageDetails = await getPackageDetails(package_name, version);
-
   return (
     <div>
       <header className='bg-neutral-800 shadow-lg border-b-2 border-neutral-725 sticky top-0 z-20 opacity-95 backdrop-filter backdrop-blur-xl bg-opacity-90 2xl:h-[82px]'>
