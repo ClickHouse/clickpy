@@ -136,7 +136,7 @@ export default function Spark({ name, data, link, type='bar' }) {
             />
             <p
               className={`text-left ml-2 duration-300 text-slate-850 text-2xl font-bold`}>
-              {formatQuantity(data[data.length - 1].y)} <span className='text-base font-normal'>(+{data[data.length - 1].y - data[0].y})</span>
+              {(data && data.length > 0) ? formatQuantity(data[data.length - 1].y): 0} <span className='text-base font-normal'>({(data && data.length > 0) ? `+${data[data.length - 1].y - data[0].y }`: ''} )</span>
             </p>
           </div>
           <Link href={link} target='_blank'>

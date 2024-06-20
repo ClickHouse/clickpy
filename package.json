@@ -19,6 +19,7 @@
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/typography": "^0.5.9",
     "autoprefixer": "10.4.14",
+    "dayjs": "^1.11.11",
     "echarts": "^5.4.3",
     "echarts-countries-js": "^1.0.5",
     "echarts-for-react": "^3.0.2",
