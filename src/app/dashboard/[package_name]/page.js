@@ -41,8 +41,6 @@ export default async function Dashboard({ params, searchParams }) {
   const file_type = searchParams.type;
   let min_date = parseDate(searchParams.min_date, null);
   let max_date = parseDate(searchParams.max_date, null);
-  console.log(min_date)
-  console.log(max_date)
   const package_name = params.package_name;
   const key = JSON.stringify({ ...searchParams });
   if (min_date == null || max_date == null) {

@@ -13,9 +13,11 @@ export function formatNumber(number) {
 
 export function parseDate(date_string, default_value) {
   const value = dayjs(date_string, "YYYY-MM-DD")
-  console.log(value)
   if (!isNaN(value.year()) && !isNaN(value.month()) && !isNaN(value.day())) {
-    return date_string
+    if (value.year() >= 1970 && value.year() < 2030) {
+      return value.format("YYYY-MM-DD")
+    }
+    return default_value
   }
   return default_value
 }
