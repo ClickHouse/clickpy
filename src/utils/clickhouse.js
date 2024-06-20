@@ -74,7 +74,7 @@ export async function getGithubStats(package_name, min_date, max_date) {
     })
 }
 
-export async function getGithubStarsOverTime({package_name, min_date, max_date}) {
+export async function getGithubStarsOverTime(package_name, min_date, max_date) {
     return query('getGithubStarsOverTime', `WITH (
         SELECT regexpExtract(arrayFilter(l -> (l LIKE '%https://github.com/%'), arrayConcat(project_urls, [home_page]))[1], '.*https://github.com/([^/]+/[^/]+)')
         FROM ${PYPI_DATABASE}.projects
@@ -92,18 +92,18 @@ export async function getGithubStarsOverTime({package_name, min_date, max_date})
           SELECT groupArrayDistinct(actor_login) FROM ${GITHUB_DATABASE}.github_events WHERE repo_id = id AND (event_type = 'WatchEvent') AND (action = 'started') AND (created_at <= {min_date:Date32})
       ) AS initial
       SELECT
-          x,
-          arrayUniq(y) AS y
-      FROM
-      (
-          SELECT
-              x,
-              groupArrayDistinctArray(arrayConcat(initial,groupArrayDistinct(actor_login))) OVER (ORDER BY x ASC) AS y
-          FROM ${GITHUB_DATABASE}.github_events
-          WHERE repo_id = id AND (event_type = 'WatchEvent') AND (action = 'started') AND (created_at > {min_date:Date32}) AND (created_at <= {max_date:Date32})
-          GROUP BY multiIf(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 3,toStartOfDay(created_at)::Date32, date_diff('month', {min_date:Date32},{max_date:Date32}) <= 12, toStartOfWeek(created_at), date_diff('month', {min_date:Date32},{max_date:Date32}) <= 60, toStartOfMonth(created_at), toStartOfYear(created_at)) AS x
-          ORDER BY x ASC
-      )`, {
+            x,
+            arrayUniq(arrayConcat(initial,y)) AS y
+        FROM
+        (
+            SELECT
+                x,
+                groupArrayDistinctArray(groupArrayDistinct(actor_login)) OVER (ORDER BY x ASC) AS y
+            FROM ${GITHUB_DATABASE}.github_events
+            WHERE repo_id = id AND (event_type = 'WatchEvent') AND (action = 'started') AND (created_at > {min_date:Date32}) AND (created_at <= {max_date:Date32})
+            GROUP BY multiIf(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 2,toStartOfDay(created_at)::Date32, date_diff('month', {min_date:Date32},{max_date:Date32}) <= 12, toStartOfWeek(created_at), date_diff('month', {min_date:Date32},{max_date:Date32}) <= 60, toStartOfMonth(created_at), toStartOfQuarter(created_at)) AS x
+            ORDER BY x ASC
+        )`, {
         package_name: package_name,
         min_date: min_date,
         max_date: max_date

@@ -85,6 +85,12 @@ export default function Spark({ name, data, link, type='bar' }) {
         lineStyle: {
           color: '#656565'
         }
+      },
+      axisLabel: {
+        color: '#656565',
+        formatter: (value, index) => {
+            return formatQuantity(value);
+        }
       }
     },
     series: [
@@ -116,21 +122,21 @@ export default function Spark({ name, data, link, type='bar' }) {
 
   return (
     <div
-      className='rounded-lg cursor-pointer shadow-inner h-full justify-between flex flex-col rounded-lg bg-slate-850 border border-slate-700 bg-[url("/stars_background.png")]'
+      className='rounded-lg cursor-pointer shadow-inner h-[312px] lg:h-[208px] justify-between flex flex-col rounded-lg bg-slate-850 border border-slate-700 bg-[url("/stars_background.png")] bg-cover'
       onMouseMove={onMouseOver}
       onMouseOut={onMouseOut}>
-        <div className='flex px-[6px] pt-[6px] pb-4 flex justify-between text-left'>
-          <div className='flex'>
+        <div className='flex px-[8px] pt-[6px] pb-4 flex justify-between text-left'>
+          <div className='flex items-center'>
             <Image
               width={8}
               height={8}
-              className='h-8 w-8 min-w-8 min-h-8 bg-neutral-850 rounded-lg'
-              src={'/stars.svg'}
+              className='h-6 w-6 min-w-6 min-h-6 bg-neutral-850 rounded-lg'
+              src={'/star.svg'}
               alt={'stars'}
             />
             <p
               className={`text-left ml-2 duration-300 text-slate-850 text-2xl font-bold`}>
-              {formatQuantity(data[data.length - 1].y)}
+              {formatQuantity(data[data.length - 1].y)} <span className='text-base font-normal'>(+{data[data.length - 1].y - data[0].y})</span>
             </p>
           </div>
           <Link href={link} target='_blank'>
