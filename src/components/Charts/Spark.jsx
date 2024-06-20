@@ -122,7 +122,7 @@ export default function Spark({ name, data, link, type='bar' }) {
 
   return (
     <div
-      className='rounded-lg cursor-pointer shadow-inner h-[312px] lg:h-[208px] justify-between flex flex-col rounded-lg bg-slate-850 border border-slate-700 bg-[url("/stars_background.png")] bg-cover'
+      className='h-full rounded-lg cursor-pointer shadow-inner justify-between flex flex-col rounded-lg bg-slate-850 border border-slate-700 bg-[url("/stars_background.png")] bg-cover'
       onMouseMove={onMouseOver}
       onMouseOut={onMouseOut}>
         <div className='flex px-[8px] pt-[6px] pb-4 flex justify-between text-left'>
