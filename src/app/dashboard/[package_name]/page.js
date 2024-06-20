@@ -8,7 +8,8 @@ import {
   getDownloadsOverTimeByPython,
   getDownloadsOverTimeBySystem,
   getDownloadsByCountry,
-  getFileTypesByInstaller
+  getFileTypesByInstaller,
+  hasGithubRepo
 } from '@/utils/clickhouse';
 import Search from '@/components/Search';
 import Image from 'next/image';
@@ -48,6 +49,7 @@ export default async function Dashboard({ params, searchParams }) {
   }
 
   const packageDetails = await getPackageDetails(package_name, version);
+
   return (
     <div>
       <header className='bg-neutral-800 shadow-lg border-b-2 border-neutral-725 sticky top-0 z-20 opacity-95 backdrop-filter backdrop-blur-xl bg-opacity-90 2xl:h-[82px]'>
@@ -123,34 +125,38 @@ export default async function Dashboard({ params, searchParams }) {
         </div>
       </header>
       <div className='relative isolate'>
-        <div className='pt-16 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 relative'>
+        <div className='pt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16'>
           <PackageDetails name={package_name} {...packageDetails[1][0]} />
-          
-          <div className={`mt-4 md:mt-12 ${packageDetails[1].length > 0 && packageDetails[1][0].github_link && packageDetails[1][0].github_link != '' ? 'min-h-24': ''}`}>
-            <Suspense key={key} fallback={<Loading/>}>
-              <GithubStats package_name={package_name} min_date={min_date} max_date={max_date}/>
-            </Suspense>
-          </div>
-          <div className='mt-4 md:mt-12 w-full mx-auto md:grid md:grid-cols-4 lg:grid-cols-3 gap-6'>
-            <DownloadList
-              package_name={package_name}
-              version={version}
-              min_date={min_date}
-              max_date={max_date}
-              country_code={country_code}
-              type={file_type}
-              className='md:col-span-2'
-            />
-            <div className='mt-4 md:mt-0 h-24 md:col-span-2 lg:col-span-1'>
-              <Version
-                current={version ? version : 'All'}
-                latest={packageDetails[1].length > 0 ? packageDetails[1][0].max_version: null}
-                link = {packageDetails[1].length > 0 ? packageDetails[0]: null}
-              />
+        </div>
+        {
+          packageDetails[1][0]?.repo_name && (
+            <div className='mt-4 md:mt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16'>
+              <Suspense key={key} fallback={<Loading height='208px'/>}>
+                <GithubStats package_name={package_name} min_date={min_date} max_date={max_date}/>
+              </Suspense>
             </div>
+          )
+        }
+        <div className='mt-4 md:mt-12 w-11/12 xl:w-11/12 lg:w-full mx-auto md:grid md:grid-cols-4 lg:grid-cols-3 gap-6 lg:px-16'>
+          <DownloadList
+            package_name={package_name}
+            version={version}
+            min_date={min_date}
+            max_date={max_date}
+            country_code={country_code}
+            type={file_type}
+            className='md:col-span-2'
+          />
+          <div className='mt-4 md:mt-0 h-24 md:col-span-2 lg:col-span-1'>
+            <Version
+              current={version ? version : 'All'}
+              latest={packageDetails[1].length > 0 ? packageDetails[1][0].max_version: null}
+              link = {packageDetails[1].length > 0 ? packageDetails[0]: null}
+            />
           </div>
         </div>
-        <div className='mt-20 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 lg:h-[480px] lg:grid lg:grid-cols-3 gap-6'>
+
+        <div className='mt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 lg:h-[480px] lg:grid lg:grid-cols-3 gap-6'>
           <div className='h-[480px] lg:col-span-2'>
             <p className='text-2xl font-bold mb-5'>Downloads over time</p>
             <Suspense key={key} fallback={<Loading />}>
@@ -187,7 +193,7 @@ export default async function Dashboard({ params, searchParams }) {
             </Suspense>
           </div>
         </div>
-        <div className='mt-32 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16'>
+        <div className='mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16'>
           <div className='h-[480px]'>
             <p className='text-2xl font-bold mb-5'>
               Downloads by Python version over time
@@ -209,7 +215,7 @@ export default async function Dashboard({ params, searchParams }) {
             </Suspense>
           </div>
         </div>
-        <div className='mt-32 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 h-[480px]'>
+        <div className='mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 h-[480px]'>
           <div className='h-[480px]'>
             <p className='text-2xl font-bold mb-5'>
               Downloads by system over time
@@ -231,7 +237,7 @@ export default async function Dashboard({ params, searchParams }) {
             </Suspense>
           </div>
         </div>
-        <div className='mt-32 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 h-[480px] lg:grid xl:grid-cols-3 gap-6 mb-32'>
+        <div className='mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 h-[480px] lg:grid xl:grid-cols-3 gap-6 mb-32'>
           <div className='h-[480px] xl:col-span-2'>
             <p className='text-2xl font-bold mb-5'>Downloads by country</p>
             <Suspense key={key} fallback={<Loading />}>

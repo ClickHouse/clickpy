@@ -1,3 +1,5 @@
+const { spark } = require('sql-formatter');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -10,7 +12,7 @@ module.exports = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))'
+        'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       typography: ({ theme }) => ({
         neutral: {
@@ -182,7 +184,10 @@ module.exports = {
         nav: {
           DEFAULT: '#181818'
         },
-
+        spark: {
+          yellow: '',
+          red: '',
+        },
         c1: {
           light: '#FFFFFF',
           DEFAULT: 'rgba(var(--clickhouse-color-1), <alpha-value>)',

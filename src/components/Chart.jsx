@@ -1,5 +1,4 @@
 import React, { Suspense } from 'react'
-import Loading from './Loading'
 import Charts from './Charts'
 
 export default async function Chart ({getData, type, params, options}) {

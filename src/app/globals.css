@@ -24,3 +24,11 @@ body {
 .icon-hover:hover {
   color: #FAFF69;
 }
+
+.icon-hover-2 {
+  color: #656565;
+}
+
+.icon-hover-2:hover {
+  color: #262626;
+}

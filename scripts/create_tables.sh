@@ -670,4 +670,25 @@ FROM github.github_events
 GROUP BY repo_name
 '
 
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE OR REPLACE FUNCTION getRepoName AS package_name -> (
+    WITH (
+            SELECT regexpExtract(arrayFilter(l -> (l LIKE '%https://github.com/%'), arrayConcat(project_urls, [home_page]))[1], '.*https://github\\.com/([^/]+/[^/]+)')
+            FROM pypi.projects
+            WHERE (name = package_name) AND (length(arrayFilter(l -> (l LIKE '%https://github.com/%'), arrayConcat(project_urls, [home_page]))) >= 1)
+            ORDER BY upload_time DESC
+            LIMIT 1
+        ) AS repo
+    SELECT repo
+)
+'
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE OR REPLACE FUNCTION getRepoId AS package_name -> (
+    SELECT repo_id
+    FROM github.repo_name_to_id
+    WHERE (repo_name = getRepoName(package_name)) AND (repo_id != '')
+    LIMIT 1
+)
+'
 echo "done"
