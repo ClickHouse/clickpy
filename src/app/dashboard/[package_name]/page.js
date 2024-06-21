@@ -193,10 +193,11 @@ export default async function Dashboard({ params, searchParams }) {
             </Suspense>
           </div>
         </div>
-        <div className='mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16'>
-          <div className='h-[480px]'>
+
+        <div className='mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 lg:h-[480px] lg:grid lg:grid-cols-3 gap-6'>
+          <div className='h-[480px] lg:col-span-2'>
             <p className='text-2xl font-bold mb-5'>
-              Downloads by Python version over time
+                Downloads by Python version over time
             </p>
             <Suspense key={key} fallback={<Loading />}>
               <Chart
@@ -214,7 +215,26 @@ export default async function Dashboard({ params, searchParams }) {
               />
             </Suspense>
           </div>
+          <div className='h-[480px] mt-32 lg:mt-0'>
+            <p className='text-2xl font-bold mb-5'>Top contributors</p>
+            <Suspense key={key} fallback={<Loading />}>
+              <Chart
+                type='pie'
+                getData={getTopVersions}
+                params={{
+                  package_name: package_name,
+                  version: version,
+                  min_date: min_date,
+                  max_date: max_date,
+                  country_code: country_code,
+                  type: file_type
+                }}
+                options={{ filter_name: 'version' }}
+              />
+            </Suspense>
+          </div>
         </div>
+
         <div className='mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 h-[480px]'>
           <div className='h-[480px]'>
             <p className='text-2xl font-bold mb-5'>
