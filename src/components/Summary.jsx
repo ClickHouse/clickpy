@@ -6,6 +6,10 @@ import Image from 'next/image';
 import PunchCard from './Charts/PunchCard';
 import { useRouter } from 'next/navigation';
 import { formatNumber } from '@/utils/utils';
+import Link from 'next/link';
+import {
+  ArrowTopRightOnSquareIcon,
+} from '@heroicons/react/20/solid';
 
 export default function Summary({
   packages,
@@ -53,21 +57,31 @@ export default function Summary({
           data={packages[1]
             .map((p) => {
               return { x: p.project, y: p.c, name: 'counts' };
-            })
-            .reverse()}
-          title={
-            <div className='flex space-x-2'>
-              <Image alt='recent' src='/popular.svg' width={20} height={20} />
-              <span className='text-white font-bold space-x-0.5'>
-                Top Repos
-              </span>
+            })}
+          header={
+            <div className='px-6 pt-4 pb-0 flex-row flex justify-between items-end'>
+              <div className='flex space-x-2'>
+                <Image alt='recent' src='/popular.svg' width={20} height={20} />
+                <span className='text-white font-bold space-x-0.5'>
+                  Top Repos
+                </span>
+              </div>
+            <div className='flex flex-row justify-center items-center'>
+              <p
+                className={
+                  'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500 text-sm'
+                }>
+                {`${formatNumber(total_top_downloads)} downloads`}
+              </p>
+              <Link href={packages[0]} target='_blank' className='w-4 ml-2'>
+                  <ArrowTopRightOnSquareIcon className='h-4 w-4 flex-none icon-hover' aria-hidden='true'/>
+              </Link>  
             </div>
+          </div>
           }
-          subtitle={`${formatNumber(total_top_downloads)} downloads`}
           onClick={(value) => {
             router.push(`/dashboard/${value}`);
           }}
-          link = {packages[0]}
         />
       </div>
       <div className='xl:col-span-2'>

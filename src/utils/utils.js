@@ -21,3 +21,17 @@ export function parseDate(date_string, default_value) {
   }
   return default_value
 }
+
+export function toValidStyleName(str) {
+  return str
+      .replace(/[^a-zA-Z0-9]/g, ' ') 
+      .trim()
+      .split(/\s+/)
+      .map((word, index) => {
+          if (index === 0) {
+              return word.toLowerCase(); 
+          }
+          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(); 
+      })
+      .join('');
+}

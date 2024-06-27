@@ -685,7 +685,7 @@ CREATE OR REPLACE FUNCTION getRepoName AS package_name -> (
 
 clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE OR REPLACE FUNCTION getRepoId AS package_name -> (
-    SELECT repo_id
+    SELECT CAST(max(CAST(repo_id, 'UInt64')), 'String') AS id
     FROM github.repo_name_to_id
     WHERE (repo_name = getRepoName(package_name)) AND (repo_id != '')
     LIMIT 1

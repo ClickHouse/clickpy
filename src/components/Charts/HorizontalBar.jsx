@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 import isEqual from 'lodash/isEqual';
 import ReactECharts from 'echarts-for-react';
 import styles from './styles.module.css';
-import { formatNumber } from '@/utils/utils';
+import { formatNumber, toValidStyleName } from '@/utils/utils';
 import Loading from '../Loading';
 import Link from 'next/link';
 import {
@@ -12,15 +12,15 @@ import {
 
 export default function HorizontalBar({
   data,
-  title,
-  subtitle,
   stack = false,
   onClick,
-  link
+  link,
+  header,
+  show_icons
 }) {
   const chartRef = useRef();
   const [loading, setLoading] = useState(true);
-  const yValues = Array.from(new Set(data.map((p) => p.x)));
+  const yValues = Array.from(new Set(data.map((p) => p.x))).reverse();
   // unique series - we assume they are shorted by series
   const seriesNames = data
     .map((p) => p.name)
@@ -31,14 +31,14 @@ export default function HorizontalBar({
     if (!(val.name in accumulator)) {
       accumulator[val.name] = {
         name: val.name,
-        data: new Array(yValues.length).fill(0)
+        data: new Array(yValues.length).fill(0),
       };
     }
     return accumulator;
   }, {});
 
   const select = (values) => {
-    onClick(values.name);
+    onClick && onClick(values.name);
   };
 
   data.forEach((p) => (values[p.name].data[yValues.indexOf(p.x)] = p.y));
@@ -51,6 +51,7 @@ export default function HorizontalBar({
           'rgba(252, 255, 116, 1.0)'
         ];
   const mappedColors = {};
+
   const series = Object.values(values).map((series, i) => {
     let color = colors[i % colors.length];
     if (series.name in mappedColors) {
@@ -70,17 +71,34 @@ export default function HorizontalBar({
           type: 'bar',
           name: series.name,
           data: series.data,
+          itemStyle: {
+            borderRadius: [0, 4, 4, 0]
+          },
           color: color
         };
   });
+  const icons = {}
+  data.forEach(p => {
+    if (p.icon) {
+      icons[[toValidStyleName(p.x)]] =  {
+        height: 24,
+        backgroundColor: {
+          image: p.icon
+        },
+        borderRadius: 4,
+        borderWidth: 1,
+      }
+    }
+  })
 
   const options = {
     animation: false,
     grid: {
-      left: 80,
       right: 50,
       top: 10,
-      bottom: 35
+      bottom: 35,
+      containLabel: true,
+      left:  show_icons ? -50: -40,
     },
     tooltip: {
       trigger: 'item',
@@ -127,7 +145,12 @@ export default function HorizontalBar({
       type: 'category',
       data: yValues,
       axisLabel: {
-        show: true
+        margin: 90,
+        align: 'left',
+        formatter: (value) => {
+          return `{${toValidStyleName(value)}| } {value| ${`${value.length > 8 ? `${value.substring(0, 6)}..`: value}`}}`;
+        },
+        rich: icons
       }
     },
     series: seriesNames.map((s) => series.find((c) => c.name === s))
@@ -145,25 +168,15 @@ export default function HorizontalBar({
     <div
       className='relative rounded-lg bg-slate-850 border border-slate-700 h-full justify-between flex flex-col'
       onMouseOver={onMouseOver}>
-      {title && (
-        <div className='px-6 pt-4 pb-0 flex-row flex justify-between items-end'>
-          {title}
-          <div className='flex flex-row justify-center items-center'>
-            <p
-              className={
-                'transition-all duration-300 ease-in-out hover:shadow-xl text-neutral-500 text-sm'
-              }>
-              {subtitle}
-            </p>
+      {
+        header ? header : (
+          <div className='px-2 pt-1 pb-0 flex-row flex justify-end'>
             { link && <Link href={link} target='_blank' className='w-4 ml-2'>
-                <ArrowTopRightOnSquareIcon
-                        className='h-4 w-4 flex-none icon-hover'
-                        aria-hidden='true'
-                />
-            </Link>}    
+                <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover'  aria-hidden='true'/>
+            </Link>}
           </div>
-        </div>
-      )}
+        )
+      }
       <ReactECharts
         ref={chartRef}
         option={options}

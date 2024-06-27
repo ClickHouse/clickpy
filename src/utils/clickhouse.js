@@ -26,6 +26,60 @@ const materialized_views = [
     { columns: ['project','max_date', 'min_date'], table: 'pypi_downloads_max_min' },
 ];
 
+export async function runAPIEndpoint(endpoint, params) {
+    const data = {
+        queryVariables: params,
+        format: 'JSONEachRow'
+      };    
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Basic ${btoa(`${process.env.API_KEY_ID}:${process.env.API_KEY_SECRET}`)}`
+        },
+        body: JSON.stringify(data)
+      })
+      return response.json()
+}
+
+export async function getGithubStatsEndpoint(package_name, min_date, max_date) {
+    return runAPIEndpoint(process.env.GITHUB_STATS_API, {
+        projectName: package_name,
+        min_date: min_date,
+        max_date: max_date
+    })
+}
+
+// based on required columns we identify the most optimal mv to query - this is the smallest view (least columns) which covers all required columns 
+function findOptimalTable(required_columns) {
+
+    const candidates = materialized_views.filter(value => {
+        if (value.columns.length >= required_columns.length) {
+            // are all required columns in the candidate
+            if (required_columns.every(column => value.columns.includes(column))){
+                return true
+            }
+        }
+        return false
+    })
+    let table = PYPI_TABLE
+    if (candidates.length > 0) {
+        // best match is shortest
+        table = candidates.reduce((a,b) => a.columns.length <= b.columns.length ? a: b).table
+    }
+    return table
+}
+
+export async function getPackages(query_prefix) {
+    if (query_prefix != '') { 
+        return await query('getPackages',`SELECT project, sum(count) AS c FROM ${PYPI_DATABASE}.${findOptimalTable(['project'])} WHERE project LIKE {query_prefix:String} GROUP BY project ORDER BY c DESC LIMIT 6`, {
+                query_prefix: `${query_prefix.toLowerCase().trim()}%`
+            }
+        )
+    }
+    return []
+}
+
 export async function getGithubStats(package_name, min_date, max_date) {
     return query('getGitubStats',`WITH
         getRepoId({package_name:String}) AS id,
@@ -87,58 +141,37 @@ export async function getGithubStarsOverTime(package_name, min_date, max_date) {
     })
 }
 
-export async function runAPIEndpoint(endpoint, params) {
-    const data = {
-        queryVariables: params,
-        format: 'JSONEachRow'
-      };    
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Basic ${btoa(`${process.env.API_KEY_ID}:${process.env.API_KEY_SECRET}`)}`
-        },
-        body: JSON.stringify(data)
-      })
-      return response.json()
-}
-
-export async function getGithubStatsEndpoint(package_name, min_date, max_date) {
-    return runAPIEndpoint(process.env.GITHUB_STATS_API, {
-        projectName: package_name,
-        min_date: min_date,
-        max_date: max_date
-    })
-}
-
-// based on required columns we identify the most optimal mv to query - this is the smallest view (least columns) which covers all required columns 
-function findOptimalTable(required_columns) {
-
-    const candidates = materialized_views.filter(value => {
-        if (value.columns.length >= required_columns.length) {
-            // are all required columns in the candidate
-            if (required_columns.every(column => value.columns.includes(column))){
-                return true
-            }
-        }
-        return false
-    })
-    let table = PYPI_TABLE
-    if (candidates.length > 0) {
-        // best match is shortest
-        table = candidates.reduce((a,b) => a.columns.length <= b.columns.length ? a: b).table
-    }
-    return table
-}
-
-export async function getPackages(query_prefix) {
-    if (query_prefix != '') { 
-        return await query('getPackages',`SELECT project, sum(count) AS c FROM ${PYPI_DATABASE}.${findOptimalTable(['project'])} WHERE project LIKE {query_prefix:String} GROUP BY project ORDER BY c DESC LIMIT 6`, {
-                query_prefix: `${query_prefix.toLowerCase().trim()}%`
-            }
+export async function getTopContributors({package_name, min_date, max_date}) {
+    return query('getTopContributors',`WITH getRepoId({package_name:String}) AS id,
+        (
+        SELECT count() AS total
+        FROM ${GITHUB_DATABASE}.github_events
+        WHERE repo_id = id AND created_at > {min_date:Date32} AND created_at <= {max_date:Date32} AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT LIKE 'robot%'
+        AND (
+            (event_type = 'PullRequestEvent' AND action = 'opened') OR
+            (event_type = 'IssuesEvent' AND action = 'opened') OR
+            (event_type = 'IssueCommentEvent' AND action = 'created') OR
+            (event_type = 'PullRequestReviewEvent' AND action = 'created') OR
+            (event_type = 'PullRequestReviewCommentEvent' AND action = 'created') OR
+            (event_type = 'PushEvent')
         )
-    }
-    return []
+        ) as total
+        SELECT actor_login AS x, count() AS y, round(y/total * 100, 4) as percent, 'contributors' as name, 'https://github.com/' || actor_login || '.png?size=80' as icon
+        FROM ${GITHUB_DATABASE}.github_events
+        WHERE repo_id = id AND created_at > {min_date:Date32} AND created_at <= {max_date:Date32} AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT LIKE 'robot%'
+        AND (
+            (event_type = 'PullRequestEvent' AND action = 'opened') OR
+            (event_type = 'IssuesEvent' AND action = 'opened') OR
+            (event_type = 'IssueCommentEvent' AND action = 'created') OR
+            (event_type = 'PullRequestReviewEvent' AND action = 'created') OR
+            (event_type = 'PullRequestReviewCommentEvent' AND action = 'created') OR
+            (event_type = 'PushEvent')
+        )
+        GROUP BY actor_login ORDER BY y DESC LIMIT 10`, {
+            package_name: package_name,
+            min_date: min_date,
+            max_date: max_date
+        })
 }
 
 export async function getTotalDownloads() {

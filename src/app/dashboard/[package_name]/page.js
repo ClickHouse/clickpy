@@ -8,7 +8,8 @@ import {
   getDownloadsOverTimeByPython,
   getDownloadsOverTimeBySystem,
   getDownloadsByCountry,
-  getFileTypesByInstaller
+  getFileTypesByInstaller,
+  getTopContributors
 } from '@/utils/clickhouse';
 import { parseDate} from '@/utils/utils';
 import Search from '@/components/Search';
@@ -50,6 +51,7 @@ export default async function Dashboard({ params, searchParams }) {
   }
 
   const packageDetails = await getPackageDetails(package_name, version);
+  const repo_name = packageDetails[1][0]?.repo_name;
   return (
     <div>
       <header className='bg-neutral-800 shadow-lg border-b-2 border-neutral-725 sticky top-0 z-20 opacity-95 backdrop-filter backdrop-blur-xl bg-opacity-90 2xl:h-[82px]'>
@@ -129,7 +131,7 @@ export default async function Dashboard({ params, searchParams }) {
           <PackageDetails name={package_name} {...packageDetails[1][0]} />
         </div>
         {
-          packageDetails[1][0]?.repo_name && (
+          repo_name && (
             <div className='mt-4 md:mt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16'>
               <Suspense key={key} fallback={<Loading height='208px'/>}>
                 <GithubStats package_name={package_name} min_date={min_date} max_date={max_date}/>
@@ -174,7 +176,7 @@ export default async function Dashboard({ params, searchParams }) {
               />
             </Suspense>
           </div>
-          <div className='h-[480px] mt-32 lg:mt-0'>
+          <div className='h-[480px] mt-24 lg:mt-0'>
             <p className='text-2xl font-bold mb-5'>Top versions</p>
             <Suspense key={key} fallback={<Loading />}>
               <Chart
@@ -193,10 +195,11 @@ export default async function Dashboard({ params, searchParams }) {
             </Suspense>
           </div>
         </div>
-        <div className='mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16'>
-          <div className='h-[480px]'>
+
+        <div className={`mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 lg:h-[480px] ${ repo_name ? 'lg:grid lg:grid-cols-3 gap-6' : ''}`}>
+          <div className='h-[480px] lg:col-span-2'>
             <p className='text-2xl font-bold mb-5'>
-              Downloads by Python version over time
+                Downloads by Python version over time
             </p>
             <Suspense key={key} fallback={<Loading />}>
               <Chart
@@ -214,7 +217,25 @@ export default async function Dashboard({ params, searchParams }) {
               />
             </Suspense>
           </div>
+          {repo_name && (
+            <div className='h-[480px] mt-24 lg:mt-0'>
+              <p className='text-2xl font-bold mb-5'>Top contributors</p>
+              <Suspense key={key} fallback={<Loading />}>
+                <Chart
+                  type='horizontal_bar'
+                  getData={getTopContributors}
+                  options={{ show_icons: true }}
+                  params={{
+                    package_name: package_name,
+                    min_date: min_date,
+                    max_date: max_date,
+                  }}
+                />
+              </Suspense>
+            </div>
+          )}
         </div>
+
         <div className='mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 h-[480px]'>
           <div className='h-[480px]'>
             <p className='text-2xl font-bold mb-5'>
