@@ -3,8 +3,10 @@ import Link from 'next/link';
 import {
   ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/20/solid';
+import React from 'react';
 
 export default function SimpleStat({ value, subtitle, logo, link }) {
+
   return (
     <div className='min-w-[250px] rounded-lg bg-slate-850 flex gap-4 p-4 h-24  w-full min-w-72 border border-slate-700'>
       <div className='items-center flex grow'>

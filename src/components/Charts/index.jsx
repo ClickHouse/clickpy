@@ -10,6 +10,7 @@ import Guage from './Guage'
 import Spark from './Spark'
 import { List } from 'echarts'
 import SimpleList from './SimpleList'
+import HorizontalBar from './HorizontalBar'
 
 export default function ClientComponent({ type, data = [], options = {}, link }) {
   const router = useRouter()
@@ -93,9 +94,11 @@ export default function ClientComponent({ type, data = [], options = {}, link })
           link={link}
       />
     ),
-    'list': (
-      <SimpleList
-
+    'horizontal_bar': (
+      <HorizontalBar
+        data={data}
+        show_icons={options.show_icons}
+        link={link}
       />
     )
   }[type]

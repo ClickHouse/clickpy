@@ -146,31 +146,28 @@ export async function getTopContributors({package_name, min_date, max_date}) {
         (
         SELECT count() AS total
         FROM ${GITHUB_DATABASE}.github_events
-        WHERE repo_id = id AND created_at > {min_date:Date32} AND created_at <= {max_date:Date32}
-        AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT LIKE 'robot%'
+        WHERE repo_id = id AND created_at > {min_date:Date32} AND created_at <= {max_date:Date32} AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT LIKE 'robot%'
         AND (
-        (event_type = 'PullRequestEvent' AND action = 'opened') OR
-        (event_type = 'IssuesEvent' AND action = 'opened') OR
-        (event_type = 'IssueCommentEvent' AND action = 'created') OR
-        (event_type = 'PullRequestReviewEvent' AND action = 'created') OR
-        (event_type = 'PullRequestReviewCommentEvent' AND action = 'created') OR
-        (event_type = 'PushEvent')
+            (event_type = 'PullRequestEvent' AND action = 'opened') OR
+            (event_type = 'IssuesEvent' AND action = 'opened') OR
+            (event_type = 'IssueCommentEvent' AND action = 'created') OR
+            (event_type = 'PullRequestReviewEvent' AND action = 'created') OR
+            (event_type = 'PullRequestReviewCommentEvent' AND action = 'created') OR
+            (event_type = 'PushEvent')
         )
         ) as total
-        SELECT actor_login, count() AS events, round(events/total * 100 ,4) as percent
+        SELECT actor_login AS x, count() AS y, round(y/total * 100, 4) as percent, 'contributors' as name, 'https://github.com/' || actor_login || '.png?size=80' as icon
         FROM ${GITHUB_DATABASE}.github_events
-        WHERE
-        repo_id = id AND created_at > {min_date:Date32} AND created_at <= {max_date:Date32}
-        AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT LIKE 'robot%'
+        WHERE repo_id = id AND created_at > {min_date:Date32} AND created_at <= {max_date:Date32} AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT LIKE 'robot%'
         AND (
-        (event_type = 'PullRequestEvent' AND action = 'opened') OR
-        (event_type = 'IssuesEvent' AND action = 'opened') OR
-        (event_type = 'IssueCommentEvent' AND action = 'created') OR
-        (event_type = 'PullRequestReviewEvent' AND action = 'created') OR
-        (event_type = 'PullRequestReviewCommentEvent' AND action = 'created') OR
-        (event_type = 'PushEvent')
+            (event_type = 'PullRequestEvent' AND action = 'opened') OR
+            (event_type = 'IssuesEvent' AND action = 'opened') OR
+            (event_type = 'IssueCommentEvent' AND action = 'created') OR
+            (event_type = 'PullRequestReviewEvent' AND action = 'created') OR
+            (event_type = 'PullRequestReviewCommentEvent' AND action = 'created') OR
+            (event_type = 'PushEvent')
         )
-        GROUP BY actor_login ORDER BY events DESC LIMIT 10`, {
+        GROUP BY actor_login ORDER BY y DESC LIMIT 10`, {
             package_name: package_name,
             min_date: min_date,
             max_date: max_date
