@@ -99,7 +99,7 @@ export default function HorizontalBar({
       top: 10,
       bottom: 35,
       containLabel: true,
-      left:  show_icons ? -50: -40,
+      left:  show_icons ? -60: -40,
     },
     tooltip: {
       trigger: 'item',
@@ -146,10 +146,10 @@ export default function HorizontalBar({
       type: 'category',
       data: yValues,
       axisLabel: {
-        margin: 90,
+        margin: show_icons ? 100: 80,
         align: 'left',
         formatter: (value) => {
-          return `{${toValidStyleName(value)}| } {value| ${`${value.length > 8 ? `${value.substring(0, 6)}..`: value}`}}`;
+          return `{${toValidStyleName(value)}| } {value| ${value.length < 10 ? value.padEnd(10, ' ') : value.substring(0, 8) + '..'}}`;
         },
         rich: icons
       }
