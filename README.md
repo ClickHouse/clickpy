@@ -209,7 +209,7 @@ Consider the list of "Emerging repos" on the landing page.
 
 ![emerging_repos](./images/emerging_repos.png)
 
-This simple visual is powered by two materialized views: `pypi_downloads_per_day` and `pypi_downloads_per_day`. For the full query, see [here](https://github.com/ClickHouse/clickpy/blob/12d565202b88b97b51d557da0bc777ad65d5ba60/src/utils/clickhouse.js#L380).
+This simple visual is powered by two materialized views: `pypi_downloads_per_day` and `pypi_downloads_max_min`. For the full query, see [here](https://github.com/ClickHouse/clickpy/blob/12d565202b88b97b51d557da0bc777ad65d5ba60/src/utils/clickhouse.js#L380).
 
 #### Choosing the right query
 
