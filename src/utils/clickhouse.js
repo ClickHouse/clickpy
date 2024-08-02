@@ -1,9 +1,15 @@
 import { createClient } from '@clickhouse/client';
+import { createClient as createWebClient } from '@clickhouse/client-web';
 
 export const clickhouse = createClient({
     host: process.env.CLICKHOUSE_HOST,
     username: process.env.CLICKHOUSE_USERNAME,
     password: process.env.CLICKHOUSE_PASSWORD,
+});
+
+export const web_clickhouse = createWebClient({
+    host: process.env.NEXT_PUBLIC_CLICKHOUSE_HOST,
+    username: 'play'
 });
 
 const PYPI_DATABASE = process.env.PYPI_DATABASE || 'pypi';
@@ -25,6 +31,15 @@ const materialized_views = [
     { columns: ['project', 'date', 'version', 'type'], table: 'pypi_downloads_per_day_by_version_by_file_type' },
     { columns: ['project','max_date', 'min_date'], table: 'pypi_downloads_max_min' },
 ];
+
+export async function ping(name) {
+    await web_clickhouse.query({
+        query: 'SELECT {name:String}',
+        query_params: {
+            name: name
+        },
+    })
+}
 
 export async function runAPIEndpoint(endpoint, params) {
     const data = {
