@@ -1,8 +1,8 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-
 import Search from '@/components/Search';
 import Summary from '@/components/Summary';
+import Ping from '@/components/Ping';
 import {
   getTotalDownloads,
   getProjectCount,
@@ -35,6 +35,7 @@ export default async function Home() {
     <div>
       {/* Header */}
       <Header />
+      <Ping name={`landing`}/>
       <main className='isolate h-screen'>
         <div className='pt-6'>
           <div className='pt-6 md:pt-24'>
