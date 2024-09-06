@@ -59,7 +59,7 @@ export async function runAPIEndpoint(endpoint, params) {
 
 export async function getGithubStatsEndpoint(package_name, min_date, max_date) {
     return runAPIEndpoint(process.env.GITHUB_STATS_API, {
-        projectName: package_name,
+        package_name: package_name,
         min_date: min_date,
         max_date: max_date
     })

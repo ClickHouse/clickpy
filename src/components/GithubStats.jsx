@@ -7,10 +7,7 @@ import Spark from './Charts/Spark';
 async function getStats(package_name, min_date, max_date) {
   if (process.env.USE_ENDPOINT == 'true') {
       const resp = await getGithubStatsEndpoint(package_name, min_date, max_date)
-      if (resp.data.rows.length > 0) {
-        // no link yet for endpoint
-        return [null,resp.data.rows[0][0], resp.data.rows[0][1], resp.data.rows[0][2], resp.data.rows[0][3]]
-      }
+      return [null,1,resp.stars, resp.prs, resp.issues, resp.forks]
       return []
   } 
   let sResp = await getGithubStats(package_name, min_date, max_date)
