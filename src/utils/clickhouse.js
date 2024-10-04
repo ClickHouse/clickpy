@@ -163,7 +163,7 @@ export async function getDependents({package_name, version, min_date, max_date, 
     if (type) { columns.push('type')}
     package_name = `${package_name}%`
     const table = findOptimalTable(columns)
-    return ('dependents', `WITH
+    return query('dependents', `WITH
         downloads AS
         (
             SELECT
@@ -174,13 +174,13 @@ export async function getDependents({package_name, version, min_date, max_date, 
             FROM ${PYPI_DATABASE}.${table}
             WHERE project IN (
                 SELECT name
-                FROM pypi.projects
+                FROM ${PYPI_DATABASE}.projects
                 WHERE arrayExists(e -> (e LIKE {package_name:String}), requires_dist) != 0
                 GROUP BY name
             ) AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'} AND (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
             GROUP BY project
             ORDER BY downloads DESC
-            LIMIT 10
+            LIMIT 9
         ),
         stars AS
         (
@@ -200,12 +200,12 @@ export async function getDependents({package_name, version, min_date, max_date, 
             stars.stars AS stars
         FROM downloads
         LEFT JOIN stars ON downloads.repo_id = stars.repo_id`, {
-                package_name: package_name,
-                version: version,
-                min_date: min_date,
-                max_date: max_date,
-                country_code: country_code,
-                type: type,
+            package_name: package_name,
+            version: version,
+            min_date: min_date,
+            max_date: max_date,
+            country_code: country_code,
+            type: type,
     })
 }
 
@@ -239,7 +239,7 @@ export async function getDependencies({package_name, version, min_date, max_date
             WHERE project IN dependencies AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'} AND (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
             GROUP BY project
             ORDER BY downloads DESC
-            LIMIT 10
+            LIMIT 9
         ),
         stars AS
         (
