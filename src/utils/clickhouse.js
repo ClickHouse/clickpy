@@ -156,6 +156,97 @@ export async function getGithubStarsOverTime(package_name, min_date, max_date) {
     })
 }
 
+export async function getDependents({package_name, version, min_date, max_date, country_code, type}) {
+    const columns = ['project', 'date']
+    if (version) {  columns.push('version') }
+    if (country_code) { columns.push('country_code') }
+    if (type) { columns.push('type')}
+    const table = findOptimalTable(columns)
+
+    
+}
+
+export async function getDependencies({package_name, version, min_date, max_date, country_code, type}) {
+    const columns = ['project', 'date']
+    if (version) {  columns.push('version') }
+    if (country_code) { columns.push('country_code') }
+    if (type) { columns.push('type')}
+    const table = findOptimalTable(columns)
+
+    return query('dependencies', `WITH
+            dependencies AS
+            (
+                SELECT extract(requires_dist, '^[a-zA-Z0-9\\-_]+') AS dependency
+                FROM
+                (
+                    SELECT arrayJoin(requires_dist) AS requires_dist
+                    FROM pypi.projects
+                    WHERE name = {package_name:String} AND ${version ? `version={version:String}`: '1=1'}
+                    GROUP BY requires_dist
+                    HAVING requires_dist NOT LIKE '%extra ==%'
+                )
+            ),
+            repo_names AS
+            (
+                SELECT
+                    name,
+                    regexpExtract(arrayFilter(l -> (l LIKE '%https://github.com/%'), arrayConcat(project_urls, [home_page]))[1], '.*https://github\\.com/([^/]+/[^/]+)') AS repo_name
+                FROM pypi.projects
+                WHERE (name IN (dependencies)) AND (length(arrayFilter(l -> (l LIKE '%https://github.com/%'), arrayConcat(project_urls, [home_page]))) >= 1)
+                ORDER BY upload_time DESC
+                LIMIT 1 BY name
+            ),
+            repo_ids AS
+            (
+                SELECT
+                    repo_name,
+                    CAST(max(CAST(repo_id, 'UInt64')), 'String') AS id
+                FROM github.repo_name_to_id
+                WHERE (repo_name IN (
+                    SELECT repo_name
+                    FROM repo_names
+                )) AND (repo_id != '')
+                GROUP BY repo_name
+            ),
+            downloads AS
+            (
+                SELECT
+                    project,
+                    sum(count) AS downloads
+                FROM ${PYPI_DATABASE}.${table}
+                WHERE project IN (dependencies) AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'} AND (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
+                GROUP BY project
+                ORDER BY downloads DESC
+            ),
+            stars AS
+            (
+                SELECT
+                    repo_id,
+                    count(actor_login) AS stars
+                FROM github.github_events
+                WHERE (repo_id IN (
+                    SELECT id
+                    FROM repo_ids
+                )) AND (event_type = 'WatchEvent') AND (action = 'started') AND (created_at >= {min_date:String}::Date32) AND (created_at < {max_date:String}::Date32)
+                GROUP BY repo_id
+            )
+        SELECT
+            downloads.project AS package,
+            formatReadableQuantity(downloads.downloads) AS downloads,
+            stars.stars AS stars
+        FROM downloads
+        LEFT JOIN repo_names ON downloads.project = repo_names.name
+        LEFT JOIN repo_ids ON repo_names.repo_name = repo_ids.repo_name
+        LEFT JOIN stars ON repo_ids.id = stars.repo_id ORDER BY downloads DESC LIMIT 10`, {
+            package_name: package_name,
+            version: version,
+            min_date: min_date,
+            max_date: max_date,
+            country_code: country_code,
+            type: type,
+        })
+}
+
 export async function getTopContributors({package_name, min_date, max_date}) {
     return query('getTopContributors',`WITH getRepoId({package_name:String}) AS id,
         (

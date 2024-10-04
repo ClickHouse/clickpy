@@ -9,7 +9,8 @@ import {
   getDownloadsOverTimeBySystem,
   getDownloadsByCountry,
   getFileTypesByInstaller,
-  getTopContributors
+  getTopContributors,
+  getDependencies
 } from '@/utils/clickhouse';
 import { parseDate} from '@/utils/utils';
 import Search from '@/components/Search';
@@ -24,6 +25,7 @@ import DatePicker from '@/components/DatePicker';
 import { Suspense } from 'react';
 import Link from 'next/link';
 import Ping from '@/components/Ping';
+import DependencyTable from '@/components/DependencyTable';
 
 export const revalidate = 3600;
 
@@ -36,6 +38,7 @@ export async function generateMetadata({ params, searchParams }, parent) {
   }
 }
 
+export const dynamic = 'force-dynamic';
 
 export default async function Dashboard({ params, searchParams }) {
   const version = searchParams.version;
@@ -52,6 +55,7 @@ export default async function Dashboard({ params, searchParams }) {
   }
 
   const packageDetails = await getPackageDetails(package_name, version);
+
   const repo_name = packageDetails[1][0]?.repo_name;
   return (
     <div>
@@ -237,11 +241,11 @@ export default async function Dashboard({ params, searchParams }) {
             </div>
           )}
         </div>
-
-        <div className='mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 h-[480px]'>
-          <div className='h-[480px]'>
+        
+        <div className={`mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 lg:h-[480px] lg:grid lg:grid-cols-3 gap-6`}>
+          <div className='h-[480px] lg:col-span-2'>
             <p className='text-2xl font-bold mb-5'>
-              Downloads by system over time
+                Downloads by system over time
             </p>
             <Suspense key={key} fallback={<Loading />}>
               <Chart
@@ -259,7 +263,21 @@ export default async function Dashboard({ params, searchParams }) {
               />
             </Suspense>
           </div>
+          <div className='h-[480px] mt-24 lg:mt-0'>
+            <p className='text-2xl font-bold mb-5'>Dependencies and dependents</p>
+            <Suspense key={key} fallback={<Loading />}>
+                <DependencyTable params={{
+                  package_name: package_name,
+                  version: version,
+                  min_date: min_date,
+                  max_date: max_date,
+                  country_code: country_code,
+                  type: file_type
+                }}/>
+            </Suspense>
+          </div>
         </div>
+
         <div className='mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 h-[480px] lg:grid xl:grid-cols-3 gap-6 mb-32'>
           <div className='h-[480px] xl:col-span-2'>
             <p className='text-2xl font-bold mb-5'>Downloads by country</p>

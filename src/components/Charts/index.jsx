@@ -2,14 +2,13 @@
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import Bar from './Bar'
 import Line from './Line'
+import Table from '../DependencyTable'
 import MultiLine from './MultiLine'
 import Pie from './Pie'
 import CountryMap from './CountryMap'
 import Radar from './Radar'
 import Guage from './Guage'
 import Spark from './Spark'
-import { List } from 'echarts'
-import SimpleList from './SimpleList'
 import HorizontalBar from './HorizontalBar'
 
 export default function ClientComponent({ type, data = [], options = {}, link }) {
