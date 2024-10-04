@@ -10,7 +10,6 @@ import {
   getDownloadsByCountry,
   getFileTypesByInstaller,
   getTopContributors,
-  getDependencies
 } from '@/utils/clickhouse';
 import { parseDate} from '@/utils/utils';
 import Search from '@/components/Search';
