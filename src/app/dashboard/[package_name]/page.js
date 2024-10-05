@@ -277,7 +277,7 @@ export default async function Dashboard({ params, searchParams }) {
           </div>
         </div>
 
-        <div className='mt-12 lg:mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 h-[480px] lg:grid xl:grid-cols-3 gap-6 mb-32'>
+        <div className='mt-12 lg:mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 h-[480px] lg:grid xl:grid-cols-3 gap-6 mb-24 lg:mb-32'>
           <div className='h-[480px] xl:col-span-2'>
             <p className='text-2xl font-bold mb-5'>Downloads by country</p>
             <Suspense key={key} fallback={<Loading />}>
@@ -296,7 +296,7 @@ export default async function Dashboard({ params, searchParams }) {
               />
             </Suspense>
           </div>
-          <div className='h-[480px] xl:col-span-1 mt-32 xl:mt-0'>
+          <div className='h-[480px] xl:col-span-1 mt-24 lg:mt-20 xl:mt-0'>
             <p className='text-2xl font-bold mb-5'>File types by installer</p>
             <Suspense key={key} fallback={<Loading />}>
               <Chart

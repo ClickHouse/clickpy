@@ -6,7 +6,6 @@ import DependencyTableClient from './DependencyTableClient';
 
 export default async function DependencyTable({ params }) {
     const [dependencies, dependents] = await Promise.all([getDependencies(params), getDependents(params)]);
-    console.log(dependents);
     return (
         <DependencyTableClient dependencies={dependencies} dependents={dependents}/>
     );
