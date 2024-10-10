@@ -1,3 +1,4 @@
+import { ClickUIProvider } from '@/click-ui'
 import './globals.css'
 import { Inter } from 'next/font/google'
 
@@ -11,7 +12,8 @@ export const metadata = {
 export default function RootLayout({ children, summary }) {
   return (
     <html lang='en' className='h-full antialiased'>
-      <body className={`${inter.className} h-full`}>{children}</body>
+      <body className={`${inter.className} h-full`}>
+        <ClickUIProvider theme="dark">{children}</ClickUIProvider></body>
     </html>
   )
 }
