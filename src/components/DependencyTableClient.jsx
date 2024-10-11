@@ -4,10 +4,15 @@ import {
     ArrowTopRightOnSquareIcon,
   } from '@heroicons/react/20/solid';
 import { useState, useEffect } from 'react';
+import { formatNumberWithDescription } from '@/utils/utils';
 
 export default function DependencyTableClient({ dependencies,  dependents}) {
     const [isDependency, setIsDependency] = useState(true);
     const [rowHeight, setRowHeight] = useState('auto');
+
+
+
+    const [order, setOrder] = useState({column: 'downloads', order: 'desc'});
 
     const updateRowHeight = () => {
         if (window.innerWidth > 1024) {
@@ -20,33 +25,36 @@ export default function DependencyTableClient({ dependencies,  dependents}) {
     useEffect(() => {
         updateRowHeight();
         window.addEventListener('resize', updateRowHeight);
-
-        // Cleanup event listener on component unmount
         return () => {
             window.removeEventListener('resize', updateRowHeight);
         };
     }, []);
 
-
-    const dependency_headers = dependencies[1].length > 0 ? Object.keys(dependencies[1][0]).map(key => (
+    const dependency_headers = dependencies[1].length > 0 ? Object.keys(dependencies[1][0]).map((key) => (
         (key === "package") ?  {label: key.charAt(0).toUpperCase() + key.slice(1)} :
-        {label: key.charAt(0).toUpperCase() + key.slice(1), isSortable: true, sortDir: 'desc'} 
+        {label: key.charAt(0).toUpperCase() + key.slice(1), isSortable: true, sortDir: key === order.column && order.order} 
     )) : [];
-    const dependency_rows = dependencies[1].map((row, index) => ({
+    
+    const dependency_rows = dependencies[1].sort((a, b) => {
+        return order.order === 'desc' ? Number(a[order.column]) < Number(b[order.column]): Number(a[order.column]) > Number(b[order.column]);
+    }).map((row, index) => ({
         id: `row-${index + 1}`,
-        items: Object.values(row).map(value => ({
-            label: value.toString()
+        items: Object.keys(row).map(key => ({
+            label: key === 'package' ? row[key].toString() : formatNumberWithDescription(Number(row[key]))
         }))
     }));
 
-    const dependents_headers = dependents[1].length > 0 ? Object.keys(dependents[1][0]).map(key => (
-        (key === "package") ?  {label: key.charAt(0).toUpperCase() + key.slice(1)} :
-        {label: key.charAt(0).toUpperCase() + key.slice(1), isSortable: true, sortDir: 'desc'} 
+    const dependents_headers = dependents[1].length > 0 ? Object.keys(dependents[1][0]).map((key, i) => (
+        (key === 'package') ?  {label: key.charAt(0).toUpperCase() + key.slice(1)} :
+        {label: key.charAt(0).toUpperCase() + key.slice(1), isSortable: true, sortDir: key === order.column && order.order} 
     )) : [];
-    const dependents_rows = dependents[1].map((row, index) => ({
+
+    const dependents_rows = dependents[1].sort((a, b) => {
+        return order.order === 'desc' ? Number(a[order.column]) < Number(b[order.column]): Number(a[order.column]) > Number(b[order.column]);
+    }).map((row, index) => ({
         id: `row-${index + 1}`,
-        items: Object.values(row).map(value => ({
-            label: value.toString()
+        items: Object.keys(row).map(key => ({
+            label: key === 'package' ? row[key].toString() : formatNumberWithDescription(Number(row[key]))
         }))
     }));
 
@@ -70,7 +78,7 @@ export default function DependencyTableClient({ dependencies,  dependents}) {
                     <Tabs.Content value='dependencies' className='h-full'>
                         <ClickTable
                             headers={dependency_headers}
-                            onSort={(sortDir, header, index) => {console.log(`${sortDir} - ${header} - ${index}`)}}
+                            onSort={(sortDir, header, index) => { setOrder({column: header.label.toLowerCase(), order: sortDir})}}
                             rows={dependency_rows}
                             size='sm'
                             noDataMessage='No dependencies'
@@ -80,7 +88,7 @@ export default function DependencyTableClient({ dependencies,  dependents}) {
                     <Tabs.Content value='dependents' className='h-full'>
                         <ClickTable
                             headers={dependents_headers}
-                            onSort={() => {}}
+                            onSort={(sortDir, header, index) => {setOrder({column: header.label.toLowerCase(), order: sortDir})}}
                             rows={dependents_rows}
                             size='sm'
                             noDataMessage='No dependents'

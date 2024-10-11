@@ -196,7 +196,7 @@ export async function getDependents({package_name, version, min_date, max_date, 
         )
         SELECT
             downloads.project AS package,
-            formatReadableQuantity(downloads.downloads) AS downloads,
+            downloads.downloads AS downloads,
             stars.stars AS stars
         FROM downloads
         LEFT JOIN stars ON downloads.repo_id = stars.repo_id`, {
@@ -249,7 +249,7 @@ export async function getDependencies({package_name, version, min_date, max_date
             GROUP BY repo_id
         )
         SELECT downloads.project AS package,
-            formatReadableQuantity(downloads.downloads) AS downloads,
+            downloads.downloads AS downloads,
             stars.stars AS stars
             FROM downloads
             LEFT JOIN stars ON downloads.repo_id::String = stars.repo_id
