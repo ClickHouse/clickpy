@@ -3,14 +3,35 @@ import { ClickUIProvider, Tabs, Table as ClickTable, Link } from '@clickhouse/cl
 import {
     ArrowTopRightOnSquareIcon,
   } from '@heroicons/react/20/solid';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function DependencyTableClient({ dependencies,  dependents}) {
     const [isDependency, setIsDependency] = useState(true);
+    const [rowHeight, setRowHeight] = useState('auto');
 
-    const dependency_headers = dependencies[1].length > 0 ? Object.keys(dependencies[1][0]).map(key => ({
-        label: key.charAt(0).toUpperCase() + key.slice(1)
-    })) : [];
+    const updateRowHeight = () => {
+        if (window.innerWidth > 1024) {
+            setRowHeight('45px');
+        } else {
+            setRowHeight('auto');
+        }
+    };
+
+    useEffect(() => {
+        updateRowHeight();
+        window.addEventListener('resize', updateRowHeight);
+
+        // Cleanup event listener on component unmount
+        return () => {
+            window.removeEventListener('resize', updateRowHeight);
+        };
+    }, []);
+
+
+    const dependency_headers = dependencies[1].length > 0 ? Object.keys(dependencies[1][0]).map(key => (
+        (key === "package") ?  {label: key.charAt(0).toUpperCase() + key.slice(1)} :
+        {label: key.charAt(0).toUpperCase() + key.slice(1), isSortable: true, sortDir: 'desc'} 
+    )) : [];
     const dependency_rows = dependencies[1].map((row, index) => ({
         id: `row-${index + 1}`,
         items: Object.values(row).map(value => ({
@@ -18,9 +39,10 @@ export default function DependencyTableClient({ dependencies,  dependents}) {
         }))
     }));
 
-    const dependents_headers = dependents[1].length > 0 ? Object.keys(dependents[1][0]).map(key => ({
-        label: key.charAt(0).toUpperCase() + key.slice(1)
-    })) : [];
+    const dependents_headers = dependents[1].length > 0 ? Object.keys(dependents[1][0]).map(key => (
+        (key === "package") ?  {label: key.charAt(0).toUpperCase() + key.slice(1)} :
+        {label: key.charAt(0).toUpperCase() + key.slice(1), isSortable: true, sortDir: 'desc'} 
+    )) : [];
     const dependents_rows = dependents[1].map((row, index) => ({
         id: `row-${index + 1}`,
         items: Object.values(row).map(value => ({
@@ -48,17 +70,21 @@ export default function DependencyTableClient({ dependencies,  dependents}) {
                     <Tabs.Content value='dependencies' className='h-full'>
                         <ClickTable
                             headers={dependency_headers}
-                            onSelect={() => {}}
-                            onSort={() => {}}
+                            onSort={(sortDir, header, index) => {console.log(`${sortDir} - ${header} - ${index}`)}}
                             rows={dependency_rows}
+                            size='sm'
+                            noDataMessage='No dependencies'
+                            rowHeight={rowHeight}
                         />
                     </Tabs.Content>
                     <Tabs.Content value='dependents' className='h-full'>
                         <ClickTable
                             headers={dependents_headers}
-                            onSelect={() => {}}
                             onSort={() => {}}
                             rows={dependents_rows}
+                            size='sm'
+                            noDataMessage='No dependents'
+                            rowHeight={rowHeight}
                         />
                     </Tabs.Content>
                 </Tabs>  

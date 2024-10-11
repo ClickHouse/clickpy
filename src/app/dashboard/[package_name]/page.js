@@ -262,7 +262,7 @@ export default async function Dashboard({ params, searchParams }) {
               />
             </Suspense>
           </div>
-          <div className='mb-4 mt-24 lg:mt-0'>
+          <div className='mt-24 lg:mt-0'>
             <p className='text-2xl font-bold mb-5'>Related packages</p>
             <Suspense key={key} fallback={<Loading />}>
                 <DependencyTable params={{

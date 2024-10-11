@@ -170,7 +170,7 @@ export async function getDependents({package_name, version, min_date, max_date, 
                 project,
                 sum(count) AS downloads,
                 dictGet(pypi.project_to_repo_name_dict, 'repo_name', project) AS repo_name,
-                dictGet(github.repo_name_to_id_dict, 'repo_id', repo_name) AS repo_id
+                dictGet(github.repo_name_to_id_dict, 'repo_id', cityHash64(repo_name))::String AS repo_id
             FROM ${PYPI_DATABASE}.${table}
             WHERE project IN (
                 SELECT name
@@ -190,7 +190,7 @@ export async function getDependents({package_name, version, min_date, max_date, 
             FROM ${GITHUB_DATABASE}.github_events
             WHERE (event_type = 'WatchEvent') AND (action = 'started') AND (repo_id IN (
                 SELECT repo_id
-                FROM downloads WHERE repo_id != ''
+                FROM downloads WHERE repo_id != '0'
             )) AND (created_at >= {min_date:String}::Date32) AND (created_at < {max_date:String}::Date32)
             GROUP BY repo_id
         )
@@ -234,7 +234,7 @@ export async function getDependencies({package_name, version, min_date, max_date
             SELECT project,
                 sum(count) AS downloads,
                 dictGet(pypi.project_to_repo_name_dict, 'repo_name', project) AS repo_name,
-                dictGet(github.repo_name_to_id_dict, 'repo_id', repo_name) AS repo_id
+                dictGet(github.repo_name_to_id_dict, 'repo_id', cityHash64(repo_name)) AS repo_id
             FROM ${PYPI_DATABASE}.${table}
             WHERE project IN dependencies AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'} AND (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
             GROUP BY project
@@ -245,14 +245,14 @@ export async function getDependencies({package_name, version, min_date, max_date
         (
             SELECT repo_id, uniqExact(actor_login) AS stars
             FROM ${GITHUB_DATABASE}.github_events
-            WHERE (event_type = 'WatchEvent') AND (action = 'started') AND (repo_id IN (SELECT repo_id FROM downloads WHERE repo_id != '')) AND (created_at >= {min_date:String}::Date32) AND (created_at < {max_date:String}::Date32)
+            WHERE (event_type = 'WatchEvent') AND (action = 'started') AND (repo_id IN (SELECT repo_id FROM downloads WHERE repo_id != 0)) AND (created_at >= {min_date:String}::Date32) AND (created_at < {max_date:String}::Date32)
             GROUP BY repo_id
         )
         SELECT downloads.project AS package,
             formatReadableQuantity(downloads.downloads) AS downloads,
             stars.stars AS stars
             FROM downloads
-            LEFT JOIN stars ON downloads.repo_id = stars.repo_id
+            LEFT JOIN stars ON downloads.repo_id::String = stars.repo_id
         `, {
             package_name: package_name,
             version: version,
