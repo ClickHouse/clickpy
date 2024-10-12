@@ -161,7 +161,6 @@ export async function getDependents({package_name, version, min_date, max_date, 
     if (version) {  columns.push('version') }
     if (country_code) { columns.push('country_code') }
     if (type) { columns.push('type')}
-    package_name = `${package_name}%`
     const table = findOptimalTable(columns)
     return query('dependents', `WITH
         downloads AS
@@ -175,7 +174,7 @@ export async function getDependents({package_name, version, min_date, max_date, 
             WHERE project IN (
                 SELECT name
                 FROM ${PYPI_DATABASE}.projects
-                WHERE arrayExists(e -> (e LIKE {package_name:String}), requires_dist) != 0
+                WHERE arrayExists(e -> (e LIKE {package_name:String} || '%'), requires_dist) != 0 AND name != {package_name:String}
                 GROUP BY name
             ) AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'} AND (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
             GROUP BY project
