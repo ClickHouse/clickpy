@@ -176,7 +176,7 @@ export async function getDependents({package_name, version, min_date, max_date, 
                 FROM ${PYPI_DATABASE}.projects
                 WHERE arrayExists(e -> (e LIKE {package_name:String} || '%'), requires_dist) != 0 AND name != {package_name:String}
                 GROUP BY name
-            ) AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'} AND (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
+            ) AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'} AND (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
             GROUP BY project
             ORDER BY downloads DESC
             LIMIT 9
