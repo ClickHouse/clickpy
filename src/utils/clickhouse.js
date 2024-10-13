@@ -235,7 +235,7 @@ export async function getDependencies({package_name, version, min_date, max_date
                 dictGet(pypi.project_to_repo_name_dict, 'repo_name', project) AS repo_name,
                 dictGet(github.repo_name_to_id_dict, 'repo_id', cityHash64(repo_name)) AS repo_id
             FROM ${PYPI_DATABASE}.${table}
-            WHERE project IN dependencies AND ${version ? `version={version:String}`: '1=1'} AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'} AND (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
+            WHERE project IN dependencies AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'} AND (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
             GROUP BY project
             ORDER BY downloads DESC
             LIMIT 9
