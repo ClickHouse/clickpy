@@ -61,43 +61,41 @@ export default function DependencyTableClient({ dependencies,  dependents}) {
     return (
         <div>
             <ClickUIProvider theme={'dark'}>
-                <div className='rounded-lg bg-slate-850 border border-slate-700'>
-                    <Tabs ariaLabel='dependencies and dependents' defaultValue='dependencies' className='h-full flex flex-col'>
-                        <div className='flex justify-between'>
-                            <Tabs.TriggersList style={{'border': 0 }} >
-                                <Tabs.Trigger value='dependencies' key='dependencies' onClick={()=>{setIsDependency(true);}}>
-                                    Dependencies
-                                </Tabs.Trigger>
-                                <Tabs.Trigger value='dependents' key='dependents' className='py-4' onClick={()=>{setIsDependency(false);}}>
-                                    Dependents
-                                </Tabs.Trigger>
-                            </Tabs.TriggersList>
-                            <Link href={isDependency ? dependencies[0]: dependents[0]} target='_blank' className='w-5 ml-5'>
-                                <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
-                            </Link>
-                        </div>
-                        <Tabs.Content value='dependencies' className='h-full'>
-                            <ClickTable
-                                headers={dependency_headers}
-                                onSort={(sortDir, header, index) => { setOrder({column: header.label.toLowerCase(), order: sortDir})}}
-                                rows={dependency_rows}
-                                size='sm'
-                                noDataMessage='No dependencies'
-                                rowHeight={rowHeight}
-                            />
-                        </Tabs.Content>
-                        <Tabs.Content value='dependents' className='h-full'>
-                            <ClickTable
-                                headers={dependents_headers}
-                                onSort={(sortDir, header, index) => {setOrder({column: header.label.toLowerCase(), order: sortDir})}}
-                                rows={dependents_rows}
-                                size='sm'
-                                noDataMessage='No dependents'
-                                rowHeight={rowHeight}
-                            />
-                        </Tabs.Content>
-                    </Tabs>  
-                </div>
+                <Tabs ariaLabel='dependencies and dependents' defaultValue='dependents' className='h-full flex flex-col'>
+                    <div className='flex justify-between'>
+                        <Tabs.TriggersList style={{'border': 0 }} >
+                            <Tabs.Trigger value='dependents' key='dependents' className='py-4' onClick={()=>{setIsDependency(false);}}>
+                                Dependents
+                            </Tabs.Trigger>
+                            <Tabs.Trigger value='dependencies' key='dependencies' onClick={()=>{setIsDependency(true);}}>
+                                Dependencies
+                            </Tabs.Trigger>
+                        </Tabs.TriggersList>
+                        <Link href={isDependency ? dependencies[0]: dependents[0]} target='_blank' className='w-5 ml-5'>
+                            <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
+                        </Link>
+                    </div>
+                    <Tabs.Content value='dependents' className='h-full'>
+                        <ClickTable
+                            headers={dependents_headers}
+                            onSort={(sortDir, header, index) => {setOrder({column: header.label.toLowerCase(), order: sortDir})}}
+                            rows={dependents_rows}
+                            size='sm'
+                            noDataMessage='No dependents'
+                            rowHeight={rowHeight}
+                        />
+                    </Tabs.Content>
+                    <Tabs.Content value='dependencies' className='h-full'>
+                        <ClickTable
+                            headers={dependency_headers}
+                            onSort={(sortDir, header, index) => { setOrder({column: header.label.toLowerCase(), order: sortDir})}}
+                            rows={dependency_rows}
+                            size='sm'
+                            noDataMessage='No dependencies'
+                            rowHeight={rowHeight}
+                        />
+                    </Tabs.Content>
+                </Tabs>  
             </ClickUIProvider>
         </div>
     );
