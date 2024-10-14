@@ -4,13 +4,11 @@ import {
     ArrowTopRightOnSquareIcon,
   } from '@heroicons/react/20/solid';
 import { useState, useEffect } from 'react';
-import { formatNumberWithDescription } from '@/utils/utils';
+import { formatNumberWithDescription, formatNumber } from '@/utils/utils';
 
 export default function DependencyTableClient({ dependencies,  dependents}) {
     const [isDependency, setIsDependency] = useState(true);
     const [rowHeight, setRowHeight] = useState('auto');
-
-
 
     const [order, setOrder] = useState({column: 'downloads', order: 'desc'});
 
@@ -36,25 +34,25 @@ export default function DependencyTableClient({ dependencies,  dependents}) {
     )) : [];
     
     const dependency_rows = dependencies[1].sort((a, b) => {
-        return order.order === 'desc' ? Number(a[order.column]) < Number(b[order.column]): Number(a[order.column]) > Number(b[order.column]);
+        return order.order === 'desc' ? Number(b[order.column]) - Number(a[order.column]) : Number(a[order.column]) - Number(b[order.column]);
     }).map((row, index) => ({
         id: `row-${index + 1}`,
         items: Object.keys(row).map(key => ({
-            label: key === 'package' ? row[key].toString() : formatNumberWithDescription(Number(row[key]))
+            label: key === 'package' ? <Link target='_blank' href={`/dashboard/${row[key].toString()}`}>{row[key].toString()}</Link> : formatNumber(Number(row[key]))
         }))
     }));
 
     const dependents_headers = dependents[1].length > 0 ? Object.keys(dependents[1][0]).map((key, i) => (
-        (key === 'package') ?  {label: key.charAt(0).toUpperCase() + key.slice(1)} :
-        {label: key.charAt(0).toUpperCase() + key.slice(1), isSortable: true, sortDir: key === order.column && order.order} 
+        (key === 'package') ?  {label: key.charAt(0).toUpperCase() + key.slice(1), width: '40%'} :
+        {label: key.charAt(0).toUpperCase() + key.slice(1), isSortable: true, sortDir: key === order.column && order.order, sortPosition: 'end', width: key === 'stars' ? 'auto': 'auto'} 
     )) : [];
 
     const dependents_rows = dependents[1].sort((a, b) => {
-        return order.order === 'desc' ? Number(a[order.column]) < Number(b[order.column]): Number(a[order.column]) > Number(b[order.column]);
+        return order.order === 'desc' ? Number(b[order.column]) - Number(a[order.column]) : Number(a[order.column]) - Number(b[order.column]);
     }).map((row, index) => ({
         id: `row-${index + 1}`,
         items: Object.keys(row).map(key => ({
-            label: key === 'package' ? row[key].toString() : formatNumberWithDescription(Number(row[key]))
+            label: key === 'package' ? <Link target='_blank' href={`/dashboard/${row[key].toString()}`}>{row[key].toString()}</Link> : formatNumber(Number(row[key]))
         }))
     }));
 
@@ -78,7 +76,7 @@ export default function DependencyTableClient({ dependencies,  dependents}) {
                     <Tabs.Content value='dependents' className='h-full'>
                         <ClickTable
                             headers={dependents_headers}
-                            onSort={(sortDir, header, index) => {setOrder({column: header.label.toLowerCase(), order: sortDir})}}
+                            onSort={(sortDir, header, index) => { setOrder({column: header.label.toLowerCase(), order: sortDir})}}
                             rows={dependents_rows}
                             size='sm'
                             noDataMessage='No dependents'
