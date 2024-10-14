@@ -29,7 +29,7 @@ export default function DependencyTableClient({ dependencies,  dependents}) {
     }, []);
 
     const dependency_headers = dependencies[1].length > 0 ? Object.keys(dependencies[1][0]).map((key) => (
-        (key === "package") ?  {label: key.charAt(0).toUpperCase() + key.slice(1)} :
+        (key === "package") ?  {label: key.charAt(0).toUpperCase() + key.slice(1), width: '40%'} :
         {label: key.charAt(0).toUpperCase() + key.slice(1), isSortable: true, sortDir: key === order.column && order.order} 
     )) : [];
     
@@ -44,7 +44,7 @@ export default function DependencyTableClient({ dependencies,  dependents}) {
 
     const dependents_headers = dependents[1].length > 0 ? Object.keys(dependents[1][0]).map((key, i) => (
         (key === 'package') ?  {label: key.charAt(0).toUpperCase() + key.slice(1), width: '40%'} :
-        {label: key.charAt(0).toUpperCase() + key.slice(1), isSortable: true, sortDir: key === order.column && order.order, sortPosition: 'end', width: key === 'stars' ? 'auto': 'auto'} 
+        {label: key.charAt(0).toUpperCase() + key.slice(1), isSortable: true, sortDir: key === order.column && order.order } 
     )) : [];
 
     const dependents_rows = dependents[1].sort((a, b) => {
