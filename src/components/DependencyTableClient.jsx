@@ -4,9 +4,10 @@ import {
     ArrowTopRightOnSquareIcon,
   } from '@heroicons/react/20/solid';
 import { useState, useEffect } from 'react';
-import { formatNumberWithDescription, formatNumber } from '@/utils/utils';
+import { formatNumber } from '@/utils/utils';
 
 export default function DependencyTableClient({ dependencies,  dependents}) {
+    
     const [isDependency, setIsDependency] = useState(true);
     const [rowHeight, setRowHeight] = useState('auto');
 
