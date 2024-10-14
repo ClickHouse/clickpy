@@ -3,12 +3,24 @@ import customParseFormat from 'dayjs/plugin/customParseFormat'
 
 dayjs.extend(customParseFormat)
 
-const numberFormatter = new Intl.NumberFormat("en", {
+const compactNumberFormatter = new Intl.NumberFormat("en", {
   notation: "compact"
 })
 
+export function formatNumberWithDescription(number) {
+  if (number >= 1e9) {
+    return (number / 1e9).toFixed(2) + " billion";
+  } else if (number >= 1e6) {
+    return (number / 1e6).toFixed(2) + " million";
+  } else if (number >= 1e3) {
+    return (number / 1e3).toFixed(2) + " thousand";
+  } else {
+    return number.toString();
+  }
+}
+
 export function formatNumber(number) {
-  return numberFormatter.format(number)
+  return compactNumberFormatter.format(number)
 }
 
 export function parseDate(date_string, default_value) {

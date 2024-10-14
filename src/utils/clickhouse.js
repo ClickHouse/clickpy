@@ -156,6 +156,112 @@ export async function getGithubStarsOverTime(package_name, min_date, max_date) {
     })
 }
 
+export async function getDependents({package_name, version, min_date, max_date, country_code, type}) {
+    const columns = ['project', 'date']
+    if (version) {  columns.push('version') }
+    if (country_code) { columns.push('country_code') }
+    if (type) { columns.push('type')}
+    const table = findOptimalTable(columns)
+    return query('dependents', `WITH
+        downloads AS
+        (
+            SELECT
+                project,
+                sum(count) AS downloads,
+                dictGet(pypi.project_to_repo_name_dict, 'repo_name', project) AS repo_name,
+                dictGet(github.repo_name_to_id_dict, 'repo_id', cityHash64(repo_name))::String AS repo_id
+            FROM ${PYPI_DATABASE}.${table}
+            WHERE project IN (
+                SELECT name
+                FROM ${PYPI_DATABASE}.projects
+                WHERE arrayExists(e -> (e LIKE {package_name:String} || '%'), requires_dist) != 0 AND name != {package_name:String}
+                GROUP BY name
+            ) AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'} AND (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
+            GROUP BY project
+            ORDER BY downloads DESC
+            LIMIT 9
+        ),
+        stars AS
+        (
+            SELECT
+                repo_id,
+                uniqExact(actor_login) AS stars
+            FROM ${GITHUB_DATABASE}.github_events
+            WHERE (event_type = 'WatchEvent') AND (action = 'started') AND (repo_id IN (
+                SELECT repo_id
+                FROM downloads WHERE repo_id != '0'
+            )) AND (created_at >= {min_date:String}::Date32) AND (created_at < {max_date:String}::Date32)
+            GROUP BY repo_id
+        )
+        SELECT
+            downloads.project AS package,
+            downloads.downloads AS downloads,
+            stars.stars AS stars
+        FROM downloads
+        LEFT JOIN stars ON downloads.repo_id = stars.repo_id`, {
+            package_name: package_name,
+            version: version,
+            min_date: min_date,
+            max_date: max_date,
+            country_code: country_code,
+            type: type,
+    })
+}
+
+export async function getDependencies({package_name, version, min_date, max_date, country_code, type}) {
+    const columns = ['project', 'date']
+    if (version) {  columns.push('version') }
+    if (country_code) { columns.push('country_code') }
+    if (type) { columns.push('type')}
+    const table = findOptimalTable(columns)
+
+    return query('dependencies', `WITH
+        dependencies AS
+        (
+            SELECT extract(requires_dist, '^[a-zA-Z0-9\\-_]+') AS dependency
+            FROM
+            (
+                SELECT arrayJoin(requires_dist) AS requires_dist
+                FROM ${PYPI_DATABASE}.projects
+                WHERE name = {package_name:String} AND ${version ? `version={version:String}`: '1=1'}
+                GROUP BY requires_dist
+                HAVING requires_dist NOT LIKE '%extra ==%'
+            )
+        ),
+        downloads AS
+        (
+            SELECT project,
+                sum(count) AS downloads,
+                dictGet(pypi.project_to_repo_name_dict, 'repo_name', project) AS repo_name,
+                dictGet(github.repo_name_to_id_dict, 'repo_id', cityHash64(repo_name)) AS repo_id
+            FROM ${PYPI_DATABASE}.${table}
+            WHERE project IN dependencies AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'} AND (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
+            GROUP BY project
+            ORDER BY downloads DESC
+            LIMIT 9
+        ),
+        stars AS
+        (
+            SELECT repo_id, uniqExact(actor_login) AS stars
+            FROM ${GITHUB_DATABASE}.github_events
+            WHERE (event_type = 'WatchEvent') AND (action = 'started') AND (repo_id IN (SELECT repo_id FROM downloads WHERE repo_id != 0)) AND (created_at >= {min_date:String}::Date32) AND (created_at < {max_date:String}::Date32)
+            GROUP BY repo_id
+        )
+        SELECT downloads.project AS package,
+            downloads.downloads AS downloads,
+            stars.stars AS stars
+            FROM downloads
+            LEFT JOIN stars ON downloads.repo_id::String = stars.repo_id
+        `, {
+            package_name: package_name,
+            version: version,
+            min_date: min_date,
+            max_date: max_date,
+            country_code: country_code,
+            type: type,
+    })
+}
+
 export async function getTopContributors({package_name, min_date, max_date}) {
     return query('getTopContributors',`WITH getRepoId({package_name:String}) AS id,
         (
@@ -601,7 +707,7 @@ export async function hotPackages() {
 export const revalidate = 3600;
 
 async function query(query_name, query, query_params) {
-    const start = performance.now()
+    //const start = performance.now()
     const results = await clickhouse.query({
         query: query,
         query_params: query_params,

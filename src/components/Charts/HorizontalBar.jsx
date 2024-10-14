@@ -80,7 +80,6 @@ export default function HorizontalBar({
   const icons = {}
   data.forEach(p => {
     if (p.icon) {
-      console.log(p.icon)
       icons[[toValidStyleName(p.x)]] =  {
         height: 24,
         backgroundColor: {
