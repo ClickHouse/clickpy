@@ -1,5 +1,5 @@
 ---
-name: UI Bug report
+name: UI Bug Report
 about: Report a bug with CryptoHouse UI
 title: ''
 labels: bug
