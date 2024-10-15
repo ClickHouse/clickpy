@@ -47,3 +47,12 @@ export function toValidStyleName(str) {
       })
       .join('');
 }
+
+export function base64Encode(text) {
+  const utf8Bytes = new TextEncoder().encode(text);
+  const binaryString = String.fromCharCode(...Array.from(utf8Bytes));
+  const base64String = btoa(binaryString);
+  // Make the base64 URL-safe
+  const urlSafeBase64String = base64String.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return urlSafeBase64String;
+}
