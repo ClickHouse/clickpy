@@ -42,11 +42,13 @@ export default function PackageDetails({
         }
       </div>
       { author || author_email || license || summary ? (
-          <div className='mt-5 leading-6 tracking-wide text-slate-200'>
+        <div className='mt-5 leading-6 tracking-wide text-slate-200'>
           {author && <p>Author: {author}</p>}
           {author_email && <p>Author Email: {author_email}</p>}
           {license && <p>License: {license}</p>}
-          {summary && <p>Summary: {summary}</p>}
+          {summary && (
+            <p>Summary: { summary.split(' ').slice(0, 10).join(' ')}{summary.split(' ').length > 10 && '...' }</p>
+          )}
         </div>
       ) : (
         <div className='mt-5 leading-6 tracking-wide text-slate-200'>

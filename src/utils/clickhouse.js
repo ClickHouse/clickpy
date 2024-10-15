@@ -708,7 +708,6 @@ export async function hotPackages() {
 export const revalidate = 3600;
 
 async function query(query_name, query, query_params) {
-    console.log(query_params)
     //const start = performance.now()
     const results = await clickhouse.query({
         query: query,
@@ -732,7 +731,6 @@ async function query(query_name, query, query_params) {
               .map(([key, value]) => [`param_${key}`, Array.isArray(value) ? `['${value.join("','")}']` : value])
         );
         query_link = `${query_link}&${Object.entries(prefixedParams).map(([name, value]) => `${encodeURIComponent(name)}=${encodeURIComponent(value)}`).join('&')}`
-        console.log(query_link)
     }
     return Promise.all([Promise.resolve(query_link),  results.json()]);
 }
