@@ -45,7 +45,7 @@ export default function PackageDetails({
         <div className='mt-5 leading-6 tracking-wide text-slate-200'>
           {author && <p>Author: {author}</p>}
           {author_email && <p>Author Email: {author_email}</p>}
-          {license && <p>License: {license}</p>}
+          {license && <p>License: { license.split(' ').slice(0, 10).join(' ')}{license.split(' ').length > 10 && '...' }</p>}
           {summary && (
             <p>Summary: { summary.split(' ').slice(0, 10).join(' ')}{summary.split(' ').length > 10 && '...' }</p>
           )}
