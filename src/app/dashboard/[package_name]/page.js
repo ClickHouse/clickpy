@@ -25,6 +25,8 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import Ping from '@/components/Ping';
 import DependencyTable from '@/components/DependencyTable';
+import PlaygroundLink from '@/components/PlaygroundLink';
+
 
 export const revalidate = 3600;
 
@@ -132,8 +134,9 @@ export default async function Dashboard({ params, searchParams }) {
         </div>
       </header>
       <div className='relative isolate'>
-        <div className='pt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16'>
+        <div className='pt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 flex flex-col gap-4 xl:flex-row justify-between'>
           <PackageDetails name={package_name} {...packageDetails[1][0]} />
+          <PlaygroundLink package_name={package_name}/>
         </div>
         {
           repo_name && (
