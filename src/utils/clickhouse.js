@@ -1,5 +1,6 @@
 import { createClient } from '@clickhouse/client';
 import { createClient as createWebClient } from '@clickhouse/client-web';
+import { base64Encode } from './utils';
 
 export const clickhouse = createClient({
     host: process.env.CLICKHOUSE_HOST,
@@ -707,6 +708,7 @@ export async function hotPackages() {
 export const revalidate = 3600;
 
 async function query(query_name, query, query_params) {
+    console.log(query_params)
     //const start = performance.now()
     const results = await clickhouse.query({
         query: query,
@@ -722,16 +724,15 @@ async function query(query_name, query, query_params) {
     //         console.log(query)
     //     }
     // }
-    let url = `${process.env.CLICKHOUSE_HOST}`
+    let query_link = `${process.env.QUERY_LINK_HOST || process.env.CLICKHOUSE_HOST}?query=${base64Encode(query)}`
     if (query_params != undefined) {
         const prefixedParams = Object.fromEntries(
             Object.entries(query_params)
               .filter(([, value]) => value !== undefined)
               .map(([key, value]) => [`param_${key}`, Array.isArray(value) ? `['${value.join("','")}']` : value])
-          );
-          
-        url = `${url}?${encodeURIComponent(new URLSearchParams(prefixedParams).toString())}`
+        );
+        query_link = `${query_link}&${Object.entries(prefixedParams).map(([name, value]) => `${encodeURIComponent(name)}=${encodeURIComponent(value)}`).join('&')}`
+        console.log(query_link)
     }
-    const query_link = `${process.env.CLICKHOUSE_HOST}/play?user=play&url=${url}#${btoa(query)}`
     return Promise.all([Promise.resolve(query_link),  results.json()]);
 }
