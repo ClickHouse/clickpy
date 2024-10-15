@@ -723,7 +723,7 @@ async function query(query_name, query, query_params) {
     //         console.log(query)
     //     }
     // }
-    let query_link = `${process.env.QUERY_LINK_HOST || process.env.CLICKHOUSE_HOST}?query=${base64Encode(query)}`
+    let query_link = `${process.env.NEXT_PUBLIC_QUERY_LINK_HOST || process.env.CLICKHOUSE_HOST}?query=${base64Encode(query)}`
     if (query_params != undefined) {
         const prefixedParams = Object.fromEntries(
             Object.entries(query_params)
