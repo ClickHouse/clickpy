@@ -46,13 +46,13 @@ export default async function Home() {
                 </h1>
                 <p className='px-4 mt-6 text-lg leading-8 text-white'>
                   Browse through{' '}
-                  <span className='text-primary-300'>
+                  <a className='text-primary-300 hover:underline' href={`${total_downloads[0]}&run_query=true`} target='_blank'>
                     {Number(total_downloads[1][0].projects).toLocaleString('en-US')}
-                  </span>{' '}
+                  </a>{' '}
                   Python packages from PyPI and over{' '}
-                  <span className='text-primary font-bold'>
+                  <a className='text-primary font-bold hover:underline' href={`${total_downloads[0]}&run_query=true`} target='_blank'>
                     {total_downloads[1][0].total}
-                  </span>{' '}
+                  </a>{' '}
                   downloads, updated daily
                 </p>
                 <div className='mt-10 flex items-center justify-center h-8'>
