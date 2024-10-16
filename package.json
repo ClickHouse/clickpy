@@ -15,6 +15,7 @@
     "@gingerwizard/react-daterange-picker": "github:gingerwizard/react-daterange-picker",
     "@headlessui/react": "^1.7.16",
     "@heroicons/react": "^2.0.18",
+    "@next/third-parties": "^14.2.15",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.4",
     "@tailwindcss/line-clamp": "^0.4.4",
@@ -29,17 +30,17 @@
     "lodash": "^4.17.21",
     "next": "^14.2.3",
     "postcss": "8.4.31",
-    "react": "18.3.0",
+    "react": "^18.3.0",
     "react-dom": "18.3.0",
     "server-only": "^0.0.1",
     "sql-formatter": "^15.3.1",
-    "styled-components": ">=6",
+    "styled-components": ">= 6",
     "tailwindcss": "3.3.3"
   },
   "devDependencies": {
-    "husky": "^8.0.3",
     "@types/node": "22.7.5",
-    "@types/react": "^18.3.2"
+    "@types/react": "^18.3.2",
+    "husky": "^8.0.3"
   },
   "peerDependencies": {
     "react": "^18.3.0",
