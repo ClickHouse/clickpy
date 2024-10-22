@@ -77,7 +77,7 @@ export default async function Dashboard({ params, searchParams }) {
               <Search package_name={package_name} />
             </div>
           </div>
-          <div className='flex flex-col sm:flex-row sm:items-center gap-4 2xl:ml-4 mb-4 2xl:mt-4 -ml-[8px] md:ml-0'>
+          <div className='flex flex-col-reverse sm:flex-row sm:items-center gap-4 2xl:ml-4 mb-4 2xl:mt-4 -ml-[8px] md:ml-0'>
             <Filter
               value={country_code}
               icon={
@@ -140,14 +140,14 @@ export default async function Dashboard({ params, searchParams }) {
         </div>
         {
           repo_name && (
-            <div className='mt-4 md:mt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16'>
+            <div className='mt-4 md:mt-8 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16'>
               <Suspense key={key} fallback={<Loading height='208px'/>}>
                 <GithubStats package_name={package_name} min_date={min_date} max_date={max_date}/>
               </Suspense>
             </div>
           )
         }
-        <div className='mt-4 md:mt-12 w-11/12 xl:w-11/12 lg:w-full mx-auto md:grid md:grid-cols-4 lg:grid-cols-3 gap-6 lg:px-16'>
+        <div className='mt-4 w-11/12 xl:w-11/12 lg:w-full mx-auto md:grid md:grid-cols-4 lg:grid-cols-3 gap-6 lg:px-16'>
           <DownloadList
             package_name={package_name}
             version={version}
