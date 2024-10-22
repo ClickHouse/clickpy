@@ -63,7 +63,7 @@ export default function DatePicker({ dates }) {
   };
 
   return (
-    <div className='width-[320px] max-w-[360px] min-w-[320px]'>
+    <div className='width-[353px] max-w-[353px] min-w-[353px]'>
       <Suspense>
         <DateRangePicker
           format='y-MM-dd'

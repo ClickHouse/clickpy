@@ -27,12 +27,12 @@ async function GithubStats({
     <div className='flex h-full w-full mx-auto flex-col lg:grid lg:grid-cols-3 gap-6 '>
         <div className='flex flex-col gap-4 lg:col-span-2 md:h-[208px]'>
           <div className='flex gap-4 w-full sm:flex-row flex-col'>          
-              <SimpleStat value={stats[3]} subtitle={'# Pull requests'} logo={'/prs.svg'} link={stats[0]}/>
-              <SimpleStat value={stats[2]} subtitle={'# PR request openers'} logo={'/users.svg'} link={stats[0]}/>
+              <SimpleStat value={stats[3]} subtitle={'Pull requests'} logo={'/prs.svg'} link={stats[0]}/>
+              <SimpleStat value={stats[2]} subtitle={'PR request openers'} logo={'/users.svg'} link={stats[0]}/>
           </div>
           <div className='flex gap-4 w-full sm:flex-row flex-col'>
-              <SimpleStat value={stats[4]} subtitle={'# Issues'} logo={'/issues.svg'} link={stats[0]}/>
-              <SimpleStat value={stats[5]} subtitle={'# Forks'} logo={'/fork.svg'} link={stats[0]}/>
+              <SimpleStat value={stats[4]} subtitle={'Issues'} logo={'/issues.svg'} link={stats[0]}/>
+              <SimpleStat value={stats[5]} subtitle={'Forks'} logo={'/fork.svg'} link={stats[0]}/>
           </div>
         </div>
         <div className='lg:col-span-1 w-full h-[208px]'>
