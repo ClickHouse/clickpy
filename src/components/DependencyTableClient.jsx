@@ -8,7 +8,7 @@ import { formatNumber } from '@/utils/utils';
 
 export default function DependencyTableClient({ dependencies,  dependents}) {
     
-    const [isDependency, setIsDependency] = useState(true);
+    const [isDependency, setIsDependency] = useState(false);
     const [rowHeight, setRowHeight] = useState('auto');
 
     const [order, setOrder] = useState({column: 'downloads', order: 'desc'});
