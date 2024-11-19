@@ -1,3 +1,4 @@
+import { withHighlightConfig } from '@highlight-run/next/config'
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async rewrites() {
@@ -8,6 +9,9 @@ const nextConfig = {
       }
     ]
   },
+  experimental: {
+		instrumentationHook: true,
+	}
 }
 
-module.exports = nextConfig
+export default withHighlightConfig(nextConfig)

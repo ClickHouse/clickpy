@@ -131,7 +131,10 @@ export default function Line({ data, onSelect, onClear, link }) {
 
   const onMouseOut = () => {
     const echartsInstance = chartRef.current.getEchartsInstance();
-    echartsInstance.setOption(options);
+    if (echartsInstance) {
+      echartsInstance.setOption(options);
+    }
+
   };
 
   const onBrushEnd = (params) => {
