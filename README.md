@@ -252,14 +252,14 @@ We cover both options below.
 For users wishing to make changes to just the app and use the existing ClickHouse instance with the data, the following credentials can be used:
 
 ```
-host: https://clickpy-clickhouse.clickhouse.com
+host: https://sql-clickhouse.clickhouse.com
 port: 443
 user: play
 ```
 Users can connect to this instance with the clickhouse-client and issue queries i.e.
 
 ```bash
-clickhouse client -h clickpy-clickhouse.clickhouse.com --user play --secure
+clickhouse client -h sql-clickhouse.clickhouse.com --user play --secure
 ```
 
 See [App Configuration](#configuration).
@@ -376,7 +376,7 @@ Copy the file `.env.example` to `.env.local`.
 Modify the settings with your clickhouse cluster details, e.g. if using the public instance.
 
 ```
-CLICKHOUSE_HOST=https://clickpy-clickhouse.clickhouse.com
+CLICKHOUSE_HOST=https://sql-clickhouse.clickhouse.com
 CLICKHOUSE_USERNAME=play
 CLICKHOUSE_PASSWORD=
 PYPI_DATABASE=pypi
