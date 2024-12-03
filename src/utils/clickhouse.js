@@ -6,6 +6,9 @@ export const clickhouse = createClient({
     host: process.env.CLICKHOUSE_HOST,
     username: process.env.CLICKHOUSE_USERNAME,
     password: process.env.CLICKHOUSE_PASSWORD,
+    clickhouse_settings: {
+        allow_experimental_analyzer: 0,
+    }
 });
 
 export const web_clickhouse = createWebClient({
@@ -730,7 +733,7 @@ async function query(query_name, query, query_params) {
               .filter(([, value]) => value !== undefined)
               .map(([key, value]) => [`param_${key}`, Array.isArray(value) ? `['${value.join("','")}']` : value])
         );
-        query_link = `${query_link}&${Object.entries(prefixedParams).map(([name, value]) => `${encodeURIComponent(name)}=${encodeURIComponent(value)}`).join('&')}`
+        query_link = `${query_link}&tab=results&${Object.entries(prefixedParams).map(([name, value]) => `${encodeURIComponent(name)}=${encodeURIComponent(value)}`).join('&')}`
     }
     return Promise.all([Promise.resolve(query_link),  results.json()]);
 }
