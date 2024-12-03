@@ -254,12 +254,12 @@ For users wishing to make changes to just the app and use the existing ClickHous
 ```
 host: https://sql-clickhouse.clickhouse.com
 port: 443
-user: play
+user: demo
 ```
 Users can connect to this instance with the clickhouse-client and issue queries i.e.
 
 ```bash
-clickhouse client -h sql-clickhouse.clickhouse.com --user play --secure
+clickhouse client -h sql-clickhouse.clickhouse.com --user demo --secure
 ```
 
 See [App Configuration](#configuration).
@@ -377,7 +377,7 @@ Modify the settings with your clickhouse cluster details, e.g. if using the publ
 
 ```
 CLICKHOUSE_HOST=https://sql-clickhouse.clickhouse.com
-CLICKHOUSE_USERNAME=play
+CLICKHOUSE_USERNAME=demo
 CLICKHOUSE_PASSWORD=
 PYPI_DATABASE=pypi
 ```
