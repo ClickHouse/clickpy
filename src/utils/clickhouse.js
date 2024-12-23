@@ -468,7 +468,7 @@ export async function getDownloadsOverTimeByPython({package_name, version, min_d
         AND ${version ? `version={version:String}`: '1=1'} AND python_minor != '' 
         AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'}
         GROUP BY name, x
-        ORDER BY x ASC, y DESC LIMIT 4 BY x`, {
+        ORDER BY x ASC, y DESC`, {
             package_name: package_name,
             min_date: min_date,
             max_date: max_date,

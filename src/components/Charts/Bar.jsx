@@ -35,29 +35,42 @@ export default function Bar({ data, stack, onSelect, link }) {
     '#CF4B4B'
   ];
   const mappedColors = {};
-  const series = Object.values(values).map((series, i) => {
+
+  const series = Object.values(values).slice(0, 10).map((series, i) => {
     let color = colors[i % colors.length];
     if (series.name in mappedColors) {
       color = mappedColors[series.name];
     } else {
       mappedColors[series.name] = color;
     }
+
     return stack
       ? {
-          type: 'bar',
-          name: series.name,
-          data: series.data,
-          color: color,
-          stack: 'series'
-        }
+        type: 'bar',
+        name: series.name,
+        data: series.data,
+        color: color,
+        stack: 'series'
+      }
       : {
-          type: 'bar',
-          name: series.name,
-          data: series.data,
-          color: color
-        };
-  });
+        type: 'bar',
+        name: series.name,
+        data: series.data,
+        color: color
+      };
 
+  });
+  if (Object.values(values).length > 10) {
+    let other = stack ?
+      { type: 'bar', name: 'Other', data: new Array(xAxis.length).fill(0), color: '#FF9B50', stack: 'series' } :
+      { type: 'bar', name: 'Other', data: new Array(xAxis.length).fill(0), color: '#FF9B50' }
+    Object.values(values).slice(10).map((series, i) => {
+      series.data.forEach((val, index) => {
+        other.data[index] += Number(val) || 0;
+      });
+    });
+    series.push(other)
+  }
   const options = {
     animation: false,
     grid: {
@@ -151,9 +164,9 @@ export default function Bar({ data, stack, onSelect, link }) {
       onMouseOver={onMouseOver}>
 
       <div className='px-[4px] pt-[4px] flex-row flex justify-end'>
-          { link && <Link href={link} target='_blank' className='w-5 ml-5'>
-              <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
-          </Link>}   
+        {link && <Link href={link} target='_blank' className='w-5 ml-5'>
+          <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true' />
+        </Link>}
       </div>
 
       <ReactECharts
