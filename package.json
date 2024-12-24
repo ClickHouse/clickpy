@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@clickhouse/click-ui": "^0.0.168",
+    "@clickhouse/click-ui": "^0.0.180",
     "@clickhouse/client": "^0.2.1",
     "@clickhouse/client-web": "^0.2.1",
     "@gingerwizard/react-daterange-picker": "github:gingerwizard/react-daterange-picker",
