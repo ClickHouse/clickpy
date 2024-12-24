@@ -36,7 +36,7 @@ export default function Bar({ data, stack, onSelect, link }) {
   ];
   const mappedColors = {};
 
-  const series = Object.values(values).slice(0, 10).map((series, i) => {
+  const series = Object.values(values).map((series, i) => {
     let color = colors[i % colors.length];
     if (series.name in mappedColors) {
       color = mappedColors[series.name];
@@ -60,17 +60,6 @@ export default function Bar({ data, stack, onSelect, link }) {
       };
 
   });
-  if (Object.values(values).length > 10) {
-    let other = stack ?
-      { type: 'bar', name: 'Other', data: new Array(xAxis.length).fill(0), color: '#FF9B50', stack: 'series' } :
-      { type: 'bar', name: 'Other', data: new Array(xAxis.length).fill(0), color: '#FF9B50' }
-    Object.values(values).slice(10).map((series, i) => {
-      series.data.forEach((val, index) => {
-        other.data[index] += Number(val) || 0;
-      });
-    });
-    series.push(other)
-  }
   const options = {
     animation: false,
     grid: {

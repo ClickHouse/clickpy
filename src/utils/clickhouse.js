@@ -460,22 +460,27 @@ export async function getDownloadsOverTimeByPython({package_name, version, min_d
     if (type) { columns.push('type') }
     const table = findOptimalTable(columns)
     return query('getDownloadsOverTimeByPython',`SELECT
-            python_minor as name,
-            if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay(date)::Date32, toStartOfWeek(date)::Date32) AS x,
-            ${table == PYPI_TABLE ? 'count()': 'sum(count)'} AS y
-        FROM ${PYPI_DATABASE}.${table}
-        WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (project = {package_name:String}) 
-        AND ${version ? `version={version:String}`: '1=1'} AND python_minor != '' 
-        AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'}
+        if (python_minor IN
+            (SELECT python_minor FROM pypi.pypi_downloads_per_day_by_version_by_python
+                                WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (project = {package_name:String})
+                                GROUP BY python_minor
+                                ORDER BY count() DESC LIMIT 10
+            ), python_minor, 'other') as name,
+        if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay(date)::Date32, toStartOfWeek(date)::Date32) AS x,
+        sum(count) AS y
+        FROM pypi.pypi_downloads_per_day_by_version_by_python
+        WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (project ={package_name:String})
+        AND 1=1 AND python_minor != ''
+        AND 1=1 AND 1=1
         GROUP BY name, x
         ORDER BY x ASC, y DESC`, {
-            package_name: package_name,
-            min_date: min_date,
-            max_date: max_date,
-            version: version,
-            country_code: country_code,
-            type: type
-        })
+                package_name: package_name,
+                min_date: min_date,
+                max_date: max_date,
+                version: version,
+                country_code: country_code,
+                type: type
+            })
 }
 
 export async function getDownloadsOverTimeBySystem({package_name, version, min_date, max_date, country_code, type}) {
