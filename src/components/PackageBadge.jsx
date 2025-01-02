@@ -17,14 +17,14 @@ export default async function PackageBadge({ package_name, min_date, max_date, c
         if (data[0].percentile < 1) {
             badgeImage = '/badges/gold.svg'
             label = 'TOP 1%'
-            rank = numeral(data[0].rank).format('0a')
+            rank = numeral(data[0].rank).format('0.0a')
         } else if (data[0].percentile < 10) {
             badgeImage = '/badges/silver.svg'
             label = 'TOP 10%'
-            rank = numeral(data[0].rank).format('0a')
+            rank = numeral(data[0].rank).format('0.0a')
         } else {
             badgeImage = '/badges/bronze.svg'
-            rank = numeral(data[0].rank).format('0a')
+            rank = numeral(data[0].rank).format('0.0a')
         }
     } else {
         badgeImage = '/badges/bronze.svg'
