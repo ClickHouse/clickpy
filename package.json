@@ -29,6 +29,7 @@
     "eslint-config-next": "13.4.13",
     "lodash": "^4.17.21",
     "next": "^14.2.3",
+    "numeral": "^2.0.6",
     "postcss": "8.4.31",
     "react": "^18.3.0",
     "react-dom": "18.3.0",
