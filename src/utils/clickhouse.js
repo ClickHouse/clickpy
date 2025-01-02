@@ -2,6 +2,7 @@ import { createClient } from '@clickhouse/client';
 import { createClient as createWebClient } from '@clickhouse/client-web';
 import { base64Encode } from './utils';
 
+
 export const clickhouse = createClient({
     host: process.env.CLICKHOUSE_HOST,
     username: process.env.CLICKHOUSE_USERNAME,
@@ -462,16 +463,18 @@ export async function getDownloadsOverTimeByPython({ package_name, version, min_
     return query('getDownloadsOverTimeByPython', `SELECT
         if (python_minor IN
             (SELECT python_minor FROM ${PYPI_DATABASE}.${table}
-                                WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (project = {package_name:String})
+                                WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (project = {package_name:String}) 
+                                AND ${version ? `version={version:String}`: '1=1'} AND python_minor != '' 
+                                AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'}
                                 GROUP BY python_minor
                                 ORDER BY count() DESC LIMIT 10
             ), python_minor, 'other') as name,
         if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay(date)::Date32, toStartOfWeek(date)::Date32) AS x,
         sum(count) AS y
         FROM ${PYPI_DATABASE}.${table}
-        WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (project ={package_name:String})
-        AND 1=1 AND python_minor != ''
-        AND 1=1 AND 1=1
+        WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (project = {package_name:String}) 
+        AND ${version ? `version={version:String}`: '1=1'} AND python_minor != '' 
+        AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'}
         GROUP BY name, x
         ORDER BY x ASC, y DESC`, {
         package_name: package_name,
