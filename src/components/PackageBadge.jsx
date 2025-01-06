@@ -12,26 +12,32 @@ export default async function PackageBadge({ package_name, min_date, max_date, c
     let badgeImage;
     let label;
     let rank;
-
+    let display = false
+    
     if (data.length > 0) {
-        if (data[0].percentile < 1) {
+        let percentile = Number(data[0].percentile)
+        if (percentile > 0 && percentile < 1) {
             badgeImage = '/badges/gold.svg'
             label = 'TOP 1%'
             rank = numeral(data[0].rank).format('0.[0]a')
-        } else if (data[0].percentile < 10) {
+            display = true
+        } else if (percentile > 0 && percentile < 10) {
             badgeImage = '/badges/silver.svg'
             label = 'TOP 10%'
             rank = numeral(data[0].rank).format('0.[0]a')
-        } else {
+            display = true
+        }else if (percentile > 0 && percentile < 25) {
             badgeImage = '/badges/bronze.svg'
+            label = 'TOP 25%'
             rank = numeral(data[0].rank).format('0.[0]a')
+            display = true
         }
-    } else {
-        badgeImage = '/badges/bronze.svg'
-    }
+    } 
     
     return (
+        display && 
         <div className='flex'>
+    
             <Image
                 src={badgeImage}
                 alt={`${package_name} ranking badge`}
@@ -43,7 +49,7 @@ export default async function PackageBadge({ package_name, min_date, max_date, c
 
             {link && <Link href={link} target='_blank' className='w-5 ml-1'>
               <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
-          </Link>}   
+          </Link>}
         </div>
     );
 }

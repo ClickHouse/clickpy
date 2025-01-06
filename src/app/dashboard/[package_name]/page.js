@@ -113,16 +113,7 @@ export default async function Dashboard({ params, searchParams }) {
               />
               <DatePicker dates={[min_date, max_date]} />
             </div>
-            <div className='flex flex-col items-center'>
-              <Suspense key={key} fallback={<Loading />}>
-                <PackageBadge package_name={package_name}
-                  version={version}
-                  min_date={min_date}
-                  max_date={max_date}
-                  country_code={country_code}
-                />
-              </Suspense>
-            </div>
+            
           </div>
 
           <div className='hidden 2xl:flex grow width-20 max-w-[122px] md:mt-2 ml-4'>
@@ -147,9 +138,19 @@ export default async function Dashboard({ params, searchParams }) {
         </div>
       </header>
       <div className='relative isolate'>
-        <div className='pt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 flex flex-col gap-4 xl:flex-row justify-between'>
+        <div className='pt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 flex flex-col gap-4 md:flex-row justify-between'>
           <PackageDetails name={package_name} {...packageDetails[1][0]} />
-          <PlaygroundLink package_name={package_name} />
+          <div className='flex flex-col'>
+            <PackageBadge package_name={package_name}
+                    version={version}
+                    min_date={min_date}
+                    max_date={max_date}
+                    country_code={country_code} />
+            
+          </div>
+        </div>
+        <div className='flex flex-col w-11/12 lg:w-full xl:w-11/12 lg:px-16 mx-auto items-start sm:items-start md:items-end'>
+        <PlaygroundLink package_name={package_name} />
         </div>
         {
           repo_name && (
