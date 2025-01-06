@@ -138,7 +138,7 @@ export default async function Dashboard({ params, searchParams }) {
         </div>
       </header>
       <div className='relative isolate'>
-        <div className='pt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 flex flex-col gap-4 md:flex-row justify-between'>
+        <div className='pt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 flex flex-row gap-4  justify-between'>
           <PackageDetails name={package_name} {...packageDetails[1][0]} />
           <div className='flex flex-col'>
             <PackageBadge package_name={package_name}
@@ -149,7 +149,7 @@ export default async function Dashboard({ params, searchParams }) {
             
           </div>
         </div>
-        <div className='flex flex-col w-11/12 lg:w-full xl:w-11/12 lg:px-16 mx-auto items-start sm:items-start md:items-end'>
+        <div className='mt-4 flex flex-col w-11/12 lg:w-full xl:w-11/12 lg:px-16 mx-auto items-end'>
         <PlaygroundLink package_name={package_name} />
         </div>
         {

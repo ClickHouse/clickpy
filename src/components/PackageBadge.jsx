@@ -36,20 +36,23 @@ export default async function PackageBadge({ package_name, min_date, max_date, c
     
     return (
         display && 
-        <div className='flex'>
-    
-            <Image
-                src={badgeImage}
-                alt={`${package_name} ranking badge`}
-                width={40}
-                height={40}
-                className='m-1'
-            />
-            <div><p className='font-inter text-slate-500'>{label}</p><p className='font-inter font-bold text-3xl text-[#FBE9B9]'>{rank}</p></div>
-
-            {link && <Link href={link} target='_blank' className='w-5 ml-1'>
-              <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
-          </Link>}
+        <div className='flex flex-col items-end'>
+            <div className='flex items-center'>
+                <Image
+                    src={badgeImage}
+                    alt={`${package_name} ranking badge`}
+                    width={25}
+                    height={25}
+                    className='m-2'
+                />
+                <div className='flex flex-rows'>
+                    <p className='font-inter text-slate-500'>{label}</p>
+                    {link && <Link href={link} target='_blank' className='w-5 ml-1'>
+                        <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
+                    </Link>}
+                </div>
+            </div>
+            <p className='font-inter font-bold text-3xl text-[#FBE9B9]'>{rank}</p>
         </div>
     );
 }
