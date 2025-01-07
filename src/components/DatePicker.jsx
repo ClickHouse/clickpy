@@ -1,15 +1,12 @@
 'use client';
-import DateRangePicker from '@gingerwizard/react-daterange-picker';
-import '@gingerwizard/react-daterange-picker/dist/DateRangePicker.css';
-import 'react-calendar/dist/Calendar.css';
-import './datepicker.css';
-import Image from 'next/image';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
-import { parseDate} from '@/utils/utils';
 
-function ClearLogo(clearable) {
+import { DatePicker as ClickHouseDatePicker } from '@clickhouse/click-ui';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+
+function ClearLogo({ clearable, onClick }) {
   return (
+    <div onClick={onClick} style={{ cursor: 'pointer' }}> 
     <svg
       width='24'
       height='24'
@@ -29,6 +26,7 @@ function ClearLogo(clearable) {
         cursor={clearable ? 'pointer' : 'default'}
       />
     </svg>
+    </div>
   );
 }
 
@@ -37,48 +35,54 @@ export default function DatePicker({ dates }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const current = new URLSearchParams(searchParams.toString());
-  const clearable = current.get('min_date') || current.get('max_date');
+  const [isLoading, setIsLoading] = useState(true);
+  const [minDate, setMinDate] = useState(current.get('min_date'));
+  const [maxDate, setMaxDate] = useState(current.get('max_date'));
 
-  const onChange = (min_date, max_date) => {
-    if (min_date === undefined && max_date === undefined) {
-      current.delete('min_date');
-      current.delete('max_date');
-      router.push(`${pathname}?${current.toString()}`, { scroll: false });
+  useEffect(() => {
+    if (dates) {
+      if (!current.get('min_date')) {
+        setMinDate(dates[0]);
+      }
+      if (!current.get('max_date')) {
+        setMaxDate(dates[1]);
+      }
     }
-    else if (parseDate(min_date, undefined) && parseDate(max_date, undefined)) {
-      min_date ? current.set('min_date', min_date) : current.delete('min_date');
-      max_date ? current.set('max_date', max_date) : current.delete('max_date');
-      router.push(`${pathname}?${current.toString()}`, { scroll: false });
-    }
-    
+    setIsLoading(false);
+  }, []);
+
+  const clearDates = () => {
+    console.log('clearing dates');
+    current.delete('min_date');
+    current.delete('max_date');
+    router.push(`${pathname}?${current.toString()}`, { scroll: false });
   };
 
-  const onSelectDates = (values) => {
-    values
-      ? onChange(
-        `${values[0].getFullYear()}-${(values[0].getMonth() + 1).toString().padStart(2, '0')}-${values[0].getDate().toString().padStart(2, '0')}`,
-        `${values[1].getFullYear()}-${(values[1].getMonth() + 1).toString().padStart(2, '0')}-${values[1].getDate().toString().padStart(2, '0')}`
-        )
-      : onChange();
+  const formatDate = (dateString) => {
+    const date = new Date(decodeURIComponent(dateString));
+    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
   };
+
+  const onSelectFromDates = (date) => {
+    const formattedDate = formatDate(date);
+    current.set('min_date', formattedDate)
+    router.push(`${pathname}?${current.toString()}`, { scroll: false });
+  };
+
+  const onSelectToDates = (date) => {
+    const formattedDate = formatDate(date);
+    current.set('max_date', formattedDate)
+    router.push(`${pathname}?${current.toString()}`, { scroll: false });
+  };
+
 
   return (
-    <div className='width-[353px] max-w-[353px] min-w-[353px]'>
-      <Suspense>
-        <DateRangePicker
-          format='y-MM-dd'
-          showLeadingZeros={true}
-          calendarClassName='calendar'
-          className='date_picker'
-          onChange={onSelectDates}
-          rangeDivider={' to '}
-          calendarIcon={
-            <Image alt='calendar' src='/calendar.svg' width={16} height={16} />
-          }
-          value={dates}
-          clearIcon={ClearLogo(clearable)}
-        />
-      </Suspense>
-    </div>
+    isLoading ? <div></div> :
+      <div className='flex flex-row gap-2 items-center'>
+        <ClickHouseDatePicker date={new Date(minDate)} onSelectDate={onSelectFromDates} />
+        <p>to</p>
+        <ClickHouseDatePicker date={new Date(maxDate)} onSelectDate={onSelectToDates} />
+        <ClearLogo clearable={true} onClick={clearDates} />
+      </div>
   );
 }
