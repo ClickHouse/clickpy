@@ -4,7 +4,7 @@ import numeral from 'numeral';
 import Link from 'next/link';
 import {
     ArrowTopRightOnSquareIcon,
-  } from '@heroicons/react/20/solid';
+} from '@heroicons/react/20/solid';
 
 export default async function PackageBadge({ package_name, min_date, max_date, country_code }) {
     const [link, data] = await getPackageRanking(package_name, min_date, max_date, country_code)
@@ -12,47 +12,46 @@ export default async function PackageBadge({ package_name, min_date, max_date, c
     let badgeImage;
     let label;
     let rank;
-    let display = false
-    
+    let displayBadge = false
+
     if (data.length > 0) {
-        let percentile = Number(data[0].percentile)
-        if (percentile > 0 && percentile < 1) {
-            badgeImage = '/badges/gold.svg'
-            label = 'TOP 1%'
-            rank = numeral(data[0].rank).format('0.[0]a')
-            display = true
-        } else if (percentile > 0 && percentile < 10) {
-            badgeImage = '/badges/silver.svg'
-            label = 'TOP 10%'
-            rank = numeral(data[0].rank).format('0.[0]a')
-            display = true
-        }else if (percentile > 0 && percentile < 25) {
-            badgeImage = '/badges/bronze.svg'
-            label = 'TOP 25%'
-            rank = numeral(data[0].rank).format('0.[0]a')
-            display = true
+        if (data[0].rank <= 10) {
+            label = 'TOP 10'
+            if (data[0].rank == 1) {
+                badgeImage = '/badges/gold.svg'
+                displayBadge = true
+            } else if (data[0].rank == 2) {
+                badgeImage = '/badges/silver.svg'
+                displayBadge = true
+            } else if (data[0].rank == 3) {
+                badgeImage = '/badges/bronze.svg'
+                displayBadge = true
+            }
         }
-    } 
-    
+        rank = numeral(data[0].rank).format('0,0')
+    }
+
     return (
-        display && 
-        <div className='flex flex-col items-end'>
-            <div className='flex items-center'>
+
+        <div className='flex flex-col items-end w-[150px]'>
+            <p className='font-inter font-bold text-3xl text-[#FBE9B9] whitespace-nowrap'># {rank}</p>
+
+            <div className='flex items-center h-[55px]'>
+                {displayBadge &&
                 <Image
                     src={badgeImage}
                     alt={`${package_name} ranking badge`}
                     width={25}
                     height={25}
-                    className='m-2'
-                />
-                <div className='flex flex-rows'>
-                    <p className='font-inter text-slate-500'>{label}</p>
-                    {link && <Link href={link} target='_blank' className='w-5 ml-1'>
-                        <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
+                    className='m-1'
+                /> }
+                <div className='flex flex-row'>
+                    <p className='font-inter text-slate-500 mx-1 whitespace-nowrap'>{label}</p>
+                    {link && <Link href={link} target='_blank' className='w-5'>
+                        <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true' />
                     </Link>}
                 </div>
             </div>
-            <p className='font-inter font-bold text-3xl text-[#FBE9B9]'>{rank}</p>
         </div>
     );
 }
