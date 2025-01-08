@@ -18,26 +18,26 @@ export default async function PackageBadge({ package_name, min_date, max_date, c
     if (data.length > 0) {
         if (data[0].rank > 0) {
             displayRank = true
-        }
-        if (data[0].rank <= 10) {
-            label = 'TOP 10'
-            if (data[0].rank == 1) {
-                badgeImage = '/badges/gold.svg'
-                displayBadge = true
-            } else if (data[0].rank == 2) {
-                badgeImage = '/badges/silver.svg'
-                displayBadge = true
-            } else if (data[0].rank == 3) {
-                badgeImage = '/badges/bronze.svg'
-                displayBadge = true
-            }
+        }            
+        if (data[0].percentile > 0 && data[0].percentile <= 1) {
+            badgeImage = '/badges/gold.svg'
+            displayBadge = true
+            label = 'TOP 1%'
+        } else if (data[0].percentile > 0 && data[0].percentile <= 10) {
+            badgeImage = '/badges/silver.svg'
+            displayBadge = true
+            label = 'TOP 10%'
+        } else if (data[0].percentile > 0 && data[0].percentile <= 25) {
+            badgeImage = '/badges/bronze.svg'
+            displayBadge = true
+            label = 'TOP 25%'
         }
         rank = numeral(data[0].rank).format('0,0')
     }
 
     return (
         displayRank && 
-        <div className='grid justify-items-end min-w-[150px]'>
+        <div className='grid justify-items-end min-w-[200px]'>
             <div className='flex'>
             <div className='flex flex-col items-end h-[60px]'>
                 <p className='font-inter font-bold text-3xl text-[#FBE9B9] whitespace-nowrap'># {rank}</p>
