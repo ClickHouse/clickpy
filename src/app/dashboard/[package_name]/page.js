@@ -10,8 +10,9 @@ import {
   getDownloadsByCountry,
   getFileTypesByInstaller,
   getTopContributors,
+  getPackageRanking
 } from '@/utils/clickhouse';
-import { parseDate} from '@/utils/utils';
+import { parseDate } from '@/utils/utils';
 import Search from '@/components/Search';
 import Image from 'next/image';
 import Chart from '@/components/Chart';
@@ -26,7 +27,7 @@ import Link from 'next/link';
 import Ping from '@/components/Ping';
 import DependencyTable from '@/components/DependencyTable';
 import PlaygroundLink from '@/components/PlaygroundLink';
-
+import PackageBadge from '@/components/PackageBadge';
 
 export const revalidate = 3600;
 
@@ -60,7 +61,7 @@ export default async function Dashboard({ params, searchParams }) {
   const repo_name = packageDetails[1][0]?.repo_name;
   return (
     <div>
-      <Ping name={`dashboard: ${package_name}`}/>
+      <Ping name={`dashboard: ${package_name}`} />
       <header className='bg-neutral-800 shadow-lg border-b-2 border-neutral-725 sticky top-0 z-20 opacity-95 backdrop-filter backdrop-blur-xl bg-opacity-90 2xl:h-[82px]'>
         <div className='mx-auto flex flex-col 2xl:flex-row 2xl:items-center justify-between px-4 sm:px-8 xsm:px-6 lg:px-16 lg:w-full xl:w-11/12 lg:mb-0'>
           <div className='md:items-center flex flex-col md:flex-row gap-4 md:gap-8 md:h-[82px] pt-[26px] md:pt-0 ml-0 w-full'>
@@ -77,72 +78,85 @@ export default async function Dashboard({ params, searchParams }) {
               <Search package_name={package_name} />
             </div>
           </div>
-          <div className='flex flex-col-reverse sm:flex-row sm:items-center gap-4 2xl:ml-4 mb-4 2xl:mt-4 -ml-[8px] md:ml-0'>
-            <Filter
-              value={country_code}
-              icon={
-                <Image
-                  alt='country code'
-                  src='/country.svg'
-                  width={16}
-                  height={16}
-                />
-              }
-              name='country_code'
-            />
-            <Filter
-              value={version}
-              icon={
-                <Image
-                  alt='version'
-                  src='/version.svg'
-                  width={16}
-                  height={16}
-                />
-              }
-              name='version'
-            />
-            <Filter
-              value={file_type}
-              icon={
-                <Image alt='type' src='/file_type.svg' width={16} height={16} />
-              }
-              name='type'
-            />
-            <DatePicker dates={[min_date, max_date]} />
+          <div className="flex justify-between">
+            <div className='flex flex-col-reverse sm:flex-row sm:items-center gap-4 2xl:ml-4 mb-4 2xl:mt-4 -ml-[8px] md:ml-0'>
+              <Filter
+                value={country_code}
+                icon={
+                  <Image
+                    alt='country code'
+                    src='/country.svg'
+                    width={16}
+                    height={16}
+                  />
+                }
+                name='country_code'
+              />
+              <Filter
+                value={version}
+                icon={
+                  <Image
+                    alt='version'
+                    src='/version.svg'
+                    width={16}
+                    height={16}
+                  />
+                }
+                name='version'
+              />
+              <Filter
+                value={file_type}
+                icon={
+                  <Image alt='type' src='/file_type.svg' width={16} height={16} />
+                }
+                name='type'
+              />
+              <DatePicker dates={[min_date, max_date]} />
+            </div>
             
-          </div> 
+          </div>
+
           <div className='hidden 2xl:flex grow width-20 max-w-[122px] md:mt-2 ml-4'>
-              <p className='text-sm text-neutral-0'>
-                Powered by &nbsp;
-                <a
-                  className='text-primary-300 hover:underline'
-                  href='http://clickhouse.com/'
-                  target='_blank'>
-                  ClickHouse
-                </a>
-              </p>
-              <Link href='https://github.com/ClickHouse/clickpy' target='_blank' className='w-32 ml-4'>
-                <Image
-                  className='w-8 h-8'
-                  src='/github.svg'
-                  alt='ClickPy Github'
-                  width='32'
-                  height='32'/>
-              </Link>
+            <p className='text-sm text-neutral-0'>
+              Powered by &nbsp;
+              <a
+                className='text-primary-300 hover:underline'
+                href='http://clickhouse.com/'
+                target='_blank'>
+                ClickHouse
+              </a>
+            </p>
+            <Link href='https://github.com/ClickHouse/clickpy' target='_blank' className='w-32 ml-4'>
+              <Image
+                className='w-8 h-8'
+                src='/github.svg'
+                alt='ClickPy Github'
+                width='32'
+                height='32' />
+            </Link>
           </div>
         </div>
       </header>
       <div className='relative isolate'>
-        <div className='pt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 flex flex-col gap-4 xl:flex-row justify-between'>
+        <div className='pt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 flex flex-row gap-4  justify-between'>
           <PackageDetails name={package_name} {...packageDetails[1][0]} />
-          <PlaygroundLink package_name={package_name}/>
+          <div className='flex flex-col'>
+            <PackageBadge package_name={package_name}
+                    version={version}
+                    min_date={min_date}
+                    max_date={max_date}
+                    country_code={country_code} />
+            
+          </div>
+        </div>
+        <div className='mt-4 flex flex-col w-11/12 lg:w-full xl:w-11/12 lg:px-16 mx-auto items-end'>
+        <PlaygroundLink package_name={package_name} />
         </div>
         {
           repo_name && (
             <div className='mt-4 md:mt-8 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16'>
-              <Suspense key={key} fallback={<Loading height='208px'/>}>
-                <GithubStats package_name={package_name} min_date={min_date} max_date={max_date}/>
+              <Suspense key={key} fallback={<Loading height='208px' />}>
+                <GithubStats package_name={package_name} min_date={min_date} max_date={max_date} />
               </Suspense>
             </div>
           )
@@ -160,8 +174,8 @@ export default async function Dashboard({ params, searchParams }) {
           <div className='mt-4 md:mt-0 h-24 md:col-span-2 lg:col-span-1'>
             <Version
               current={version ? version : 'All'}
-              latest={packageDetails[1].length > 0 ? packageDetails[1][0].max_version: null}
-              link = {packageDetails[1].length > 0 ? packageDetails[0]: null}
+              latest={packageDetails[1].length > 0 ? packageDetails[1][0].max_version : null}
+              link={packageDetails[1].length > 0 ? packageDetails[0] : null}
             />
           </div>
         </div>
@@ -204,10 +218,10 @@ export default async function Dashboard({ params, searchParams }) {
           </div>
         </div>
 
-        <div className={`mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 lg:h-[480px] ${ repo_name ? 'lg:grid lg:grid-cols-3 gap-6' : ''}`}>
+        <div className={`mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 lg:h-[480px] ${repo_name ? 'lg:grid lg:grid-cols-3 gap-6' : ''}`}>
           <div className='h-[480px] lg:col-span-2'>
             <p className='text-2xl font-bold mb-5'>
-                Downloads by Python version over time
+              Downloads by Python version over time
             </p>
             <Suspense key={key} fallback={<Loading />}>
               <Chart
@@ -243,11 +257,11 @@ export default async function Dashboard({ params, searchParams }) {
             </div>
           )}
         </div>
-        
+
         <div className={`mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 lg:h-[480px] lg:grid lg:grid-cols-3 gap-6`}>
           <div className='h-[480px] lg:col-span-2'>
             <p className='text-2xl font-bold mb-5'>
-                Downloads by system over time
+              Downloads by system over time
             </p>
             <Suspense key={key} fallback={<Loading />}>
               <Chart
@@ -268,14 +282,14 @@ export default async function Dashboard({ params, searchParams }) {
           <div className='mt-24 lg:mt-0'>
             <p className='text-2xl font-bold mb-5'>Related packages</p>
             <Suspense key={key} fallback={<Loading />}>
-                <DependencyTable params={{
-                  package_name: package_name,
-                  version: version,
-                  min_date: min_date,
-                  max_date: max_date,
-                  country_code: country_code,
-                  type: file_type
-                }}/>
+              <DependencyTable params={{
+                package_name: package_name,
+                version: version,
+                min_date: min_date,
+                max_date: max_date,
+                country_code: country_code,
+                type: file_type
+              }} />
             </Suspense>
           </div>
         </div>
@@ -320,9 +334,9 @@ export default async function Dashboard({ params, searchParams }) {
         </div>
       </div>
       <div className='mb-8 w-10/12 flex justify-center mx-auto h-[640px] xl:h-full items-end'>
-        <Footer/>
+        <Footer />
       </div>
     </div>
-    
+
   );
 }
