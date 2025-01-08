@@ -33,25 +33,28 @@ export default async function PackageBadge({ package_name, min_date, max_date, c
 
     return (
 
-        <div className='flex flex-col items-end w-[150px]'>
-            <p className='font-inter font-bold text-3xl text-[#FBE9B9] whitespace-nowrap'># {rank}</p>
-
-            <div className='flex items-center h-[55px]'>
-                {displayBadge &&
+        <div className='flex flex-row min-w-[150px]'>
+            <div className='flex flex-col items-end h-[60px] mr-4'>
+                <p className='font-inter font-bold text-3xl text-[#FBE9B9] whitespace-nowrap'># {rank}</p>
+                <div className='flex items-center'>
+                    <div className='flex flex-row'>
+                        <p className='font-inter text-slate-500 mx-1 whitespace-nowrap'>{label}</p>
+                        {link && <Link href={link} target='_blank' className='w-5'>
+                            <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true' />
+                        </Link>}
+                    </div>
+                </div>
+            </div>
+            {displayBadge &&
+            <div className='flex items-center h-full'>
                 <Image
                     src={badgeImage}
                     alt={`${package_name} ranking badge`}
-                    width={25}
-                    height={25}
-                    className='m-1'
-                /> }
-                <div className='flex flex-row'>
-                    <p className='font-inter text-slate-500 mx-1 whitespace-nowrap'>{label}</p>
-                    {link && <Link href={link} target='_blank' className='w-5'>
-                        <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true' />
-                    </Link>}
-                </div>
-            </div>
+                    width={34}
+                    height={48}
+                />
+                </div>}
+
         </div>
     );
 }
