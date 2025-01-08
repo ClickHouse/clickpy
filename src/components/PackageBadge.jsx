@@ -13,8 +13,12 @@ export default async function PackageBadge({ package_name, min_date, max_date, c
     let label;
     let rank;
     let displayBadge = false
+    let displayRank = false
 
     if (data.length > 0) {
+        if (data[0].rank > 0) {
+            displayRank = true
+        }
         if (data[0].rank <= 10) {
             label = 'TOP 10'
             if (data[0].rank == 1) {
@@ -32,9 +36,10 @@ export default async function PackageBadge({ package_name, min_date, max_date, c
     }
 
     return (
-
-        <div className='flex flex-row min-w-[150px]'>
-            <div className='flex flex-col items-end h-[60px] mr-4'>
+        displayRank && 
+        <div className='grid justify-items-end min-w-[150px]'>
+            <div className='flex'>
+            <div className='flex flex-col items-end h-[60px]'>
                 <p className='font-inter font-bold text-3xl text-[#FBE9B9] whitespace-nowrap'># {rank}</p>
                 <div className='flex items-center'>
                     <div className='flex flex-row'>
@@ -46,7 +51,7 @@ export default async function PackageBadge({ package_name, min_date, max_date, c
                 </div>
             </div>
             {displayBadge &&
-            <div className='flex items-center h-full'>
+            <div className='flex items-center h-full ml-4'>
                 <Image
                     src={badgeImage}
                     alt={`${package_name} ranking badge`}
@@ -54,7 +59,7 @@ export default async function PackageBadge({ package_name, min_date, max_date, c
                     height={48}
                 />
                 </div>}
-
+            </div>
         </div>
     );
 }
