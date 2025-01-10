@@ -90,6 +90,12 @@ function findOptimalTable(required_columns) {
     return table
 }
 
+function getQueryCustomSettings(query_name) {
+    const queryCustomSettings = process.env.QUERY_CUSTOM_SETTINGS || '{}'
+    const settings = JSON.parse(queryCustomSettings)
+    return settings[query_name] || {}
+}
+
 export async function getPackages(query_prefix) {
     if (query_prefix != '') {
         return await query('getPackages', `SELECT project, sum(count) AS c FROM ${PYPI_DATABASE}.${findOptimalTable(['project'])} WHERE project LIKE {query_prefix:String} GROUP BY project ORDER BY c DESC LIMIT 6`, {
@@ -724,6 +730,7 @@ export async function getPackageRanking(package_name, min_date, max_date, countr
     const columns = ['project', 'date']
     if (country_code) { columns.push('country_code') }
     const table = findOptimalTable(columns)
+    
     return query('getPackageRanking',`WITH
     (   SELECT
         sum(count) AS total
@@ -751,6 +758,7 @@ async function query(query_name, query, query_params) {
         query: query,
         query_params: query_params,
         format: 'JSONEachRow',
+        clickhouse_settings: getQueryCustomSettings(query_name)
     })
     const end = performance.now()
     //console.log(`Execution time for ${query_name}: ${end - start} ms`)
