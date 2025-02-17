@@ -52,30 +52,21 @@ client = clickhouse_connect.get_client(
     username='pme', password='XkaeJ}#4U85/'
 )
 
-index = 1
-offset = 0
-while True:
-    print(index, offset)
-    query = """
-    SELECT
-        project,
-        sum(count) AS c
-    FROM pypi.pypi_downloads
-    GROUP BY project
-    ORDER BY c DESC
-    LIMIT 10000 OFFSET {offset:UInt32}
-    """
+query = """
+SELECT
+    project,
+    sum(count) AS c
+FROM pypi.pypi_downloads
+GROUP BY project
+ORDER BY c DESC
+LIMIT 50000
+"""
 
-    result = client.query(query, {'offset': offset})
+result = client.query(query)
 
-    urls = [
-        f"https://clickpy.clickhouse.com/dashboard/{row[0]}"
-        for row in result.result_rows
-    ] 
+urls = [
+    f"https://clickpy.clickhouse.com/dashboard/{row[0]}"
+    for row in result.result_rows
+] 
 
-    if len(urls) > 0 and offset < 100000:
-        generate_sitemap(urls, f"src/app/sitemap{index}.xml")
-        offset += len(urls)
-        index += 1        
-    else:
-        break
+generate_sitemap(urls, f"src/app/sitemap.xml")
