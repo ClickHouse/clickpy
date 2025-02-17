@@ -15,6 +15,8 @@ def generate_sitemap(urls):
     # Create the root element for the XML tree
     root = ET.Element("urlset")
     root.set("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
+
+    current_time = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"    
     
     # Iterate over each URL and create XML elements
     for url in urls:
@@ -27,7 +29,7 @@ def generate_sitemap(urls):
         
         # Create <lastmod> element and set current date
         lastmod_elem = ET.SubElement(url_elem, "lastmod")
-        lastmod_elem.text = datetime.datetime.now().isoformat()
+        lastmod_elem.text = current_time
         
         # # Create <changefreq> element and set frequency of change
         # changefreq_elem = ET.SubElement(url_elem, "changefreq")
