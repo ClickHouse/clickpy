@@ -66,5 +66,5 @@ urls = [
     for row in result.result_rows
 ] 
 
-urls.insert(0, "https://clickpy.clickhouse.com/dashboard")
+urls.insert(0, "https://clickpy.clickhouse.com")
 generate_sitemap(urls)
