@@ -11,7 +11,7 @@ import clickhouse_connect
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 
-def generate_sitemap(urls):
+def generate_sitemap(urls, file):
     # Create the root element for the XML tree
     root = ET.Element("urlset")
     root.set("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
@@ -43,30 +43,39 @@ def generate_sitemap(urls):
     xmlstr = minidom.parseString(ET.tostring(root)).toprettyxml(indent="  ")
     
     # Write the formatted XML string to a file
-    with open("src/app/sitemap.xml", "w", encoding="utf-8") as f:
+    with open(file, "w", encoding="utf-8") as f:
         f.write(xmlstr)
 
 client = clickhouse_connect.get_client(
     host='sql-clickhouse.clickhouse.com', 
     port=8443, 
-    username='demo'
+    username='pme', password='XkaeJ}#4U85/'
 )
 
-query = """
-SELECT
-    project,
-    sum(count) AS c
-FROM pypi.pypi_downloads
-GROUP BY project
-ORDER BY c DESC
-LIMIT 10000
-"""
+index = 1
+offset = 0
+while True:
+    print(index, offset)
+    query = """
+    SELECT
+        project,
+        sum(count) AS c
+    FROM pypi.pypi_downloads
+    GROUP BY project
+    ORDER BY c DESC
+    LIMIT 10000 OFFSET {offset:UInt32}
+    """
 
-result = client.query(query)
-urls = [
-    f"https://clickpy.clickhouse.com/dashboard/{row[0]}"
-    for row in result.result_rows
-] 
+    result = client.query(query, {'offset': offset})
 
-urls.insert(0, "https://clickpy.clickhouse.com")
-generate_sitemap(urls)
+    urls = [
+        f"https://clickpy.clickhouse.com/dashboard/{row[0]}"
+        for row in result.result_rows
+    ] 
+
+    if len(urls) > 0 and offset < 100000:
+        generate_sitemap(urls, f"src/app/sitemap{index}.xml")
+        offset += len(urls)
+        index += 1        
+    else:
+        break
