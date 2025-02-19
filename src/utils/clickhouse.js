@@ -657,6 +657,7 @@ export async function getPopularEmergingRepos() {
         GROUP BY project
         ORDER BY c DESC
         LIMIT 7
+        SETTINGS allow_experimental_analyzer=0
     `)
 }
 
