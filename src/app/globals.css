@@ -32,3 +32,74 @@ body {
 .icon-hover-2:hover {
   color: #262626;
 }
+
+.both-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
+  justify-content: center; /* Center items horizontally */
+  width: 100%; /* Ensure the container takes full width */
+}
+
+.both-buttons button {
+  height: 31.9688px;
+}
+
+.cookie-divider {
+
+  margin-top: 1rem;
+  border-top: 1px solid #414141;
+  margin-bottom: 1rem;
+}
+
+.cookie-content {
+  font-size: 14px;
+}
+
+.cookie-container {
+  background-color: #1F1F1C;
+  border-radius: 10px;
+  box-shadow: 1px 1px 1px 1px #323232;
+  display: flex;
+  position: fixed;
+  flex: 1 0 300px;
+  bottom: 0px;
+  color: white;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  left: 0px;
+  width: 100%;
+  z-index: 999;
+  font-size: 1.2em;
+  padding: 24px;
+}
+
+.cookie-container h3 {
+  font-size: 1.25rem;
+}
+
+
+.CookieConsent {
+  max-width: 500px;
+  border-radius: 5px;
+  padding: 20px 30px;
+  background-color: white;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate3d(-50%, -50%, 9999990px);
+  width: 95%;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.overlayclass { 
+  position: fixed;
+  background-color: white;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
