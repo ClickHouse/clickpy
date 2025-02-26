@@ -3,6 +3,7 @@ import Footer from '@/components/Footer';
 import Search from '@/components/Search';
 import Summary from '@/components/Summary';
 import Ping from '@/components/Ping';
+
 import {
   getTotalDownloads,
   getProjectCount,
@@ -30,6 +31,7 @@ export default async function Home() {
       getPopularReposNeedingRefresh(),
       hotPackages()
   ]);
+
 
   return (
     <div>
