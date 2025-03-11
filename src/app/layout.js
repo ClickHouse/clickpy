@@ -17,7 +17,6 @@ export default function RootLayout({ children }) {
       <Script
         defer
         data-strict-csp
-        data-securiti-staging-mode="true"
         data-skip-css="false"
         src="https://cdn-prod.securiti.ai/consent/cookie-consent-sdk-loader-strict-csp.js"
         data-tenant-uuid="8555e54b-cd0b-45d7-9c1c-e9e088bf774a"
