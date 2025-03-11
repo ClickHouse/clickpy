@@ -1,12 +1,9 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { GoogleAnalytics } from '@next/third-parties/google';
-import { getCookieConsentValue } from 'react-cookie-consent';
 
 export default function GAWithConsent({ children }) {
-  const [hasConsent, setHasConsent] = useState(() => {
-    return getCookieConsentValue("cookie-consent") === 'true';
-  });
+  const [hasConsent, setHasConsent] = useState(false);
 
   useEffect(() => {
     const handleMessageEvent = (event) => {
