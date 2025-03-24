@@ -12,7 +12,15 @@ export default function Footer() {
             <a className='text-xs md:text-sm text-neutral-500 hover:text-primary-300 hover:underline' href='https://trust.clickhouse.com/' target='_blank'>Security</a>
             <a className='text-xs md:text-sm text-neutral-500 hover:text-primary-300 hover:underline' href='https://clickhouse.com/legal/agreements/terms-of-service' target='_blank'>Terms of Service</a>
             <a className='text-xs md:text-sm text-neutral-500 hover:text-primary-300 hover:underline' href='https://clickhouse.com/legal/cookie-policy' target='_blank'>Cookie Policy</a>
+            <button
+              id='cookie-settings-button'
+              className={
+                'cmp-revoke-consent text-xs md:text-sm text-neutral-500 whitespace-nowrap bg-transparent hover:text-neutral-0'
+              }>
+              Cookie settings
+        </button>
         </div>
+
     </div>
   );
 }

@@ -103,3 +103,130 @@ body {
   width: 100%;
   height: 100%;
 }
+
+.cc-message-container * {
+  font-size: 14px !important;
+}
+
+.cmp-modal {
+  font-weight: normal !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.cmp-modal h1 {
+  font-family: inter;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.atabs__panel {
+  padding-top: 0;
+}
+
+.cmp-modal__sub-title, .cmp-tabs__desc, .cmp-tabs__sub-title, .cmp-accordion__sub-title {
+  font-family: inter;
+  font-size: 0.875rem;
+  line-height: 150%;
+}
+
+.cmp-modal__footer .cmp-save-btn {
+  font-family: inter;
+  font-size: 0.875rem;
+}
+
+.cmp-modal__title {
+  font-family: inter;
+}
+
+.cmp-accordion p {
+  font-size: 0.875rem;
+}
+
+.cmp-tabs__title {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.cmp-tabs__sub-title {
+  font-size: 1rem;
+  text-transform: capitalize;
+  margin-bottom: 0.5rem;
+}
+
+.cmp-accordion__title {
+  font-size: 1rem;
+  color: var(--primary-300);
+}
+
+.cmp-accordion__sub-title {
+  font-size: 0.875rem;
+}
+
+.cmp-save-btn {
+  border-radius: 0.125rem;
+}
+
+.cmp-modal__footer .cmp-save-btn, .cmp-modal__footer .cmp-decline-btn {
+  height: auto !important;
+}
+
+.cc-message {
+  padding: 15px !important;
+}
+
+.cc-compliance {
+  color: #fff !important;
+  font-weight: normal !important;
+}
+
+.cc-btn { 
+  font-size: 14px !important;
+  color: #fff !important;
+  font-weight: normal !important;
+  padding: 15px !important;
+}
+
+.cc-btn.cc-allow, .cc-type-opt-out .cc-btn.cc-dismiss {
+  background-color: rgb(23, 103, 54) !important;
+  color: #fff !important;
+  font-weight: normal !important;
+  font-size: 14px !important;
+  border: none !important;
+}
+
+#securitiCmpCookiePrefBtn {
+  font-weight: normal !important;
+  font-size: 14px !important;
+}
+
+.cc-btn.cc-allow:hover, .cc-type-opt-out .cc-btn.cc-dismiss:hover {
+  background-color: rgb(15, 67, 35) !important;
+}
+
+.cmp-revoke-consent {
+  position: initial !important;
+  padding: 0 !important;
+}
+
+.cmp-tabs {
+  padding-top: 0;
+}
+
+.cmp-modal__header {
+  margin-bottom: 0;
+}
+
+.cmp-tabs__nav ul li svg {
+  left: 11px;
+}
+
+.cmp-tabs__nav ul li span {
+  margin-left: 11px;
+}
+
+@media only screen and (max-width: 750px) {
+  .cc-message {
+    padding: 15px 15px 0 15px !important;
+  }
+}
