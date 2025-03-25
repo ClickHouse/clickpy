@@ -16,7 +16,6 @@ export default function RootLayout({ children }) {
     <html lang='en' className='h-full antialiased'>
       <Script
         defer
-        data-strict-csp
         data-skip-css="false"
         src="https://cdn-prod.securiti.ai/consent/cookie-consent-sdk-loader-strict-csp.js"
         data-tenant-uuid="8555e54b-cd0b-45d7-9c1c-e9e088bf774a"
@@ -26,14 +25,7 @@ export default function RootLayout({ children }) {
 
       <body className={`${inter.className} h-full`}>
         <ClickUIProvider theme="dark">
-        {/* <button
-              id='cookie-settings-button'
-              className={
-                'cmp-revoke-consent text-xs md:text-sm text-neutral-500 whitespace-nowrap bg-transparent hover:text-neutral-0'
-              }>
-              Cookie settings
-        </button> */}
-        <GAWithConsent>{children}</GAWithConsent>
+          <GAWithConsent>{children}</GAWithConsent>
         </ClickUIProvider>        
       </body>
     </html>
