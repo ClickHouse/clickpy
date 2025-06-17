@@ -12,7 +12,7 @@
     "@clickhouse/click-ui": "^0.0.168",
     "@clickhouse/client": "^0.2.1",
     "@clickhouse/client-web": "^0.2.1",
-    "@gingerwizard/react-daterange-picker": "github:gingerwizard/react-daterange-picker",
+    "@gingerwizard/react-daterange-picker": "https://github.com/gingerwizard/react-daterange-picker.git",
     "@headlessui/react": "^1.7.16",
     "@heroicons/react": "^2.0.18",
     "@next/third-parties": "^14.2.15",
