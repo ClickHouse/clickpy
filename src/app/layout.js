@@ -7,8 +7,8 @@ import GAWithConsent from '@/components/GAWithConsent';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'ClickPy',
-  description: 'Python package analytics powered by ClickHouse',
+  title: 'ClickGems',
+  description: 'Gems package analytics powered by ClickHouse',
 };
 
 export default function RootLayout({ children }) {

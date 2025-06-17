@@ -11,8 +11,8 @@ export default function Header() {
           <Link href='/'>
             <Image
               className='w-24'
-              src='/click_py.svg'
-              alt='ClickPy by ClickHouse'
+              src='/clickgems.svg'
+              alt='ClickGems by ClickHouse'
               width='96'
               height='32'
             />

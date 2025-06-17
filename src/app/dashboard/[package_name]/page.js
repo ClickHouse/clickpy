@@ -68,8 +68,8 @@ export default async function Dashboard({ params, searchParams }) {
             <Link href='/' className='min-w-[96px]'>
               <Image
                 className='w-24'
-                src='/click_py.svg'
-                alt='ClickPy by ClickHouse'
+                src='/clickgems.svg'
+                alt='ClickGems by ClickHouse'
                 width='96'
                 height='32'
               />

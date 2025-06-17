@@ -44,14 +44,14 @@ export default async function Home() {
             <div className='lg:px-16 flex justify-center mx-auto w-full xl:w-11/12'>
               <div className='text-center flex items-center flex-col justify-center'>
                 <h1 className='text-4xl font-bold font-inter lg:text-5xl px-4 md:px-0'>
-                  Analytics for PyPI packages
+                  Analytics for RubyGems
                 </h1>
                 <p className='px-4 mt-6 text-lg leading-8 text-white'>
                   Browse through{' '}
                   <a className='text-primary-300 hover:underline' href={`${total_downloads[0]}&run_query=true`} target='_blank'>
                     {Number(total_downloads[1][0].projects).toLocaleString('en-US')}
                   </a>{' '}
-                  Python packages from PyPI and over{' '}
+                  gems from RubyGems and over{' '}
                   <a className='text-primary font-bold hover:underline' href={`${total_downloads[0]}&run_query=true`} target='_blank'>
                     {total_downloads[1][0].total}
                   </a>{' '}
