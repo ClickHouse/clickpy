@@ -379,7 +379,7 @@ Modify the settings with your clickhouse cluster details, e.g. if using the publ
 CLICKHOUSE_HOST=https://sql-clickhouse.clickhouse.com
 CLICKHOUSE_USERNAME=demo
 CLICKHOUSE_PASSWORD=
-PYPI_DATABASE=pypi
+GEMS_DATABASE=pypi
 ```
 
 ### Running

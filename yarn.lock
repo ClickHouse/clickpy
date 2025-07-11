@@ -142,9 +142,9 @@
   resolved "https://registry.npmjs.org/@floating-ui/utils/-/utils-0.2.8.tgz"
   integrity sha512-kym7SodPp8/wloecOpcmSnWJsK7M0E5Wg8UcFA+uO4B9s5d0ywXOEro/8HM9x0rW+TljRzul/14UYz3TleT3ig==
 
-"@gingerwizard/react-daterange-picker@github:gingerwizard/react-daterange-picker":
+"@gingerwizard/react-daterange-picker@https://github.com/gingerwizard/react-daterange-picker.git":
   version "5.4.2"
-  resolved "git+ssh://git@github.com/gingerwizard/react-daterange-picker.git#91fe3b2f09910f15ff00fa89efc78609a6566da6"
+  resolved "https://github.com/gingerwizard/react-daterange-picker.git#91fe3b2f09910f15ff00fa89efc78609a6566da6"
   dependencies:
     clsx "^2.0.0"
     make-event-props "^1.6.0"

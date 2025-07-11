@@ -26,7 +26,7 @@ export default async function Home() {
   const projects = await getProjectCount();
   const [recent_releases, emerging_repos, needing_refresh, hot_packages] =
     await Promise.all([
-      getRecentReleases(projects[1].map((p) => p.project)),
+      getRecentReleases(projects[1].map((p) => p.name)),
       getPopularEmergingRepos(),
       getPopularReposNeedingRefresh(),
       hotPackages()

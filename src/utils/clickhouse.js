@@ -17,12 +17,12 @@ export const web_clickhouse = createWebClient({
     username: 'play'
 });
 
-const PYPI_DATABASE = process.env.PYPI_DATABASE || 'pypi';
+const GEMS_DATABASE = process.env.GEMS_DATABASE || 'rubygems';
 const GITHUB_DATABASE = process.env.GITHUB_DATABASE || 'github'
 
-const PYPI_TABLE = process.env.PYPI_TABLE || 'pypi';
+const GEMS_TABLE = process.env.GEMS_TABLE || 'rubygems';
 const materialized_views = [
-    { columns: ['project'], table: 'pypi_downloads' },
+    { columns: ['name'], table: 'gem_downloads_total' },
     { columns: ['project', 'version'], table: 'pypi_downloads_by_version' },
     { columns: ['project', 'date'], table: 'pypi_downloads_per_day' },
     { columns: ['project', 'date', 'version'], table: 'pypi_downloads_per_day_by_version' },
@@ -72,7 +72,8 @@ export async function getGithubStatsEndpoint(package_name, min_date, max_date) {
 
 // based on required columns we identify the most optimal mv to query - this is the smallest view (least columns) which covers all required columns 
 function findOptimalTable(required_columns) {
-
+    console.log('findOptimalTable')
+    console.log(required_columns)
     const candidates = materialized_views.filter(value => {
         if (value.columns.length >= required_columns.length) {
             // are all required columns in the candidate
@@ -82,7 +83,7 @@ function findOptimalTable(required_columns) {
         }
         return false
     })
-    let table = PYPI_TABLE
+    let table = GEMS_TABLE
     if (candidates.length > 0) {
         // best match is shortest
         table = candidates.reduce((a, b) => a.columns.length <= b.columns.length ? a : b).table
@@ -98,7 +99,7 @@ function getQueryCustomSettings(query_name) {
 
 export async function getPackages(query_prefix) {
     if (query_prefix != '') {
-        return await query('getPackages', `SELECT project, sum(count) AS c FROM ${PYPI_DATABASE}.${findOptimalTable(['project'])} WHERE project LIKE {query_prefix:String} GROUP BY project ORDER BY c DESC LIMIT 6`, {
+        return await query('getPackages', `SELECT name, sum(count) AS c FROM ${GEMS_DATABASE}.${findOptimalTable(['name'])} WHERE name LIKE {query_prefix:String} GROUP BY name ORDER BY c DESC LIMIT 6`, {
             query_prefix: `${query_prefix.toLowerCase().trim()}%`
         }
         )
@@ -181,10 +182,10 @@ export async function getDependents({ package_name, version, min_date, max_date,
                 sum(count) AS downloads,
                 dictGet(pypi.project_to_repo_name_dict, 'repo_name', project) AS repo_name,
                 dictGet(github.repo_name_to_id_dict, 'repo_id', cityHash64(repo_name))::String AS repo_id
-            FROM ${PYPI_DATABASE}.${table}
+            FROM ${GEMS_DATABASE}.${table}
             WHERE project IN (
                 SELECT name
-                FROM ${PYPI_DATABASE}.projects
+                FROM ${GEMS_DATABASE}.projects
                 WHERE arrayExists(e -> (e LIKE {package_name:String} || '%'), requires_dist) != 0 AND name != {package_name:String}
                 GROUP BY name
             ) AND ${country_code ? `country_code={country_code:String}` : '1=1'} AND ${type ? `type={type:String}` : '1=1'} AND (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
@@ -233,7 +234,7 @@ export async function getDependencies({ package_name, version, min_date, max_dat
             FROM
             (
                 SELECT arrayJoin(requires_dist) AS requires_dist
-                FROM ${PYPI_DATABASE}.projects
+                FROM ${GEMS_DATABASE}.projects
                 WHERE name = {package_name:String} AND ${version ? `version={version:String}` : '1=1'}
                 GROUP BY requires_dist
                 HAVING requires_dist NOT LIKE '%extra ==%'
@@ -245,7 +246,7 @@ export async function getDependencies({ package_name, version, min_date, max_dat
                 sum(count) AS downloads,
                 dictGet(pypi.project_to_repo_name_dict, 'repo_name', project) AS repo_name,
                 dictGet(github.repo_name_to_id_dict, 'repo_id', cityHash64(repo_name)) AS repo_id
-            FROM ${PYPI_DATABASE}.${table}
+            FROM ${GEMS_DATABASE}.${table}
             WHERE project IN dependencies AND ${country_code ? `country_code={country_code:String}` : '1=1'} AND ${type ? `type={type:String}` : '1=1'} AND (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
             GROUP BY project
             ORDER BY downloads DESC
@@ -308,7 +309,7 @@ export async function getTopContributors({ package_name, min_date, max_date }) {
 
 export async function getTotalDownloads() {
     return query('getTotalDownloads', `SELECT
-        formatReadableQuantity(sum(count)) AS total, uniqExact(project) as projects FROM ${PYPI_DATABASE}.${findOptimalTable(['project'])}`)
+        formatReadableQuantity(sum(count)) AS total, uniqExact(name) as projects FROM ${GEMS_DATABASE}.${findOptimalTable(['name'])}`)
 }
 
 export async function getDownloadSummary(package_name, version, min_date, max_date, country_code, type) {
@@ -321,7 +322,7 @@ export async function getDownloadSummary(package_name, version, min_date, max_da
     sumIf(count, date > {min_date:String}::Date32 AND date > {max_date:String}::Date32 - toIntervalWeek(1) AND date <= {max_date:String}::Date32) AS last_week,
     sumIf(count, date > {min_date:String}::Date32 AND date > {max_date:String}::Date32 - toIntervalMonth(1) AND date <= {max_date:String}::Date32) AS last_month,
     sumIf(count, date > {min_date:String}::Date32 AND date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32) AS total
-    FROM ${PYPI_DATABASE}.${table} WHERE (project = {package_name:String}) AND ${version ? `version={version:String}` : '1=1'} AND ${country_code ? `country_code={country_code:String}` : '1=1'} 
+    FROM ${GEMS_DATABASE}.${table} WHERE (project = {package_name:String}) AND ${version ? `version={version:String}` : '1=1'} AND ${country_code ? `country_code={country_code:String}` : '1=1'} 
     AND ${type ? `type={type:String}` : '1=1'}`,
         {
             min_date: min_date,
@@ -335,10 +336,10 @@ export async function getDownloadSummary(package_name, version, min_date, max_da
 
 export async function getProjectCount() {
     return query('getProjectCount', `SELECT
-        project,
+        name,
         sum(count) AS c
-    FROM ${PYPI_DATABASE}.${findOptimalTable(['project'])}
-    GROUP BY project
+    FROM ${GEMS_DATABASE}.${findOptimalTable(['name'])}
+    GROUP BY name
     ORDER BY c DESC
     LIMIT 5`)
 }
@@ -347,13 +348,13 @@ export async function getRecentPackageDownloads(package_name) {
 
     return query('getRecentPackageDownloads', `WITH (
         SELECT max(date) AS max_date
-        FROM ${PYPI_DATABASE}.${findOptimalTable(['project', 'date'])}
+        FROM ${GEMS_DATABASE}.${findOptimalTable(['project', 'date'])}
         WHERE project = {package_name:String}
     ) AS max_date
     SELECT
         toStartOfWeek(date) AS x,
         sum(count) AS y
-    FROM ${PYPI_DATABASE}.${findOptimalTable(['project', 'date'])}
+    FROM ${GEMS_DATABASE}.${findOptimalTable(['project', 'date'])}
     WHERE (project = {package_name:String}) AND (date > (max_date - toIntervalWeek(12)))
     GROUP BY x
     ORDER BY x ASC`, {
@@ -368,7 +369,7 @@ export async function getPackageDateRanges(package_name, version) {
     const [_, results] = await query('getPackageDateRanges', `SELECT
             max(date) AS max_date,
             min(date) AS min_date
-        FROM ${PYPI_DATABASE}.${table}
+        FROM ${GEMS_DATABASE}.${table}
         WHERE project = {package_name:String} AND ${version ? `version={version:String}` : '1=1'}`, {
         package_name: package_name,
         version: version
@@ -379,7 +380,7 @@ export async function getPackageDateRanges(package_name, version) {
 export async function getPackageDetails(package_name, version) {
     return query('getPackageDetails', `WITH (
                 SELECT version
-                FROM ${PYPI_DATABASE}.projects
+                FROM ${GEMS_DATABASE}.projects
                 WHERE name = {package_name:String}
                 ORDER BY arrayMap(x -> toUInt8OrDefault(x, 0), splitByChar('.', version)) DESC
                 LIMIT 1
@@ -393,7 +394,7 @@ export async function getPackageDetails(package_name, version) {
             home_page,
             max_version,
             getRepoName({package_name:String}) as repo_name
-        FROM ${PYPI_DATABASE}.projects
+        FROM ${GEMS_DATABASE}.projects
         WHERE (name = {package_name:String}) AND ${version ? `version={version:String}` : '1=1'} 
         ORDER BY upload_time DESC
         LIMIT 1`, {
@@ -411,7 +412,7 @@ export async function getDownloadsOverTime({ package_name, version, min_date, ma
     return query('getDownloadsOverTime', `SELECT
         if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay(date)::Date32, toStartOfWeek(date)::Date32) AS x,
         sum(count) AS y
-    FROM ${PYPI_DATABASE}.${table} 
+    FROM ${GEMS_DATABASE}.${table} 
     WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (project = {package_name:String}) 
     AND ${version ? `version={version:String}` : '1=1'} AND ${country_code ? `country_code={country_code:String}` : '1=1'} AND ${type ? `type={type:String}` : '1=1'}
     GROUP BY x
@@ -429,7 +430,7 @@ export async function getTopDistributionTypes(package_name, version, min_date, m
     return query('getTopDistributionTypes', `SELECT
             type AS name,
             sum(count) AS value
-        FROM ${PYPI_DATABASE}.pypi_downloads_per_day_by_version_by_file_type
+        FROM ${GEMS_DATABASE}.pypi_downloads_per_day_by_version_by_file_type
         WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) AND ${version ? `version={version:String}` : '1=1'} 
         GROUP BY type LIMIT 7`, {
         package_name: package_name,
@@ -447,7 +448,7 @@ export async function getTopVersions({ package_name, version, min_date, max_date
     return query('getTopVersions', `SELECT
             version AS name,
             sum(count) AS value
-        FROM ${PYPI_DATABASE}.${table}
+        FROM ${GEMS_DATABASE}.${table}
         WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) 
             AND ${version ? `version={version:String}` : '1=1'} AND ${country_code ? `country_code={country_code:String}` : '1=1'} AND ${type ? `type={type:String}` : '1=1'}
         GROUP BY version ORDER BY value DESC LIMIT 6`, {
@@ -468,7 +469,7 @@ export async function getDownloadsOverTimeByPython({ package_name, version, min_
     const table = findOptimalTable(columns)
     return query('getDownloadsOverTimeByPython', `SELECT
         if (python_minor IN
-            (SELECT python_minor FROM ${PYPI_DATABASE}.${table}
+            (SELECT python_minor FROM ${GEMS_DATABASE}.${table}
                                 WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (project = {package_name:String}) 
                                 AND ${version ? `version={version:String}`: '1=1'} AND python_minor != '' 
                                 AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'}
@@ -477,7 +478,7 @@ export async function getDownloadsOverTimeByPython({ package_name, version, min_
             ), python_minor, 'other') as name,
         if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay(date)::Date32, toStartOfWeek(date)::Date32) AS x,
         sum(count) AS y
-        FROM ${PYPI_DATABASE}.${table}
+        FROM ${GEMS_DATABASE}.${table}
         WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (project = {package_name:String}) 
         AND ${version ? `version={version:String}`: '1=1'} AND python_minor != '' 
         AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'}
@@ -503,7 +504,7 @@ export async function getDownloadsOverTimeBySystem({ package_name, version, min_
     return query('getDownloadsOverTimeBySystem', `WITH systems AS
     (
         SELECT system
-        FROM ${PYPI_DATABASE}.${table}
+        FROM ${GEMS_DATABASE}.${table}
         WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) AND ${version ? `version={version:String}` : '1=1'} AND system != ''
         GROUP BY system
         ORDER BY count() DESC
@@ -511,8 +512,8 @@ export async function getDownloadsOverTimeBySystem({ package_name, version, min_
     ) SELECT
         system as name,
         if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay(date)::Date32, toStartOfWeek(date)::Date32) AS x,
-        ${table == PYPI_TABLE ? 'count()' : 'sum(count)'} AS y
-        FROM ${PYPI_DATABASE}.${table}
+        ${table == GEMS_TABLE ? 'count()' : 'sum(count)'} AS y
+        FROM ${GEMS_DATABASE}.${table}
         WHERE (date >= {min_date:String}::Date32) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (project = {package_name:String}) 
         AND ${version ? `version={version:String}` : '1=1'} AND system IN systems 
         AND ${country_code ? `country_code={country_code:String}` : '1=1'} AND ${type ? `type={type:String}` : '1=1'}
@@ -536,7 +537,7 @@ export async function getDownloadsByCountry({ package_name, version, min_date, m
                     LEFT OUTER JOIN (
                         SELECT country_code, 
                         sum(count) AS value 
-                        FROM ${PYPI_DATABASE}.${table} 
+                        FROM ${GEMS_DATABASE}.${table} 
                     WHERE (date >= {min_date:String}::Date32) AND 
                         (date < {max_date:String}::Date32) AND 
                         project = {package_name:String} AND 
@@ -561,7 +562,7 @@ export async function getFileTypesByInstaller({ package_name, version, min_date,
     return query('getFileTypesByInstaller', `WITH installers AS
         (
             SELECT installer
-            FROM ${PYPI_DATABASE}.${table}
+            FROM ${GEMS_DATABASE}.${table}
             WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND installer != '' AND (project = {package_name:String}) 
                     AND ${version ? `version={version:String}` : '1=1'} AND ${country_code ? `country_code={country_code:String}` : '1=1'} AND ${type ? `type={type:String}` : '1=1'}
             GROUP BY installer
@@ -572,7 +573,7 @@ export async function getFileTypesByInstaller({ package_name, version, min_date,
             installer AS name,
             type AS y,
             sum(count) AS value
-        FROM ${PYPI_DATABASE}.${table}
+        FROM ${GEMS_DATABASE}.${table}
         WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND installer IN installers AND (project = {package_name:String}) 
                 AND ${version ? `version={version:String}` : '1=1'} AND ${country_code ? `country_code={country_code:String}` : '1=1'} AND ${type ? `type={type:String}` : '1=1'}
         GROUP BY
@@ -598,7 +599,7 @@ export async function getPercentileRank(min_date, max_date, country_code) {
     return query('getPercentileRank', `WITH downloads AS
     (
         SELECT sum(count) AS c
-        FROM ${PYPI_DATABASE}.${table}
+        FROM ${GEMS_DATABASE}.${table}
         WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND ${country_code ? `country_code={country_code:String}` : '1=1'}
         GROUP BY project
     )
@@ -615,21 +616,22 @@ export async function getPercentileRank(min_date, max_date, country_code) {
 
 
 export async function getRecentReleases(packages) {
+    console.log(packages)
     return query('getRecentReleases', `
         WITH (
-            SELECT max(upload_time) AS max_date
-            FROM ${PYPI_DATABASE}.projects
+            SELECT max(created_at) AS max_date
+            FROM ${GEMS_DATABASE}.versions
         ) AS max_date
         SELECT
             release_month as x,
-            name as y,
-            uniqExact(version) AS z
-        FROM ${PYPI_DATABASE}.projects
-        WHERE (name IN {packages:Array(String)}) AND (toStartOfMonth(upload_time) > toStartOfMonth(max_date - toIntervalMonth(6)))
+            dictGet('${GEMS_DATABASE}.id_to_name', 'name', rubygem_id) as y,
+            uniqExact(number) AS z
+        FROM ${GEMS_DATABASE}.versions
+        WHERE (y IN {packages:Array(String)}) AND (toStartOfMonth(created_at) > toStartOfMonth(max_date - toIntervalMonth(6)))
         GROUP BY
-            name,
-            toMonth(upload_time) AS month,
-            formatDateTime(upload_time, '%b') AS release_month
+            y,
+            toMonth(created_at) AS month,
+            formatDateTime(created_at, '%b') AS release_month
         ORDER BY month ASC
         LIMIT ${packages.length * 6}
         `, {
@@ -642,19 +644,19 @@ export async function getPopularEmergingRepos() {
     return query('getEmergingRepos', `
         WITH (
             SELECT max(max_date)
-            FROM ${PYPI_DATABASE}.pypi_downloads_max_min
+            FROM ${GEMS_DATABASE}.gems_downloads_max_min
         ) AS max_date
         SELECT
-            project as name,
+            gem as name,
             sum(count) AS c
-        FROM ${PYPI_DATABASE}.pypi_downloads_per_day
-        WHERE project IN (
-            SELECT project
-            FROM ${PYPI_DATABASE}.pypi_downloads_max_min
-            GROUP BY project
+        FROM ${GEMS_DATABASE}.downloads_per_day
+        WHERE name IN (
+            SELECT name
+            FROM ${GEMS_DATABASE}.gems_downloads_max_min
+            GROUP BY name
             HAVING min(min_date) >= (max_date - toIntervalMonth(3))
         )
-        GROUP BY project
+        GROUP BY name
         ORDER BY c DESC
         LIMIT 7
         SETTINGS allow_experimental_analyzer=0
@@ -665,16 +667,17 @@ export async function getPopularEmergingRepos() {
 export async function getPopularReposNeedingRefresh() {
     return query('getPopularReposNeedingRefresh', `
         WITH (
-            SELECT max(upload_time) AS max_date
-            FROM ${PYPI_DATABASE}.projects
+            SELECT max(created_at) AS max_date
+            FROM ${GEMS_DATABASE}.versions
         ) AS max_date
         SELECT
-            project AS name,
+            gem AS name,
             sum(count) AS c,
-            formatDateTime(dictGet('${PYPI_DATABASE}.last_updated_dict', 'last_update', project), '%d %M %Y') AS last_updated
-        FROM ${PYPI_DATABASE}.pypi_downloads_per_day
-        WHERE dictGet('${PYPI_DATABASE}.last_updated_dict', 'last_update', project) BETWEEN '1970-01-02' AND (max_date - toIntervalMonth(6))
-        GROUP BY project
+            dictGet('${GEMS_DATABASE}.name_to_id', 'id', name) as rubygem_id,
+            formatDateTime(dictGet('${GEMS_DATABASE}.last_updated_dict', 'last_update', rubygem_id), '%d %M %Y') AS last_updated
+        FROM ${GEMS_DATABASE}.downloads_per_day
+        WHERE dictGet('${GEMS_DATABASE}.last_updated_dict', 'last_update', rubygem_id) BETWEEN '1970-01-02' AND (max_date - toIntervalMonth(6))
+        GROUP BY name
         ORDER BY c DESC
         LIMIT 7
     `)
@@ -688,20 +691,20 @@ export async function hotPackages() {
     WITH
     (
         SELECT max(max_date)
-        FROM ${PYPI_DATABASE}.pypi_downloads_max_min
+        FROM ${GEMS_DATABASE}.gems_downloads_max_min
     ) AS max_date,
     percentage_increases AS
     (
         SELECT
-            project,
+            gem as project,
             sum(count) AS c,
             month,
-            any(c) OVER (PARTITION BY project ORDER BY month ASC ROWS BETWEEN 1 PRECEDING AND 1 PRECEDING) AS previous,
+            any(c) OVER (PARTITION BY gem ORDER BY month ASC ROWS BETWEEN 1 PRECEDING AND 1 PRECEDING) AS previous,
             if(previous > 0, (c - previous) / previous, 0) AS percent_increase
-        FROM ${PYPI_DATABASE}.pypi_downloads_per_month
+        FROM ${GEMS_DATABASE}.downloads_per_month
         WHERE ((month > (toStartOfMonth(max_date) - toIntervalMonth(6))) AND (month <= (toStartOfMonth(max_date)))) AND (project IN (
-            SELECT project
-            FROM pypi.pypi_downloads_per_month
+            SELECT gem as project
+            FROM ${GEMS_DATABASE}.downloads_per_month
             GROUP BY project
             HAVING sum(count) > ${min_downloads}
         ))
@@ -735,10 +738,10 @@ export async function getPackageRanking(package_name, min_date, max_date, countr
     return query('getPackageRanking',`WITH
     (   SELECT
         sum(count) AS total
-        FROM ${PYPI_DATABASE}.${table} WHERE project = {package_name:String} AND 1=1 AND date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}`: '1=1'} 
+        FROM ${GEMS_DATABASE}.${table} WHERE project = {package_name:String} AND 1=1 AND date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}`: '1=1'} 
     ) AS downloads,
-    (SELECT count() FROM ( SELECT project FROM ${PYPI_DATABASE}.${table} WHERE date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}`: '1=1'} GROUP BY project HAVING sum(count) >= downloads )) as rank,
-    (SELECT uniqExact(project) FROM ${PYPI_DATABASE}.${table} WHERE date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}`: '1=1'}) as total_packages
+    (SELECT count() FROM ( SELECT project FROM ${GEMS_DATABASE}.${table} WHERE date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}`: '1=1'} GROUP BY project HAVING sum(count) >= downloads )) as rank,
+    (SELECT uniqExact(project) FROM ${GEMS_DATABASE}.${table} WHERE date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}`: '1=1'}) as total_packages
         SELECT rank, total_packages, CASE
         WHEN total_packages = 0 THEN NULL
         ELSE (rank / total_packages) * 100

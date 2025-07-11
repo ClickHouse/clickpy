@@ -5,27 +5,73 @@ CLICKHOUSE_HOST=${CLICKHOUSE_HOST:-localhost}
 CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD:-}
 
 echo "dropping database"
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query 'DROP DATABASE IF EXISTS pypi'
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query 'DROP DATABASE IF EXISTS rubygems'
 echo "creating database"
-clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query 'CREATE DATABASE pypi'
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query 'CREATE DATABASE rubygems'
 
 
-echo "creating pypi table"
+echo "creating rubygems table"
 clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
-CREATE OR REPLACE TABLE pypi.pypi
+CREATE OR REPLACE TABLE rubygems.rubygems
 (
-    `date` Date,
-    `country_code` LowCardinality(String),
-    `project` String,
-    `type` LowCardinality(String),
-    `installer` LowCardinality(String),
-    `python_minor` LowCardinality(String),
-    `system` LowCardinality(String),
-    `version` String
+    `id` UInt32,
+    `name` String,
+    `created_at` DateTime64(6),
+    `updated_at` DateTime64(6),
+    `indexed` LowCardinality(String),
+    `organization_id` LowCardinality(String)
 )
 ENGINE = MergeTree
-ORDER BY (project, date, version, country_code, python_minor, system)
+ORDER BY (name, id)
 '
+echo "creating last_updated_dict dict"
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query "CREATE DICTIONARY rubygems.last_updated_dict
+(
+    rubygems_id UInt32,
+    last_update DateTime64(3)
+)
+PRIMARY KEY rubygems_id
+SOURCE(CLICKHOUSE(QUERY 'SELECT rubygems_id, max(created_at) AS last_update FROM rubygems.versions GROUP BY rubygems_id'))
+LIFETIME(MIN 0 MAX 300)
+LAYOUT(COMPLEX_KEY_HASHED())"
+
+
+echo "creating pypi_downloads_per_month"
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE TABLE rubygems.downloads_per_month
+(
+    `month` Date,
+    `gem` String,
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY (month, gem)
+'
+
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE MATERIALIZED VIEW rubygems.downloads_per_month_mv TO rubygems.downloads_per_month
+(
+    `month` Date,
+    `gem` String,
+    `count` Int64
+) AS
+SELECT
+    toStartOfMonth(timestamp) AS month,
+    gem,
+    count() AS count
+FROM rubygems.downloads
+GROUP BY
+    month,
+    gem
+'
+
+
+
+
+
 
 echo "creating pypi_downloads view"
 
