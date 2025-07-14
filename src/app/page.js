@@ -15,7 +15,7 @@ import {
 import 'server-only';
 
 export const metadata = {
-  title: 'Pypi downloads stats - ClickPy',
+  title: 'PyPI downloads stats - ClickPy',
   description: 'Free analytics service for Python package downloads, powered by ClickHouse',
 }
 

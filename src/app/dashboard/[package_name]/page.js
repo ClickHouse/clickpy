@@ -35,7 +35,7 @@ export async function generateMetadata({ params, searchParams }, parent) {
   const package_name = params.package_name;
 
   return {
-    title: `Pypi downloads stats for ${package_name}`,
+    title: `PyPI downloads stats for ${package_name}`,
     description: `Analytics for the python package ${package_name}, powered by ClickHouse`,
   }
 }
