@@ -224,7 +224,7 @@ export default async function Dashboard({ params, searchParams }) {
         <div className={`mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 lg:h-[480px] ${repo_name ? 'lg:grid lg:grid-cols-3 gap-6' : ''}`}>
           <div className='h-[480px] lg:col-span-2'>
             <p className='text-2xl font-bold mb-5'>
-              Downloads by Python version over time
+              Downloads by Ruby version over time
             </p>
             <Suspense key={key} fallback={<Loading />}>
               <Chart
@@ -284,7 +284,7 @@ export default async function Dashboard({ params, searchParams }) {
           </div>
           <div className='mt-24 lg:mt-0'>
             <p className='text-2xl font-bold mb-5'>Related packages</p>
-            <Suspense key={key} fallback={<Loading />}>
+            {/* <Suspense key={key} fallback={<Loading />}>
               <DependencyTable params={{
                 package_name: package_name,
                 version: version,
@@ -293,7 +293,7 @@ export default async function Dashboard({ params, searchParams }) {
                 country_code: country_code,
                 type: file_type
               }} />
-            </Suspense>
+            </Suspense> */}
           </div>
         </div>
 
@@ -318,7 +318,7 @@ export default async function Dashboard({ params, searchParams }) {
           </div>
           <div className='h-[480px] xl:col-span-1 mt-24 lg:mt-20 xl:mt-0'>
             <p className='text-2xl font-bold mb-5'>File types by installer</p>
-            <Suspense key={key} fallback={<Loading />}>
+            {/* <Suspense key={key} fallback={<Loading />}>
               <Chart
                 type='radar'
                 options={{ column: 'type' }}
@@ -332,7 +332,7 @@ export default async function Dashboard({ params, searchParams }) {
                   type: file_type
                 }}
               />
-            </Suspense>
+            </Suspense> */}
           </div>
         </div>
       </div>

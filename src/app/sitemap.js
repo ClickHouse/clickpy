@@ -27,7 +27,7 @@ export default async function sitemap() {
     const projects = []
     for await (const rows of resultSet.stream()) {
         rows.forEach(row => {
-            projects.push(row.json()['project'])
+            projects.push(row.json()['gem'])
         })
       }
 

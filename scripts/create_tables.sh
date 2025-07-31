@@ -37,7 +37,7 @@ LIFETIME(MIN 0 MAX 300)
 LAYOUT(COMPLEX_KEY_HASHED())"
 
 
-echo "creating pypi_downloads_per_month"
+echo "creating downloads_per_month"
 
 clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
 CREATE TABLE rubygems.downloads_per_month
@@ -70,6 +70,342 @@ GROUP BY
 
 
 
+echo "creating downloads_per_day_by_version_by_platform"
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE TABLE rubygems.downloads_per_day_by_version_by_platform
+(
+    `date` Date,
+    `gem` String,
+    `version` String,
+    `platform` String,
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY (gem, version, date, platform)
+'
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE MATERIALIZED VIEW rubygems.downloads_per_day_by_version_by_platform_mv TO rubygems.downloads_per_day_by_version_by_platform
+(
+    `date` Date,
+    `gem` String,
+    `version` String,
+    `platform` String,
+    `count` Int64
+) AS
+SELECT
+    toDate(timestamp) AS date,
+    gem,
+    version,
+    platform,
+    count() AS count
+FROM rubygems.downloads
+GROUP BY
+    date,
+    gem,
+    version,
+    platform
+'
+
+
+echo "creating downloads_per_day_by_version_by_platform_by_country"
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE TABLE rubygems.downloads_per_day_by_version_by_platform_by_country
+(
+    `date` Date,
+    `gem` String,
+    `version` String,
+    `platform` String,
+    `country_code` String,
+    `client_country` String,
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY (gem, version, date, country_code, platform)
+'
+
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE MATERIALIZED VIEW rubygems.downloads_per_day_by_version_by_platform_by_country_mv TO rubygems.downloads_per_day_by_version_by_platform_by_country
+(
+    `date` Date,
+    `gem` String,
+    `version` String,
+    `platform` String,
+    `country_code` String,
+    `client_country` String,
+    `count` Int64
+) AS
+SELECT toDate(timestamp) AS date, 
+gem, version, platform, 
+dictGet('pypi.countries_code_dict', 'code', lowerUTF8(trim(client_country))) AS country_code, client_country, count() as count 
+FROM rubygems.downloads GROUP BY date, gem, version, platform, country_code, client_country
+'
+
+
+echo "creating downloads_per_day_by_version_by_system"
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE TABLE rubygems.downloads_per_day_by_version_by_system
+(
+    `date` Date,
+    `gem` String,
+    `version` String,
+    `system` String,
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY (gem, version, date, system)
+'
+
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE MATERIALIZED VIEW rubygems.downloads_per_day_by_version_by_system_mv TO rubygems.downloads_per_day_by_version_by_system
+(
+    `date` Date,
+    `gem` String,
+    `version` String,
+    `system` String,
+    `count` Int64
+) AS
+SELECT
+    toDate(timestamp) AS date,
+    gem,
+    version,
+    user_agent.platform.os as system,
+    count() AS count
+FROM rubygems.downloads
+GROUP BY
+    date,
+    gem,
+    version,
+    system
+'
+
+
+echo "creating downloads_by_version view"
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE TABLE rubygems.downloads_by_version
+(
+    `gem` String,
+    `version` String,
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY (gem, version)
+'
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE MATERIALIZED VIEW rubygems.downloads_by_version_mv TO rubygems.downloads_by_version
+(
+    `gem` String,
+    `version` String,
+    `count` Int64
+) AS
+SELECT
+    gem,
+    version,
+    count() AS count
+FROM rubygems.downloads
+GROUP BY
+    gem,
+    version
+'
+
+
+echo "creating downloads_per_day_by_version_by_python"
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE TABLE rubygems.downloads_per_day_by_version_by_ruby
+(
+    `date` Date,
+    `gem` String,
+    `version` String,
+    `ruby_minor` String,
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY (gem, version, date, ruby_minor)
+'
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE MATERIALIZED VIEW rubygems.downloads_per_day_by_version_by_ruby_mv TO rubygems.downloads_per_day_by_version_by_ruby
+(
+    `date` Date,
+    `gem` String,
+    `version` String,
+    `ruby_minor` String,
+    `count` Int64
+) AS
+SELECT
+    toDate(timestamp) AS date,
+    gem,
+    version,
+    user_agent.ruby as ruby_minor,
+    count() AS count
+FROM rubygems.downloads
+GROUP BY
+    date,
+    gem,
+    version,
+    ruby_minor
+'
+
+
+echo "creating downloads_per_day_by_version_by_ruby_by_country"
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE TABLE rubygems.downloads_per_day_by_version_by_ruby_by_country
+(
+    `date` Date,
+    `gem` String,
+    `version` String,
+    `ruby_minor` String,
+    `country_code` String,
+    `client_country` LowCardinality(String),
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY (gem, version, date, country_code, ruby_minor)
+'
+
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE MATERIALIZED VIEW rubygems.downloads_per_day_by_version_by_ruby_by_country_mv TO rubygems.downloads_per_day_by_version_by_ruby_by_country
+(
+    `date` Date,
+    `gem` String,
+    `version` String,
+    `ruby_minor` String,
+    `country_code` String,
+    `client_country` LowCardinality(String),
+    `count` Int64
+) AS
+SELECT 
+    toDate(timestamp) AS date, 
+    gem, 
+    version,
+    dictGet('pypi.countries_code_dict', 'code', tuple(lowerUTF8(trim(client_country)))) AS country_code,
+    user_agent.ruby as ruby_minor, 
+    client_country, 
+    count() as count 
+FROM rubygems.downloads 
+GROUP BY 
+    date, 
+    gem, 
+    version, 
+    ruby_minor, 
+    country_code,
+    client_country
+'
+
+
+
+echo "creating downloads_per_day_by_version_by_country"
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE TABLE rubygems.downloads_per_day_by_version_by_country
+(
+    `date` Date,
+    `gem` String,
+    `version` String,
+    `country_code` String,
+    `client_country` String,
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY (gem, version, date, country_code)
+'
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE MATERIALIZED VIEW rubygems.downloads_per_day_by_version_by_country_mv TO rubygems.downloads_per_day_by_version_by_country
+(
+    `date` Date,
+    `gem` String,
+    `version` String,
+    `country_code` String,
+    `client_country` String,
+    `count` Int64
+) AS
+SELECT
+    toDate(timestamp) AS date,
+    gem,
+    version,
+    dictGet('pypi.countries_code_dict', 'code', tuple(lowerUTF8(trim(client_country)))) AS country_code,
+    client_country,
+    count() AS count
+FROM rubygems.downloads
+GROUP BY
+    date,
+    gem,
+    version,
+    country_code,
+    client_country
+'
+
+
+echo "creating downloads_per_day_by_version view"
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE TABLE rubygems.downloads_per_day_by_version
+(
+    `date` Date,
+    `gem` String,
+    `version` String,
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY (gem, version, date)
+'
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE MATERIALIZED VIEW rubygems.downloads_per_day_by_version_mv TO rubygems.downloads_per_day_by_version
+(
+    `date` Date,
+    `gem` String,
+    `version` String,
+    `count` Int64
+) AS
+SELECT
+    toDate(timestamp) AS date,
+    gem,
+    version,
+    count() AS count
+FROM rubygems.downloads
+GROUP BY
+    date,
+    gem,
+    version
+'
+
+echo "creating gem_to_repo_name"
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE TABLE rubygems.gem_to_repo_name
+(
+    `gem` String,
+    `repo_name` String
+)
+ORDER BY gem
+'
+
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE MATERIALIZED VIEW rubygems.gem_to_repo_name_mv TO rubygems.gem_to_repo_name
+(
+    `gem` String,
+    `repo_name` String
+)
+AS SELECT
+    r.name AS gem,
+    regexpExtract(arrayFilter(l -> (l LIKE '%https://github.com/%'), [ls.home])[1], '.*https://github\\.com/([^/]+/[^/]+)') AS repo_name
+FROM rubygems.rubygems AS r
+LEFT JOIN rubygems.linksets AS ls ON r.id = ls.rubygem_id
+WHERE length(arrayFilter(l -> (l LIKE '%https://github.com/%'), [ls.home])) >= 1
+'
 
 
 

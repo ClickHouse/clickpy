@@ -23,18 +23,15 @@ const GITHUB_DATABASE = process.env.GITHUB_DATABASE || 'github'
 const GEMS_TABLE = process.env.GEMS_TABLE || 'rubygems';
 const materialized_views = [
     { columns: ['name'], table: 'gem_downloads_total' },
-    { columns: ['project', 'version'], table: 'pypi_downloads_by_version' },
-    { columns: ['project', 'date'], table: 'pypi_downloads_per_day' },
-    { columns: ['project', 'date', 'version'], table: 'pypi_downloads_per_day_by_version' },
-    { columns: ['project', 'date', 'version', 'country_code'], table: 'pypi_downloads_per_day_by_version_by_country' },
-    { columns: ['project', 'date', 'version', 'python_minor'], table: 'pypi_downloads_per_day_by_version_by_python' },
-    { columns: ['project', 'date', 'version', 'python_minor', 'country_code'], table: 'pypi_downloads_per_day_by_version_by_python_by_country' },
-    { columns: ['project', 'date', 'version', 'system'], table: 'pypi_downloads_per_day_by_version_by_system' },
-    { columns: ['project', 'date', 'version', 'system', 'country_code'], table: 'pypi_downloads_per_day_by_version_by_system_by_country' },
-    { columns: ['project', 'date', 'version', 'installer', 'type'], table: 'pypi_downloads_per_day_by_version_by_installer_by_type' },
-    { columns: ['project', 'date', 'version', 'installer', 'type', 'country_code'], table: 'pypi_downloads_per_day_by_version_by_installer_by_type_by_country' },
-    { columns: ['project', 'date', 'version', 'type'], table: 'pypi_downloads_per_day_by_version_by_file_type' },
-    { columns: ['project', 'max_date', 'min_date'], table: 'pypi_downloads_max_min' },
+    { columns: ['gem', 'version'], table: 'downloads_by_version' },
+    { columns: ['gem', 'date'], table: 'downloads_per_day' },
+    { columns: ['gem', 'date', 'version'], table: 'downloads_per_day_by_version' },
+    { columns: ['gem', 'date', 'version', 'country_code'], table: 'downloads_per_day_by_version_by_country' },
+    { columns: ['gem', 'date', 'version', 'ruby_minor'], table: 'downloads_per_day_by_version_by_ruby' },
+    { columns: ['gem', 'date', 'version', 'ruby_minor', 'country_code'], table: 'downloads_per_day_by_version_by_ruby_by_country' },
+    { columns: ['gem', 'date', 'version', 'platform'], table: 'downloads_per_day_by_version_by_platform' },
+    { columns: ['gem', 'date', 'version', 'system', 'country_code'], table: 'downloads_per_day_by_version_by_system_by_country' },
+    { columns: ['gem', 'max_date', 'min_date'], table: 'downloads_max_min' },
 ];
 
 export async function ping(name) {
@@ -169,7 +166,8 @@ export async function getGithubStarsOverTime(package_name, min_date, max_date) {
 }
 
 export async function getDependents({ package_name, version, min_date, max_date, country_code, type }) {
-    const columns = ['project', 'date']
+    console.log("getDependents")
+    const columns = ['gem', 'date']
     if (version) { columns.push('version') }
     if (country_code) { columns.push('country_code') }
     if (type) { columns.push('type') }
@@ -178,18 +176,18 @@ export async function getDependents({ package_name, version, min_date, max_date,
         downloads AS
         (
             SELECT
-                project,
+                gem,
                 sum(count) AS downloads,
-                dictGet(pypi.project_to_repo_name_dict, 'repo_name', project) AS repo_name,
+                dictGet(pypi.project_to_repo_name_dict, 'repo_name', gem) AS repo_name,
                 dictGet(github.repo_name_to_id_dict, 'repo_id', cityHash64(repo_name))::String AS repo_id
             FROM ${GEMS_DATABASE}.${table}
-            WHERE project IN (
-                SELECT name
-                FROM ${GEMS_DATABASE}.projects
-                WHERE arrayExists(e -> (e LIKE {package_name:String} || '%'), requires_dist) != 0 AND name != {package_name:String}
-                GROUP BY name
+            WHERE gem IN (
+                SELECT summary
+                FROM ${GEMS_DATABASE}.versions
+                WHERE arrayExists(e -> (e LIKE {package_name:String} || '%'), requires_dist) != 0 AND summary != {package_name:String}
+                GROUP BY summary
             ) AND ${country_code ? `country_code={country_code:String}` : '1=1'} AND ${type ? `type={type:String}` : '1=1'} AND (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
-            GROUP BY project
+            GROUP BY gem
             ORDER BY downloads DESC
             LIMIT 9
         ),
@@ -206,7 +204,7 @@ export async function getDependents({ package_name, version, min_date, max_date,
             GROUP BY repo_id
         )
         SELECT
-            downloads.project AS package,
+            downloads.gem AS package,
             downloads.downloads AS downloads,
             stars.stars AS stars
         FROM downloads
@@ -221,7 +219,7 @@ export async function getDependents({ package_name, version, min_date, max_date,
 }
 
 export async function getDependencies({ package_name, version, min_date, max_date, country_code, type }) {
-    const columns = ['project', 'date']
+    const columns = ['gem', 'date']
     if (version) { columns.push('version') }
     if (country_code) { columns.push('country_code') }
     if (type) { columns.push('type') }
@@ -234,21 +232,21 @@ export async function getDependencies({ package_name, version, min_date, max_dat
             FROM
             (
                 SELECT arrayJoin(requires_dist) AS requires_dist
-                FROM ${GEMS_DATABASE}.projects
-                WHERE name = {package_name:String} AND ${version ? `version={version:String}` : '1=1'}
+                FROM ${GEMS_DATABASE}.versions
+                WHERE summary = {package_name:String} AND ${version ? `version={version:String}` : '1=1'}
                 GROUP BY requires_dist
                 HAVING requires_dist NOT LIKE '%extra ==%'
             )
         ),
         downloads AS
         (
-            SELECT project,
+            SELECT gem,
                 sum(count) AS downloads,
-                dictGet(pypi.project_to_repo_name_dict, 'repo_name', project) AS repo_name,
+                dictGet(rubygems.gem_to_repo_name_dict, 'repo_name', gem) AS repo_name,
                 dictGet(github.repo_name_to_id_dict, 'repo_id', cityHash64(repo_name)) AS repo_id
             FROM ${GEMS_DATABASE}.${table}
-            WHERE project IN dependencies AND ${country_code ? `country_code={country_code:String}` : '1=1'} AND ${type ? `type={type:String}` : '1=1'} AND (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
-            GROUP BY project
+            WHERE gem IN dependencies AND ${country_code ? `country_code={country_code:String}` : '1=1'} AND ${type ? `type={type:String}` : '1=1'} AND (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
+            GROUP BY gem
             ORDER BY downloads DESC
             LIMIT 9
         ),
@@ -259,7 +257,7 @@ export async function getDependencies({ package_name, version, min_date, max_dat
             WHERE (event_type = 'WatchEvent') AND (action = 'started') AND (repo_id IN (SELECT repo_id FROM downloads WHERE repo_id != 0)) AND (created_at >= {min_date:String}::Date32) AND (created_at < {max_date:String}::Date32)
             GROUP BY repo_id
         )
-        SELECT downloads.project AS package,
+        SELECT downloads.gem AS package,
             downloads.downloads AS downloads,
             stars.stars AS stars
             FROM downloads
@@ -313,7 +311,7 @@ export async function getTotalDownloads() {
 }
 
 export async function getDownloadSummary(package_name, version, min_date, max_date, country_code, type) {
-    const columns = ['project', 'date']
+    const columns = ['gem', 'date']
     if (version) { columns.push('version') }
     if (country_code) { columns.push('country_code') }
     if (type) { columns.push('type') }
@@ -322,7 +320,7 @@ export async function getDownloadSummary(package_name, version, min_date, max_da
     sumIf(count, date > {min_date:String}::Date32 AND date > {max_date:String}::Date32 - toIntervalWeek(1) AND date <= {max_date:String}::Date32) AS last_week,
     sumIf(count, date > {min_date:String}::Date32 AND date > {max_date:String}::Date32 - toIntervalMonth(1) AND date <= {max_date:String}::Date32) AS last_month,
     sumIf(count, date > {min_date:String}::Date32 AND date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32) AS total
-    FROM ${GEMS_DATABASE}.${table} WHERE (project = {package_name:String}) AND ${version ? `version={version:String}` : '1=1'} AND ${country_code ? `country_code={country_code:String}` : '1=1'} 
+    FROM ${GEMS_DATABASE}.${table} WHERE (gem = {package_name:String}) AND ${version ? `version={version:String}` : '1=1'} AND ${country_code ? `country_code={country_code:String}` : '1=1'} 
     AND ${type ? `type={type:String}` : '1=1'}`,
         {
             min_date: min_date,
@@ -348,14 +346,14 @@ export async function getRecentPackageDownloads(package_name) {
 
     return query('getRecentPackageDownloads', `WITH (
         SELECT max(date) AS max_date
-        FROM ${GEMS_DATABASE}.${findOptimalTable(['project', 'date'])}
-        WHERE project = {package_name:String}
+        FROM ${GEMS_DATABASE}.${findOptimalTable(['gem', 'date'])}
+        WHERE gem = {package_name:String}
     ) AS max_date
     SELECT
         toStartOfWeek(date) AS x,
         sum(count) AS y
-    FROM ${GEMS_DATABASE}.${findOptimalTable(['project', 'date'])}
-    WHERE (project = {package_name:String}) AND (date > (max_date - toIntervalWeek(12)))
+    FROM ${GEMS_DATABASE}.${findOptimalTable(['gem', 'date'])}
+    WHERE (gem = {package_name:String}) AND (date > (max_date - toIntervalWeek(12)))
     GROUP BY x
     ORDER BY x ASC`, {
         package_name: package_name
@@ -363,14 +361,14 @@ export async function getRecentPackageDownloads(package_name) {
 }
 
 export async function getPackageDateRanges(package_name, version) {
-    const columns = ['project', 'date']
+    const columns = ['gem', 'date']
     if (version) { columns.push('version') }
     const table = findOptimalTable(columns)
     const [_, results] = await query('getPackageDateRanges', `SELECT
             max(date) AS max_date,
             min(date) AS min_date
         FROM ${GEMS_DATABASE}.${table}
-        WHERE project = {package_name:String} AND ${version ? `version={version:String}` : '1=1'}`, {
+        WHERE gem = {package_name:String} AND ${version ? `version={version:String}` : '1=1'}`, {
         package_name: package_name,
         version: version
     })
@@ -378,25 +376,23 @@ export async function getPackageDateRanges(package_name, version) {
 }
 
 export async function getPackageDetails(package_name, version) {
+    console.log("getPackageDetails")
     return query('getPackageDetails', `WITH (
-                SELECT version
-                FROM ${GEMS_DATABASE}.projects
-                WHERE name = {package_name:String}
-                ORDER BY arrayMap(x -> toUInt8OrDefault(x, 0), splitByChar('.', version)) DESC
+                SELECT number
+                FROM ${GEMS_DATABASE}.versions
+                WHERE summary = {package_name:String}
+                ORDER BY arrayMap(x -> toUInt8OrDefault(x, 0), splitByChar('.', number)) DESC
                 LIMIT 1
             ) AS max_version
         SELECT
-            version,
+            number,
             summary,
-            author,
-            author_email,
-            license,
-            home_page,
-            max_version,
-            getRepoName({package_name:String}) as repo_name
-        FROM ${GEMS_DATABASE}.projects
-        WHERE (name = {package_name:String}) AND ${version ? `version={version:String}` : '1=1'} 
-        ORDER BY upload_time DESC
+            authors,
+            licenses,
+            max_version
+        FROM ${GEMS_DATABASE}.versions
+        WHERE (summary = {package_name:String}) AND ${version ? `number={version:String}` : '1=1'} 
+        ORDER BY created_at DESC
         LIMIT 1`, {
         package_name: package_name,
         version: version
@@ -404,7 +400,7 @@ export async function getPackageDetails(package_name, version) {
 }
 
 export async function getDownloadsOverTime({ package_name, version, min_date, max_date, country_code, type }) {
-    const columns = ['project', 'date']
+    const columns = ['gem', 'date']
     if (version) { columns.push('version') }
     if (country_code) { columns.push('country_code') }
     if (type) { columns.push('type') }
@@ -413,7 +409,7 @@ export async function getDownloadsOverTime({ package_name, version, min_date, ma
         if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay(date)::Date32, toStartOfWeek(date)::Date32) AS x,
         sum(count) AS y
     FROM ${GEMS_DATABASE}.${table} 
-    WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (project = {package_name:String}) 
+    WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (gem = {package_name:String}) 
     AND ${version ? `version={version:String}` : '1=1'} AND ${country_code ? `country_code={country_code:String}` : '1=1'} AND ${type ? `type={type:String}` : '1=1'}
     GROUP BY x
     ORDER BY x ASC`, {
@@ -430,8 +426,8 @@ export async function getTopDistributionTypes(package_name, version, min_date, m
     return query('getTopDistributionTypes', `SELECT
             type AS name,
             sum(count) AS value
-        FROM ${GEMS_DATABASE}.pypi_downloads_per_day_by_version_by_file_type
-        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) AND ${version ? `version={version:String}` : '1=1'} 
+        FROM ${GEMS_DATABASE}.downloads_per_day_by_version_by_file_type
+        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (gem = {package_name:String}) AND ${version ? `version={version:String}` : '1=1'} 
         GROUP BY type LIMIT 7`, {
         package_name: package_name,
         version: version,
@@ -440,97 +436,90 @@ export async function getTopDistributionTypes(package_name, version, min_date, m
     })
 }
 
-export async function getTopVersions({ package_name, version, min_date, max_date, country_code, type }) {
-    const columns = ['project', 'date', 'version']
+export async function getTopVersions({ package_name, version, min_date, max_date, country_code }) {
+    const columns = ['gem', 'date', 'version']
     if (country_code) { columns.push('country_code') }
-    if (type) { columns.push('type') }
     const table = findOptimalTable(columns)
     return query('getTopVersions', `SELECT
             version AS name,
             sum(count) AS value
         FROM ${GEMS_DATABASE}.${table}
-        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) 
-            AND ${version ? `version={version:String}` : '1=1'} AND ${country_code ? `country_code={country_code:String}` : '1=1'} AND ${type ? `type={type:String}` : '1=1'}
+        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (gem = {package_name:String}) 
+            AND ${version ? `version={version:String}` : '1=1'} AND ${country_code ? `country_code={country_code:String}` : '1=1'}
         GROUP BY version ORDER BY value DESC LIMIT 6`, {
         package_name: package_name,
         version: version,
         min_date: min_date,
         max_date: max_date,
-        country_code: country_code,
-        type: type,
+        country_code: country_code
     })
 }
 
-export async function getDownloadsOverTimeByPython({ package_name, version, min_date, max_date, country_code, type }) {
-    const columns = ['project', 'date', 'python_minor']
+export async function getDownloadsOverTimeByPython({ package_name, version, min_date, max_date, country_code }) {
+    const columns = ['gem', 'date', 'ruby_minor']
     if (country_code) { columns.push('country_code') }
     if (version) { columns.push('version') }
-    if (type) { columns.push('type') }
     const table = findOptimalTable(columns)
     return query('getDownloadsOverTimeByPython', `SELECT
-        if (python_minor IN
-            (SELECT python_minor FROM ${GEMS_DATABASE}.${table}
-                                WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (project = {package_name:String}) 
-                                AND ${version ? `version={version:String}`: '1=1'} AND python_minor != '' 
-                                AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'}
-                                GROUP BY python_minor
+        if (ruby_minor IN
+            (SELECT ruby_minor FROM ${GEMS_DATABASE}.${table}
+                                WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (gem = {package_name:String}) 
+                                AND ${version ? `version={version:String}`: '1=1'} AND ruby_minor != '' 
+                                AND ${country_code ? `country_code={country_code:String}`: '1=1'}
+                                GROUP BY ruby_minor
                                 ORDER BY count() DESC LIMIT 10
-            ), python_minor, 'other') as name,
+            ), ruby_minor, 'other') as name,
         if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay(date)::Date32, toStartOfWeek(date)::Date32) AS x,
         sum(count) AS y
         FROM ${GEMS_DATABASE}.${table}
-        WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (project = {package_name:String}) 
-        AND ${version ? `version={version:String}`: '1=1'} AND python_minor != '' 
-        AND ${country_code ? `country_code={country_code:String}`: '1=1'} AND ${type ? `type={type:String}`: '1=1'}
+        WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (gem = {package_name:String}) 
+        AND ${version ? `version={version:String}`: '1=1'} AND ruby_minor != '' 
+        AND ${country_code ? `country_code={country_code:String}`: '1=1'}
         GROUP BY name, x
         ORDER BY x ASC, y DESC`, {
         package_name: package_name,
         min_date: min_date,
         max_date: max_date,
         version: version,
-        country_code: country_code,
-        type: type
+        country_code: country_code
     })
 }
 
 
 
-export async function getDownloadsOverTimeBySystem({ package_name, version, min_date, max_date, country_code, type }) {
-    const columns = ['project', 'date', 'system']
+export async function getDownloadsOverTimeBySystem({ package_name, version, min_date, max_date, country_code }) {
+    const columns = ['gem', 'date', 'platform']
     if (country_code) { columns.push('country_code') }
     if (version) { columns.push('version') }
-    if (type) { columns.push('type') }
     const table = findOptimalTable(columns)
     return query('getDownloadsOverTimeBySystem', `WITH systems AS
     (
-        SELECT system
+        SELECT platform
         FROM ${GEMS_DATABASE}.${table}
-        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (project = {package_name:String}) AND ${version ? `version={version:String}` : '1=1'} AND system != ''
-        GROUP BY system
+        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (gem = {package_name:String}) AND ${version ? `version={version:String}` : '1=1'} AND platform != ''
+        GROUP BY platform
         ORDER BY count() DESC
         LIMIT 4
     ) SELECT
-        system as name,
+        platform as name,
         if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay(date)::Date32, toStartOfWeek(date)::Date32) AS x,
         ${table == GEMS_TABLE ? 'count()' : 'sum(count)'} AS y
         FROM ${GEMS_DATABASE}.${table}
-        WHERE (date >= {min_date:String}::Date32) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (project = {package_name:String}) 
-        AND ${version ? `version={version:String}` : '1=1'} AND system IN systems 
-        AND ${country_code ? `country_code={country_code:String}` : '1=1'} AND ${type ? `type={type:String}` : '1=1'}
+        WHERE (date >= {min_date:String}::Date32) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (gem = {package_name:String}) 
+        AND ${version ? `version={version:String}` : '1=1'} AND platform IN systems 
+        AND ${country_code ? `country_code={country_code:String}` : '1=1'} 
         GROUP BY name, x ORDER BY x ASC, y DESC LIMIT 4 BY x`, {
         min_date: min_date,
         max_date: max_date,
         package_name: package_name,
         version: version,
         country_code: country_code,
-        type: type
     })
 }
 
-export async function getDownloadsByCountry({ package_name, version, min_date, max_date, country_code, type }) {
-    const columns = ['project', 'date', 'country_code']
+export async function getDownloadsByCountry({ package_name, version, min_date, max_date, country_code }) {
+    const columns = ['gem', 'date', 'country_code']
     if (version) { columns.push('version') }
-    if (type) { columns.push('type') }
     const table = findOptimalTable(columns)
     return query('getDownloadsByCountry', `SELECT name, code AS country_code, value 
                     FROM pypi.countries AS all 
@@ -540,9 +529,8 @@ export async function getDownloadsByCountry({ package_name, version, min_date, m
                         FROM ${GEMS_DATABASE}.${table} 
                     WHERE (date >= {min_date:String}::Date32) AND 
                         (date < {max_date:String}::Date32) AND 
-                        project = {package_name:String} AND 
-                        ${version ? `version={version:String}` : '1=1'} AND 
-                        ${type ? `type={type:String}` : '1=1'} GROUP BY country_code 
+                        gem = {package_name:String} AND 
+                        ${version ? `version={version:String}` : '1=1'} GROUP BY country_code 
                     ) AS values ON all.code = values.country_code`,
         {
             package_name: package_name,
@@ -550,49 +538,11 @@ export async function getDownloadsByCountry({ package_name, version, min_date, m
             min_date: min_date,
             max_date: max_date,
             country_code: country_code,
-            type: type
         })
 }
 
-export async function getFileTypesByInstaller({ package_name, version, min_date, max_date, country_code, type }) {
-    const columns = ['project', 'date', 'installer', 'type']
-    if (version) { columns.push('version') }
-    if (country_code) { columns.push('country_code') }
-    const table = findOptimalTable(columns)
-    return query('getFileTypesByInstaller', `WITH installers AS
-        (
-            SELECT installer
-            FROM ${GEMS_DATABASE}.${table}
-            WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND installer != '' AND (project = {package_name:String}) 
-                    AND ${version ? `version={version:String}` : '1=1'} AND ${country_code ? `country_code={country_code:String}` : '1=1'} AND ${type ? `type={type:String}` : '1=1'}
-            GROUP BY installer
-            ORDER BY count() DESC
-            LIMIT 6
-        )
-        SELECT
-            installer AS name,
-            type AS y,
-            sum(count) AS value
-        FROM ${GEMS_DATABASE}.${table}
-        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND installer IN installers AND (project = {package_name:String}) 
-                AND ${version ? `version={version:String}` : '1=1'} AND ${country_code ? `country_code={country_code:String}` : '1=1'} AND ${type ? `type={type:String}` : '1=1'}
-        GROUP BY
-            installer,
-            type
-        ORDER BY
-            installer ASC,
-            value DESC`, {
-        min_date: min_date,
-        max_date: max_date,
-        package_name: package_name,
-        version: version,
-        country_code: country_code,
-        type: type
-    })
-}
-
 export async function getPercentileRank(min_date, max_date, country_code) {
-    const columns = ['project', 'date']
+    const columns = ['gem', 'date']
     if (country_code) { columns.push('country_code') }
     const table = findOptimalTable(columns)
     const quantiles = [...Array(100).keys()].map(percentile => percentile / 100)
@@ -601,7 +551,7 @@ export async function getPercentileRank(min_date, max_date, country_code) {
         SELECT sum(count) AS c
         FROM ${GEMS_DATABASE}.${table}
         WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND ${country_code ? `country_code={country_code:String}` : '1=1'}
-        GROUP BY project
+        GROUP BY gem
     )
     SELECT quantiles(${quantiles.join(',')})(c) as quantiles
     FROM downloads
@@ -731,17 +681,17 @@ export async function hotPackages() {
 
 export async function getPackageRanking(package_name, min_date, max_date, country_code) {
 
-    const columns = ['project', 'date']
+    const columns = ['gem', 'date']
     if (country_code) { columns.push('country_code') }
     const table = findOptimalTable(columns)
     
     return query('getPackageRanking',`WITH
     (   SELECT
         sum(count) AS total
-        FROM ${GEMS_DATABASE}.${table} WHERE project = {package_name:String} AND 1=1 AND date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}`: '1=1'} 
+        FROM ${GEMS_DATABASE}.${table} WHERE gem = {package_name:String} AND 1=1 AND date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}`: '1=1'} 
     ) AS downloads,
-    (SELECT count() FROM ( SELECT project FROM ${GEMS_DATABASE}.${table} WHERE date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}`: '1=1'} GROUP BY project HAVING sum(count) >= downloads )) as rank,
-    (SELECT uniqExact(project) FROM ${GEMS_DATABASE}.${table} WHERE date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}`: '1=1'}) as total_packages
+    (SELECT count() FROM ( SELECT gem as project FROM ${GEMS_DATABASE}.${table} WHERE date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}`: '1=1'} GROUP BY project HAVING sum(count) >= downloads )) as rank,
+    (SELECT uniqExact(gem) FROM ${GEMS_DATABASE}.${table} WHERE date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}`: '1=1'}) as total_packages
         SELECT rank, total_packages, CASE
         WHEN total_packages = 0 THEN NULL
         ELSE (rank / total_packages) * 100
