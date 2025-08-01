@@ -54,10 +54,10 @@ client = clickhouse_connect.get_client(
 
 query = """
 SELECT
-    project,
+    name,
     sum(count) AS c
-FROM pypi.pypi_downloads
-GROUP BY project
+FROM rubygems.gem_downloads_total
+GROUP BY name
 ORDER BY c DESC
 LIMIT 50000
 """

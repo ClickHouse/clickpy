@@ -11,10 +11,10 @@ export const clickhouse = createClient({
 
 const topProjectsQuery = `
 SELECT
-    project,
+    name,
     sum(count) AS c
-FROM pypi.pypi_downloads
-GROUP BY project
+FROM rubygems.gem_downloads_total
+GROUP BY name
 ORDER BY c DESC
 LIMIT 49999
 `;
@@ -27,7 +27,7 @@ export default async function sitemap() {
     const projects = []
     for await (const rows of resultSet.stream()) {
         rows.forEach(row => {
-            projects.push(row.json()['gem'])
+            projects.push(row.json()['name'])
         })
       }
 
