@@ -185,6 +185,50 @@ GROUP BY
 '
 
 
+
+echo "creating downloads_per_day_by_version_by_system_by_country"
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE TABLE rubygems.downloads_per_day_by_version_by_system_by_country
+(
+    `date` Date,
+    `gem` String,
+    `version` String,
+    `system` String,
+    `country_code` String,
+    `client_country` String,
+    `count` Int64
+)
+ENGINE = SummingMergeTree
+ORDER BY (gem, version, date, country_code, system)
+'
+
+
+clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+CREATE MATERIALIZED VIEW rubygems.downloads_per_day_by_version_by_system_by_country_mv TO rubygems.downloads_per_day_by_version_by_system_by_country
+(
+    `date` Date,
+    `gem` String,
+    `version` String,
+    `system` String,
+    `country_code` String,
+    `client_country` String,
+    `count` Int64
+) AS
+SELECT  
+    toDate(timestamp) AS date, 
+    gem, 
+    version, 
+    user_agent.platform.os as system,
+    dictGet('pypi.countries_code_dict', 'code', tuple(lowerUTF8(trim(client_country)))) AS country_code, 
+    client_country, 
+    count() as count 
+FROM rubygems.downloads 
+GROUP BY date, gem, version, system, country_code, client_country
+'
+
+
+
 echo "creating downloads_by_version view"
 
 clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '

@@ -69,8 +69,6 @@ export async function getGithubStatsEndpoint(package_name, min_date, max_date) {
 
 // based on required columns we identify the most optimal mv to query - this is the smallest view (least columns) which covers all required columns 
 function findOptimalTable(required_columns) {
-    console.log('findOptimalTable')
-    console.log(required_columns)
     const candidates = materialized_views.filter(value => {
         if (value.columns.length >= required_columns.length) {
             // are all required columns in the candidate
@@ -166,7 +164,6 @@ export async function getGithubStarsOverTime(package_name, min_date, max_date) {
 }
 
 export async function getDependents({ package_name, version, min_date, max_date, country_code, type }) {
-    console.log("getDependents")
     const columns = ['gem', 'date']
     if (version) { columns.push('version') }
     if (country_code) { columns.push('country_code') }
@@ -376,7 +373,6 @@ export async function getPackageDateRanges(package_name, version) {
 }
 
 export async function getPackageDetails(package_name, version) {
-    console.log("getPackageDetails")
     return query('getPackageDetails', `WITH (
                 SELECT number
                 FROM ${GEMS_DATABASE}.versions
@@ -488,25 +484,25 @@ export async function getDownloadsOverTimeByPython({ package_name, version, min_
 
 
 export async function getDownloadsOverTimeBySystem({ package_name, version, min_date, max_date, country_code }) {
-    const columns = ['gem', 'date', 'platform']
+    const columns = ['gem', 'date', 'system']
     if (country_code) { columns.push('country_code') }
     if (version) { columns.push('version') }
     const table = findOptimalTable(columns)
     return query('getDownloadsOverTimeBySystem', `WITH systems AS
     (
-        SELECT platform
+        SELECT system
         FROM ${GEMS_DATABASE}.${table}
-        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (gem = {package_name:String}) AND ${version ? `version={version:String}` : '1=1'} AND platform != ''
-        GROUP BY platform
+        WHERE (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32) AND (gem = {package_name:String}) AND ${version ? `version={version:String}` : '1=1'} AND system != ''
+        GROUP BY system
         ORDER BY count() DESC
         LIMIT 4
     ) SELECT
-        platform as name,
+        system as name,
         if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay(date)::Date32, toStartOfWeek(date)::Date32) AS x,
         ${table == GEMS_TABLE ? 'count()' : 'sum(count)'} AS y
         FROM ${GEMS_DATABASE}.${table}
         WHERE (date >= {min_date:String}::Date32) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (gem = {package_name:String}) 
-        AND ${version ? `version={version:String}` : '1=1'} AND platform IN systems 
+        AND ${version ? `version={version:String}` : '1=1'} AND system IN systems 
         AND ${country_code ? `country_code={country_code:String}` : '1=1'} 
         GROUP BY name, x ORDER BY x ASC, y DESC LIMIT 4 BY x`, {
         min_date: min_date,
