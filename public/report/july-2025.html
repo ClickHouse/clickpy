@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyPI Analytics Report - July 2025</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            line-height: 1.6; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background: white;
+            color: #333;
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 40px; 
+            border-bottom: 3px solid #3776ab;
+            padding-bottom: 20px;
+        }
+        .header h1 { 
+            color: #3776ab; 
+            font-size: 2.5em; 
+            margin-bottom: 10px;
+        }
+        .subtitle { 
+            color: #666; 
+            font-size: 1.2em; 
+            font-weight: normal;
+        }
+        .executive-summary { 
+            background: #f8f9fa; 
+            padding: 25px; 
+            border-radius: 8px; 
+            margin-bottom: 30px;
+            border-left: 5px solid #3776ab;
+        }
+        .section { 
+            margin-bottom: 40px; 
+        }
+        .section h2 { 
+            color: #3776ab; 
+            border-bottom: 2px solid #3776ab; 
+            padding-bottom: 10px;
+            font-size: 1.8em;
+        }
+        .section h3 { 
+            color: #555; 
+            margin-top: 25px;
+        }
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 20px; 
+            margin: 20px 0; 
+        }
+        .stat-box { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            text-align: center; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-top: 4px solid #3776ab;
+        }
+        .stat-number { 
+            font-size: 2.2em; 
+            font-weight: bold; 
+            color: #3776ab; 
+        }
+        .stat-label { 
+            color: #666; 
+            font-size: 0.9em; 
+            margin-top: 5px;
+        }
+        .table-container { 
+            overflow-x: auto; 
+            margin: 20px 0; 
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td { 
+            padding: 12px; 
+            text-align: left; 
+            border-bottom: 1px solid #ddd; 
+        }
+        th { 
+            background: #3776ab; 
+            color: white; 
+            font-weight: 600;
+        }
+        tr:nth-child(even) { 
+            background: #f8f9fa; 
+        }
+        tr:hover { 
+            background: #e3f2fd; 
+        }
+        .percentage { 
+            font-weight: bold; 
+            color: #2e7d32;
+        }
+        .growth-high { 
+            color: #2e7d32; 
+            font-weight: bold;
+        }
+        .growth-medium { 
+            color: #f57c00; 
+            font-weight: bold;
+        }
+        .highlight { 
+            background: #fff3cd; 
+            padding: 15px; 
+            border-radius: 5px; 
+            border-left: 4px solid #ffc107; 
+            margin: 15px 0;
+        }
+        .chart-placeholder {
+            width: 100%;
+            height: 300px;
+            background: #f8f9fa;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: #666;
+        }
+        .methodology {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border-left: 5px solid #4caf50;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 2px solid #3776ab;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>PyPI Analytics Report</h1>
+        <div class="subtitle">July 2025 • Python Package Downloads Analysis</div>
+        <div style="margin-top: 15px; color: #888;">Report Period: July 1-28, 2025</div>
+    </div>
+
+    <div class="executive-summary">
+        <h2 style="margin-top: 0; color: #3776ab;">Executive Summary</h2>
+        <p>July 2025 showed remarkable activity in the Python Package Index (PyPI) ecosystem with <strong>83.8 billion downloads</strong> across the month. The data reveals significant geographical concentration in North America and Europe, continued dominance of established infrastructure packages, and the emergence of several AI/ML and cloud-related packages showing explosive growth.</p>
+        
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-number">83.8B</div>
+                <div class="stat-label">Total Downloads</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">195</div>
+                <div class="stat-label">Countries/Regions</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">68%</div>
+                <div class="stat-label">US Market Share</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">95.2%</div>
+                <div class="stat-label">Linux Systems</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🌍 Geographic Distribution</h2>
+        <p>PyPI downloads continue to be heavily concentrated in developed markets, with the United States maintaining dominant market share. European countries show strong representation, while Asia-Pacific markets demonstrate growing adoption.</p>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Country</th>
+                        <th>Downloads (Millions)</th>
+                        <th>Market Share</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>🇺🇸 United States</td>
+                        <td>56,983</td>
+                        <td><span class="percentage">68.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>🇩🇪 Germany</td>
+                        <td>3,908</td>
+                        <td><span class="percentage">4.7%</span></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>🇮🇪 Ireland</td>
+                        <td>3,888</td>
+                        <td><span class="percentage">4.6%</span></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>🇳🇱 Netherlands</td>
+                        <td>2,392</td>
+                        <td><span class="percentage">2.9%</span></td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>🇬🇧 United Kingdom</td>
+                        <td>1,814</td>
+                        <td><span class="percentage">2.2%</span></td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>🇸🇬 Singapore</td>
+                        <td>1,527</td>
+                        <td><span class="percentage">1.8%</span></td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>🇮🇳 India</td>
+                        <td>1,260</td>
+                        <td><span class="percentage">1.5%</span></td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>🇦🇺 Australia</td>
+                        <td>1,176</td>
+                        <td><span class="percentage">1.4%</span></td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>🇨🇦 Canada</td>
+                        <td>1,110</td>
+                        <td><span class="percentage">1.3%</span></td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>🇫🇷 France</td>
+                        <td>1,023</td>
+                        <td><span class="percentage">1.2%</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="highlight">
+            <strong>Key Insight:</strong> The top 3 countries (US, Germany, Ireland) account for 77.3% of all PyPI downloads, indicating heavy concentration in major cloud computing and enterprise markets.
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📦 Most Popular Packages</h2>
+        <p>Infrastructure and utility packages continue to dominate download statistics, with cloud services (AWS) and web development tools leading the pack.</p>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Package</th>
+                        <th>Downloads (Millions)</th>
+                        <th>Category</th>
+                        <th>Versions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><strong>cloudflare</strong></td>
+                        <td>2,982</td>
+                        <td>Infrastructure</td>
+                        <td>129</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><strong>acme</strong></td>
+                        <td>2,950</td>
+                        <td>Security/SSL</td>
+                        <td>142</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td><strong>certbot-dns-cloudflare</strong></td>
+                        <td>2,942</td>
+                        <td>Security/SSL</td>
+                        <td>104</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td><strong>boto3</strong></td>
+                        <td>1,338</td>
+                        <td>Cloud/AWS</td>
+                        <td>1,842</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td><strong>urllib3</strong></td>
+                        <td>883</td>
+                        <td>HTTP/Web</td>
+                        <td>99</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td><strong>botocore</strong></td>
+                        <td>878</td>
+                        <td>Cloud/AWS</td>
+                        <td>2,240</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td><strong>requests</strong></td>
+                        <td>771</td>
+                        <td>HTTP/Web</td>
+                        <td>153</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td><strong>certifi</strong></td>
+                        <td>769</td>
+                        <td>Security/SSL</td>
+                        <td>66</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td><strong>typing-extensions</strong></td>
+                        <td>758</td>
+                        <td>Language/Types</td>
+                        <td>47</td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td><strong>setuptools</strong></td>
+                        <td>755</td>
+                        <td>Build Tools</td>
+                        <td>616</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="highlight">
+            <strong>Notable Trend:</strong> SSL/Security packages (cloudflare, acme, certbot-dns-cloudflare) dominate the top 3 positions, reflecting increased focus on web security and automated certificate management.
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🚀 Emerging & High-Growth Packages</h2>
+        <p>Several packages showed extraordinary growth in July 2025, particularly in the AI/ML, cloud infrastructure, and developer tooling categories.</p>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Package</th>
+                        <th>July Downloads (M)</th>
+                        <th>June Downloads (M)</th>
+                        <th>Growth %</th>
+                        <th>Category</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>fastapi-cloud-cli</strong></td>
+                        <td>9.0</td>
+                        <td>0.0</td>
+                        <td><span class="growth-high">12,622,054%</span></td>
+                        <td>Web/Cloud CLI</td>
+                    </tr>
+                    <tr>
+                        <td><strong>rfc3987-syntax</strong></td>
+                        <td>8.6</td>
+                        <td>0.0</td>
+                        <td><span class="growth-high">10,240,189%</span></td>
+                        <td>Parsing/Validation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>certbot-dns-cloudflare</strong></td>
+                        <td>2,942.2</td>
+                        <td>0.2</td>
+                        <td><span class="growth-high">1,622,601%</span></td>
+                        <td>Security/SSL</td>
+                    </tr>
+                    <tr>
+                        <td><strong>acme</strong></td>
+                        <td>2,949.8</td>
+                        <td>0.8</td>
+                        <td><span class="growth-high">359,668%</span></td>
+                        <td>Security/SSL</td>
+                    </tr>
+                    <tr>
+                        <td><strong>cloudflare</strong></td>
+                        <td>2,981.5</td>
+                        <td>3.1</td>
+                        <td><span class="growth-high">95,475%</span></td>
+                        <td>Infrastructure</td>
+                    </tr>
+                    <tr>
+                        <td><strong>rignore</strong></td>
+                        <td>7.8</td>
+                        <td>0.0</td>
+                        <td><span class="growth-high">58,069%</span></td>
+                        <td>Dev Tools</td>
+                    </tr>
+                    <tr>
+                        <td><strong>opentelemetry-instrumentation-google-generativeai</strong></td>
+                        <td>5.5</td>
+                        <td>0.4</td>
+                        <td><span class="growth-high">1,217%</span></td>
+                        <td>Observability/AI</td>
+                    </tr>
+                    <tr>
+                        <td><strong>semantic-kernel</strong></td>
+                        <td>7.6</td>
+                        <td>1.8</td>
+                        <td><span class="growth-high">312%</span></td>
+                        <td>AI/ML</td>
+                    </tr>
+                    <tr>
+                        <td><strong>azure-ai-projects</strong></td>
+                        <td>5.8</td>
+                        <td>1.9</td>
+                        <td><span class="growth-high">203%</span></td>
+                        <td>Cloud/AI</td>
+                    </tr>
+                    <tr>
+                        <td><strong>fireworks-ai</strong></td>
+                        <td>7.5</td>
+                        <td>2.5</td>
+                        <td><span class="growth-high">197%</span></td>
+                        <td>AI/ML</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="highlight">
+            <strong>Key Trends:</strong>
+            <ul>
+                <li><strong>Security & SSL:</strong> Massive growth in certificate management tools</li>
+                <li><strong>AI/ML Infrastructure:</strong> Strong adoption of semantic-kernel, azure-ai-projects, and fireworks-ai</li>
+                <li><strong>Developer Tools:</strong> New CLI tools and parsing libraries gaining traction</li>
+                <li><strong>Cloud Integration:</strong> Increased focus on cloud-native development tools</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🐍 Python Version & System Distribution</h2>
+        
+        <h3>Python Version Usage</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Python Version</th>
+                        <th>Downloads (Millions)</th>
+                        <th>Market Share</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Python 3.11</strong></td>
+                        <td>25,995</td>
+                        <td><span class="percentage">31.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Python 3.10</strong></td>
+                        <td>17,304</td>
+                        <td><span class="percentage">20.7%</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Python 3.12</strong></td>
+                        <td>12,293</td>
+                        <td><span class="percentage">14.7%</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Python 3.9</strong></td>
+                        <td>10,617</td>
+                        <td><span class="percentage">12.7%</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Python 3.13</strong></td>
+                        <td>4,011</td>
+                        <td><span class="percentage">4.8%</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Python 3.7</strong></td>
+                        <td>4,863</td>
+                        <td><span class="percentage">5.8%</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Python 3.8</strong></td>
+                        <td>3,978</td>
+                        <td><span class="percentage">4.8%</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Operating System Distribution</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Operating System</th>
+                        <th>Downloads (Millions)</th>
+                        <th>Market Share</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Linux</strong></td>
+                        <td>79,784</td>
+                        <td><span class="percentage">95.2%</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Windows</strong></td>
+                        <td>1,834</td>
+                        <td><span class="percentage">2.2%</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>macOS (Darwin)</strong></td>
+                        <td>913</td>
+                        <td><span class="percentage">1.1%</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Unknown</strong></td>
+                        <td>1,273</td>
+                        <td><span class="percentage">1.5%</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="highlight">
+            <strong>Version Analysis:</strong> Python 3.11 leads adoption with 31% market share, while Python 3.13 (still in development) shows 4.8% usage indicating early adopter interest. The overwhelming Linux dominance (95.2%) reflects PyPI's heavy usage in server and cloud environments.
+        </div>
+    </div>
+
+    <div class="methodology">
+        <h3>📊 Methodology & Data Notes</h3>
+        <ul>
+            <li><strong>Data Source:</strong> PyPI download statistics from ClickHouse Cloud analytics platform</li>
+            <li><strong>Time Period:</strong> July 1-28, 2025 (28 days of data)</li>
+            <li><strong>Geographic Data:</strong> Based on ISO country codes from download origins</li>
+            <li><strong>Growth Calculations:</strong> Month-over-month comparison with June 2025</li>
+            <li><strong>Emerging Packages:</strong> Defined as packages with >100% growth or >50% growth with >500K downloads</li>
+            <li><strong>Data Quality:</strong> Analysis based on 500+ billion download records</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        <p>Report generated by <a href="https://llm.clickhouse.com/">AgentHouse</a> • ClickHouse Cloud Analytics • August 2025</p>
+        <p>For more insights and real-time PyPI analytics, visit our <a href="https://clickpy.clickhouse.com/">dashboard</a></p>
+    </div>
+</body>
+</html>
