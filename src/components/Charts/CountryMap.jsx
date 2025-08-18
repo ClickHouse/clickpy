@@ -1,5 +1,6 @@
 'use client';
 import ReactECharts from 'echarts-for-react';
+import 'echarts-countries-js/echarts-countries-js/world';
 import isEqual from 'lodash/isEqual';
 import Loading from '../Loading';
 import { useState } from 'react';
