@@ -1,6 +1,6 @@
 'use client';
 import React, { useRef, useState } from 'react';
-import ReactECharts from './ReactEChartsNoSSR';
+import ReactECharts from 'echarts-for-react';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';

@@ -7,7 +7,7 @@ import MultiLine from './MultiLine'
 import Pie from './Pie'
 import CountryMap from './CountryMap'
 import Radar from './Radar'
-import Guage from './Guage'
+import Gauge from './Gauge'
 import Spark from './Spark'
 import HorizontalBar from './HorizontalBar'
 
@@ -73,7 +73,7 @@ export default function ClientComponent({ type, data = [], options = {}, link })
       // current.set(options.column, value)
       // router.push(`${pathname}?${current.toString()}`, { scroll: false })
     }}/>),
-    'guage': (<Guage data={data} />),
+    'gauge': (<Gauge data={data} />),
     'multiline': (
       <MultiLine
         data={data}

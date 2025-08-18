@@ -1,10 +1,10 @@
 'use client'
 import React, { useState } from 'react'
-import ReactECharts from './ReactEChartsNoSSR'
+import ReactECharts from 'echarts-for-react';
 import isEqual from 'lodash/isEqual'
 import Loading from '../Loading'
 
-export default function Guage({ data }) {
+export default function Gauge({ data }) {
   const [loading, setLoading] = useState(true)
   let value = data.ranks.findIndex((value) => value > data.value)
   value = value == -1 ? 0.99 : (value - 1) / 100

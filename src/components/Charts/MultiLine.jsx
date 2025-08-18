@@ -1,6 +1,6 @@
 'use client';
 import React, { useRef, useState } from 'react';
-import ReactECharts from './ReactEChartsNoSSR';
+import ReactECharts from 'echarts-for-react';
 import isEqual from 'lodash/isEqual';
 import Loading from '../Loading';
 import Link from 'next/link';

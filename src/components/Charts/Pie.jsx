@@ -1,4 +1,4 @@
-import ReactECharts from './ReactEChartsNoSSR';
+import ReactECharts from 'echarts-for-react';
 import Loading from '../Loading';
 import isEqual from 'lodash/isEqual';
 import { useState } from 'react';
