@@ -5,7 +5,7 @@ import {
   getPackageDateRanges,
   getDownloadsOverTime,
   getTopVersions,
-  getDownloadsOverTimeByPython,
+  getDownloadsOverTimeByRuby,
   getDownloadsOverTimeBySystem,
   getDownloadsByCountry,
   getFileTypesByInstaller,
@@ -230,7 +230,7 @@ export default async function Dashboard({ params, searchParams }) {
               <Chart
                 type='bar'
                 options={{ stack: true }}
-                getData={getDownloadsOverTimeByPython}
+                getData={getDownloadsOverTimeByRuby}
                 params={{
                   package_name: package_name,
                   version: version,
@@ -284,7 +284,7 @@ export default async function Dashboard({ params, searchParams }) {
           </div>
           <div className='mt-24 lg:mt-0'>
             <p className='text-2xl font-bold mb-5'>Related packages</p>
-            {/* <Suspense key={key} fallback={<Loading />}>
+            <Suspense key={key} fallback={<Loading />}>
               <DependencyTable params={{
                 package_name: package_name,
                 version: version,
@@ -293,11 +293,11 @@ export default async function Dashboard({ params, searchParams }) {
                 country_code: country_code,
                 type: file_type
               }} />
-            </Suspense> */}
+            </Suspense>
           </div>
         </div>
 
-        <div className='mt-12 lg:mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 h-[480px] lg:grid xl:grid-cols-3 gap-6 mb-24 lg:mb-32'>
+        <div className='mt-12 lg:mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 h-[480px] gap-6 mb-24 lg:mb-32'>
           <div className='h-[480px] xl:col-span-2'>
             <p className='text-2xl font-bold mb-5'>Downloads by country</p>
             <Suspense key={key} fallback={<Loading />}>
@@ -316,9 +316,9 @@ export default async function Dashboard({ params, searchParams }) {
               />
             </Suspense>
           </div>
-          <div className='h-[480px] xl:col-span-1 mt-24 lg:mt-20 xl:mt-0'>
+          {/* <div className='h-[480px] xl:col-span-1 mt-24 lg:mt-20 xl:mt-0'>
             <p className='text-2xl font-bold mb-5'>File types by installer</p>
-            {/* <Suspense key={key} fallback={<Loading />}>
+            <Suspense key={key} fallback={<Loading />}>
               <Chart
                 type='radar'
                 options={{ column: 'type' }}
@@ -332,11 +332,11 @@ export default async function Dashboard({ params, searchParams }) {
                   type: file_type
                 }}
               />
-            </Suspense> */}
-          </div>
+            </Suspense> 
+          </div> */}
         </div>
       </div>
-      <div className='mb-8 w-10/12 flex justify-center mx-auto h-[640px] xl:h-full items-end'>
+      <div className='mb-8 w-10/12 flex justify-center mx-auto h-[440px] xl:h-full items-end'>
         <Footer />
       </div>
     </div>

@@ -167,7 +167,6 @@ export async function getDependents({ package_name, version, min_date, max_date,
     const columns = ['gem', 'date']
     if (version) { columns.push('version') }
     if (country_code) { columns.push('country_code') }
-    if (type) { columns.push('type') }
     const table = findOptimalTable(columns)
     return query('dependents', `WITH
         downloads AS
@@ -175,43 +174,43 @@ export async function getDependents({ package_name, version, min_date, max_date,
             SELECT
                 gem,
                 sum(count) AS downloads,
-                dictGet(pypi.project_to_repo_name_dict, 'repo_name', gem) AS repo_name,
+                dictGet(rubygems.gem_to_repo_name_dict, 'repo_name', gem) AS repo_name,
                 dictGet(github.repo_name_to_id_dict, 'repo_id', cityHash64(repo_name))::String AS repo_id
             FROM ${GEMS_DATABASE}.${table}
             WHERE gem IN (
-                SELECT summary
-                FROM ${GEMS_DATABASE}.versions
-                WHERE arrayExists(e -> (e LIKE {package_name:String} || '%'), requires_dist) != 0 AND summary != {package_name:String}
-                GROUP BY summary
-            ) AND ${country_code ? `country_code={country_code:String}` : '1=1'} AND ${type ? `type={type:String}` : '1=1'} AND (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
+                SELECT
+                    substring(v.gem_full_name, 1, length(v.gem_full_name) - length(splitByChar('-', v.gem_full_name)[-1]) - 1) AS gem_name
+                FROM ${GEMS_DATABASE}.versions AS v
+                JOIN ${GEMS_DATABASE}.dependencies AS d
+                    ON (d.version_id = v.id) JOIN ${GEMS_DATABASE}.rubygems r ON r.id=d.rubygem_id where r.name={package_name:String} GROUP BY gem_name
+            ) AND ${country_code ? `country_code={country_code:String}` : '1=1'} AND (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
             GROUP BY gem
             ORDER BY downloads DESC
             LIMIT 9
         ),
         stars AS
         (
-            SELECT
-                repo_id,
-                uniqExact(actor_login) AS stars
-            FROM ${GITHUB_DATABASE}.github_events
-            WHERE (event_type = 'WatchEvent') AND (action = 'started') AND (repo_id IN (
-                SELECT repo_id
-                FROM downloads WHERE repo_id != '0'
-            )) AND (created_at >= {min_date:String}::Date32) AND (created_at < {max_date:String}::Date32)
-            GROUP BY repo_id
+            SELECT 
+                repo_name,
+                sum(count) AS stars
+            FROM github.repo_stars
+            WHERE repo_name IN (
+                SELECT repo_name 
+                FROM downloads
+            )
+            GROUP BY repo_name
         )
         SELECT
             downloads.gem AS package,
             downloads.downloads AS downloads,
             stars.stars AS stars
         FROM downloads
-        LEFT JOIN stars ON downloads.repo_id = stars.repo_id`, {
+        LEFT JOIN stars ON downloads.repo_name = stars.repo_name`, {
         package_name: package_name,
         version: version,
         min_date: min_date,
         max_date: max_date,
         country_code: country_code,
-        type: type,
     })
 }
 
@@ -219,46 +218,48 @@ export async function getDependencies({ package_name, version, min_date, max_dat
     const columns = ['gem', 'date']
     if (version) { columns.push('version') }
     if (country_code) { columns.push('country_code') }
-    if (type) { columns.push('type') }
     const table = findOptimalTable(columns)
-
     return query('dependencies', `WITH
-        dependencies AS
-        (
-            SELECT extract(requires_dist, '^[a-zA-Z0-9\\-_]+') AS dependency
-            FROM
-            (
-                SELECT arrayJoin(requires_dist) AS requires_dist
-                FROM ${GEMS_DATABASE}.versions
-                WHERE summary = {package_name:String} AND ${version ? `version={version:String}` : '1=1'}
-                GROUP BY requires_dist
-                HAVING requires_dist NOT LIKE '%extra ==%'
-            )
-        ),
-        downloads AS
-        (
-            SELECT gem,
-                sum(count) AS downloads,
-                dictGet(rubygems.gem_to_repo_name_dict, 'repo_name', gem) AS repo_name,
-                dictGet(github.repo_name_to_id_dict, 'repo_id', cityHash64(repo_name)) AS repo_id
-            FROM ${GEMS_DATABASE}.${table}
-            WHERE gem IN dependencies AND ${country_code ? `country_code={country_code:String}` : '1=1'} AND ${type ? `type={type:String}` : '1=1'} AND (date >= {min_date:String}::Date32) AND (date < {max_date:String}::Date32)
-            GROUP BY gem
-            ORDER BY downloads DESC
-            LIMIT 9
-        ),
-        stars AS
-        (
-            SELECT repo_id, uniqExact(actor_login) AS stars
-            FROM ${GITHUB_DATABASE}.github_events
-            WHERE (event_type = 'WatchEvent') AND (action = 'started') AND (repo_id IN (SELECT repo_id FROM downloads WHERE repo_id != 0)) AND (created_at >= {min_date:String}::Date32) AND (created_at < {max_date:String}::Date32)
-            GROUP BY repo_id
-        )
-        SELECT downloads.gem AS package,
-            downloads.downloads AS downloads,
-            stars.stars AS stars
-            FROM downloads
-            LEFT JOIN stars ON downloads.repo_id::String = stars.repo_id
+    dependencies AS
+    (
+        SELECT
+            dictGet(rubygems.id_to_name, 'name',d.rubygem_id) as gem,
+            dictGet(rubygems.name_to_id, 'id', {package_name:String}) AS package_id
+        FROM rubygems.versions AS v
+        INNER JOIN rubygems.dependencies AS d ON v.id = d.version_id
+        WHERE v.rubygem_id = package_id
+        GROUP BY gem
+    ),
+    downloads AS
+    (
+        SELECT
+            gem,
+            sum(count) AS downloads,
+            dictGet(rubygems.gem_to_repo_name_dict, 'repo_name', gem) AS repo_name,
+            dictGet(github.repo_name_to_id_dict, 'repo_id', cityHash64(repo_name)) AS repo_id
+        FROM rubygems.downloads_per_day
+        WHERE gem IN (SELECT gem FROM dependencies)
+          AND (date >= {min_date:String}::Date32)
+          AND (date < {max_date:String}::Date32)
+        GROUP BY gem
+        ORDER BY downloads DESC
+        LIMIT 9
+    ),
+    stars AS
+    (
+        SELECT
+            repo_name,
+            sum(count) AS stars
+        FROM github.repo_stars
+        WHERE repo_name IN (SELECT repo_name FROM downloads)
+        GROUP BY repo_name
+    )
+        SELECT
+            d.gem AS package,
+            d.downloads AS downloads,
+            s.stars AS stars
+        FROM downloads AS d
+        LEFT JOIN stars AS s ON d.repo_name = s.repo_name;
         `, {
         package_name: package_name,
         version: version,
@@ -451,12 +452,12 @@ export async function getTopVersions({ package_name, version, min_date, max_date
     })
 }
 
-export async function getDownloadsOverTimeByPython({ package_name, version, min_date, max_date, country_code }) {
+export async function getDownloadsOverTimeByRuby({ package_name, version, min_date, max_date, country_code }) {
     const columns = ['gem', 'date', 'ruby_minor']
     if (country_code) { columns.push('country_code') }
     if (version) { columns.push('version') }
     const table = findOptimalTable(columns)
-    return query('getDownloadsOverTimeByPython', `SELECT
+    return query('getDownloadsOverTimeByRuby', `SELECT
         if (ruby_minor IN
             (SELECT ruby_minor FROM ${GEMS_DATABASE}.${table}
                                 WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (gem = {package_name:String}) 
@@ -517,8 +518,9 @@ export async function getDownloadsByCountry({ package_name, version, min_date, m
     const columns = ['gem', 'date', 'country_code']
     if (version) { columns.push('version') }
     const table = findOptimalTable(columns)
+
     return query('getDownloadsByCountry', `SELECT name, code AS country_code, value 
-                    FROM pypi.countries AS all 
+                    FROM rubygems.countries AS all 
                     LEFT OUTER JOIN (
                         SELECT country_code, 
                         sum(count) AS value 
@@ -562,7 +564,6 @@ export async function getPercentileRank(min_date, max_date, country_code) {
 
 
 export async function getRecentReleases(packages) {
-    console.log(packages)
     return query('getRecentReleases', `
         WITH (
             SELECT max(created_at) AS max_date
@@ -703,7 +704,7 @@ export async function getPackageRanking(package_name, min_date, max_date, countr
 export const revalidate = 3600;
 
 async function query(query_name, query, query_params) {
-    //const start = performance.now()
+    const start = performance.now()
     const results = await clickhouse.query({
         query: query,
         query_params: query_params,
@@ -711,7 +712,7 @@ async function query(query_name, query, query_params) {
         clickhouse_settings: getQueryCustomSettings(query_name)
     })
     const end = performance.now()
-    //console.log(`Execution time for ${query_name}: ${end - start} ms`)
+    console.log(`Execution time for ${query_name}: ${end - start} ms`)
     // if (end - start > 0) {
     //     if (query_params) {
     //         console.log(query, query_params)

@@ -123,7 +123,7 @@ export default function Search({ package_name = '' }) {
                 {packages.map((p, i) => (
                   <li
                     onClick={() => {
-                      onClick(p.project);
+                      onClick(p.name);
                     }}
                     key={`package-${i}`}
                     className={`cursor-pointer flex space-x-2 py-4 hover:bg-[url("/highlight.svg")] ${
@@ -132,7 +132,7 @@ export default function Search({ package_name = '' }) {
                     <div className='flex items-center gap-x-2 w-full pr-2'>
                       <div className='flex items-center flex-auto'>
                         <h2 className='min-w-0 text-sm text-white'>
-                          <span className='truncate'>{p.project}</span>
+                          <span className='truncate'>{p.name}</span>
                         </h2>
                       </div>
                       <div className='flex gap-3'>

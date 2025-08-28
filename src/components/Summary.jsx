@@ -56,7 +56,7 @@ export default function Summary({
         <HorizontalBar
           data={packages[1]
             .map((p) => {
-              return { x: p.project, y: p.c, name: 'counts' };
+              return { x: p.name, y: p.c, name: 'counts' };
             })}
           header={
             <div className='px-6 pt-4 pb-0 flex-row flex justify-between items-end'>

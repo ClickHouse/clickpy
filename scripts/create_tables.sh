@@ -140,7 +140,7 @@ CREATE MATERIALIZED VIEW rubygems.downloads_per_day_by_version_by_platform_by_co
 ) AS
 SELECT toDate(timestamp) AS date, 
 gem, version, platform, 
-dictGet('pypi.countries_code_dict', 'code', lowerUTF8(trim(client_country))) AS country_code, client_country, count() as count 
+dictGet('rubygems.countries_code_dict', 'code', tuple(initcap(lowerUTF8(trim(client_country))))) AS country_code, client_country, count() as count 
 FROM rubygems.downloads GROUP BY date, gem, version, platform, country_code, client_country
 '
 
@@ -220,7 +220,7 @@ SELECT
     gem, 
     version, 
     user_agent.platform.os as system,
-    dictGet('pypi.countries_code_dict', 'code', tuple(lowerUTF8(trim(client_country)))) AS country_code, 
+    dictGet('rubygems.countries_code_dict', 'code', tuple(initcap(lowerUTF8(trim(client_country))))) AS country_code, 
     client_country, 
     count() as count 
 FROM rubygems.downloads 
@@ -332,8 +332,8 @@ SELECT
     toDate(timestamp) AS date, 
     gem, 
     version,
-    dictGet('pypi.countries_code_dict', 'code', tuple(lowerUTF8(trim(client_country)))) AS country_code,
     user_agent.ruby as ruby_minor, 
+    dictGet('rubygems.countries_code_dict', 'code', tuple(initcap(lowerUTF8(trim(client_country))))) AS country_code,
     client_country, 
     count() as count 
 FROM rubygems.downloads 
@@ -378,7 +378,7 @@ SELECT
     toDate(timestamp) AS date,
     gem,
     version,
-    dictGet('pypi.countries_code_dict', 'code', tuple(lowerUTF8(trim(client_country)))) AS country_code,
+    dictGet('rubygems.countries_code_dict', 'code', tuple(initcap(lowerUTF8(trim(client_country))))) AS country_code,
     client_country,
     count() AS count
 FROM rubygems.downloads
@@ -438,17 +438,57 @@ ORDER BY gem
 
 
 clickhouse client --host ${CLICKHOUSE_HOST} --secure --password ${CLICKHOUSE_PASSWORD} --user ${CLICKHOUSE_USER} --query '
+
 CREATE MATERIALIZED VIEW rubygems.gem_to_repo_name_mv TO rubygems.gem_to_repo_name
 (
     `gem` String,
     `repo_name` String
 )
-AS SELECT
-    r.name AS gem,
-    regexpExtract(arrayFilter(l -> (l LIKE '%https://github.com/%'), [ls.home])[1], '.*https://github\\.com/([^/]+/[^/]+)') AS repo_name
-FROM rubygems.rubygems AS r
-LEFT JOIN rubygems.linksets AS ls ON r.id = ls.rubygem_id
-WHERE length(arrayFilter(l -> (l LIKE '%https://github.com/%'), [ls.home])) >= 1
+AS WITH latest AS
+(
+    SELECT
+        rubygem_id,
+        argMax(simpleJSONExtractString(CAST(metadata, 'String'), 'homepage_uri'),     created_at) AS homepage_uri,
+        argMax(simpleJSONExtractString(CAST(metadata, 'String'), 'source_code_uri'),  created_at) AS source_code_uri
+    FROM rubygems.versions
+    GROUP BY rubygem_id
+),
+picked AS
+(
+    SELECT
+        r.id,
+        r.name AS gem,
+        -- prefer homepage_uri if it’s GitHub; otherwise source_code_uri if it’s GitHub
+        multiIf(
+            positionCaseInsensitive(homepage_uri,   'github.com/') > 0, homepage_uri,
+            positionCaseInsensitive(source_code_uri,'github.com/') > 0, source_code_uri,
+            ''
+        ) AS gh_url
+    FROM rubygems.rubygems r
+    LEFT JOIN latest v ON r.id = v.rubygem_id
+),
+norm AS
+(
+    SELECT
+        gem,
+        gh_url,
+        -- take only the first two path segments after github.com/
+        substring(gh_url, positionCaseInsensitive(gh_url, 'github.com/') + length('github.com/')) AS path_after_host,
+        splitByChar('/', path_after_host) AS segs,
+        lower(segs[1]) AS owner_raw,
+        -- drop trailing .git if present
+        lower(replaceRegexpAll(segs[2], '(\\.git)?$', '')) AS repo_raw,
+        concat(owner_raw, '/', repo_raw) AS repo_name_norm
+    FROM picked
+)
+SELECT
+    gem,
+    repo_name_norm AS repo_name
+FROM norm
+WHERE
+    gh_url != ''                                 -- we found a GH URL in either field
+    AND owner_raw != '' AND repo_raw != ''       -- both segments present
+    AND match(repo_name_norm, '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$')
 '
 
 
