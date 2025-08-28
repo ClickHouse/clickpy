@@ -15,8 +15,8 @@ import {
 import 'server-only';
 
 export const metadata = {
-  title: 'ClickPy - Python package analytics',
-  description: 'Free Analytics service for Python package downloads, powered by ClickHouse',
+  title: 'ClickGems - RubyGems analytics',
+  description: 'Free Analytics service for Rubygems downloads, powered by ClickHouse',
 }
 
 export const revalidate = 3600

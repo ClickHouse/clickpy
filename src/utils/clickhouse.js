@@ -712,7 +712,7 @@ async function query(query_name, query, query_params) {
         clickhouse_settings: getQueryCustomSettings(query_name)
     })
     const end = performance.now()
-    console.log(`Execution time for ${query_name}: ${end - start} ms`)
+    // console.log(`Execution time for ${query_name}: ${end - start} ms`)
     // if (end - start > 0) {
     //     if (query_params) {
     //         console.log(query, query_params)
