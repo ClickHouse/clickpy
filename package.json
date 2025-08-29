@@ -15,11 +15,18 @@
     "@gingerwizard/react-daterange-picker": "github:gingerwizard/react-daterange-picker",
     "@headlessui/react": "^1.7.16",
     "@heroicons/react": "^2.0.18",
+    "@hyperdx/browser": "^0.21.2",
+    "@hyperdx/node-opentelemetry": "^0.8.2",
     "@next/third-parties": "^14.2.15",
+    "@opentelemetry/api-logs": "^0.57.2",
+    "@opentelemetry/instrumentation": "^0.57.2",
+    "@opentelemetry/sdk-logs": "^0.57.2",
+    "@opentelemetry/winston-transport": "^0.14.1",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.4",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/typography": "^0.5.9",
+    "@vercel/otel": "^1.13.0",
     "autoprefixer": "10.4.14",
     "dayjs": "^1.11.11",
     "echarts": "^5.4.3",
@@ -37,7 +44,8 @@
     "server-only": "^0.0.1",
     "sql-formatter": "^15.3.1",
     "styled-components": ">= 6",
-    "tailwindcss": "3.3.3"
+    "tailwindcss": "3.3.3",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/node": "22.7.5",
