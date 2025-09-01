@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3000",
+    "dev": "NODE_OPTIONS=\"--require ./hyperdx-preload.js\" next dev -p 3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -50,6 +50,7 @@
   "devDependencies": {
     "@types/node": "22.7.5",
     "@types/react": "^18.3.2",
+    "dotenv": "^17.2.1",
     "husky": "^8.0.3"
   },
   "peerDependencies": {
