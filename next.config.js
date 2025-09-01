@@ -1,19 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    instrumentationHook: true,
+  },
   async rewrites() {
     return [
       {
         source: '/dashboard',
-        destination: '/',
-      },
-    ];
+        destination: '/'
+      }
+    ]
   },
+}
 
-  experimental: {
-    outputFileTracingIncludes: {
-      '*': ['./clickstack-preload.js'],
-    },
-  },
-};
-
-module.exports = nextConfig;
+module.exports = nextConfig

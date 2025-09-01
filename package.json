@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "NODE_OPTIONS=\"--require ./clickstack-preload.js\" next dev -p 3000",
+    "vercel-build": "unset NODE_OPTIONS && next build",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
