@@ -3,7 +3,6 @@ import './globals.css';
 import { Inter } from 'next/font/google';
 import Script from 'next/script';
 import GAWithConsent from '@/components/GAWithConsent';
-import TelemetryProvider from '@/components/TelemetryProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -26,9 +25,7 @@ export default function RootLayout({ children }) {
 
       <body className={`${inter.className} h-full`}>
         <ClickUIProvider theme="dark">
-          <TelemetryProvider>
-            <GAWithConsent>{children}</GAWithConsent>
-          </TelemetryProvider>
+          <GAWithConsent>{children}</GAWithConsent>
         </ClickUIProvider>        
       </body>
     </html>
