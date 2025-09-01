@@ -4,10 +4,16 @@ const nextConfig = {
     return [
       {
         source: '/dashboard',
-        destination: '/'
-      }
-    ]
+        destination: '/',
+      },
+    ];
   },
-}
 
-module.exports = nextConfig
+  experimental: {
+    outputFileTracingIncludes: {
+      '*': ['./clickstack-preload.js'],
+    },
+  },
+};
+
+module.exports = nextConfig;
