@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyPI Usage Report - August 2025</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: white;
+        }
+        
+        h1 {
+            color: #2563eb;
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #1e40af;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3b82f6;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #1e3a8a;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        
+        .metric-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .metric-highlight {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #1e40af;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .number {
+            text-align: right;
+            font-family: 'SF Mono', Monaco, monospace;
+        }
+        
+        .growth-positive {
+            color: #059669;
+            font-weight: 600;
+        }
+        
+        .growth-negative {
+            color: #dc2626;
+            font-weight: 600;
+        }
+        
+        .summary {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .date-header {
+            text-align: right;
+            color: #6b7280;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        
+        .package-highlight {
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="date-header">Report Generated: September 3, 2025</div>
+    
+    <h1>PyPI Usage Report - August 2025</h1>
+    
+    <div class="summary">
+        <strong>Executive Summary:</strong> August 2025 showed a slight overall decline in PyPI downloads (79.7B vs 83.8B in July), but revealed significant growth in emerging AI and infrastructure packages. The United States maintained its dominant position, while several European countries saw notable shifts in download patterns.
+    </div>
+
+    <div class="metric-box">
+        <div class="metric-highlight">79.65 billion downloads</div>
+        <div>Total package downloads in August 2025 across <strong>668,877 unique projects</strong></div>
+    </div>
+
+    <h2>Geographic Distribution of Downloads</h2>
+    
+    <p>The United States continues to dominate PyPI downloads, representing approximately 72% of global traffic. Notable geographic shifts occurred in August compared to July 2025.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Country</th>
+                <th class="number">August 2025 Downloads</th>
+                <th class="number">July 2025 Downloads</th>
+                <th class="number">Change</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>United States</strong></td>
+                <td class="number">57.53B</td>
+                <td class="number">56.98B</td>
+                <td class="number growth-positive">+1.0%</td>
+            </tr>
+            <tr>
+                <td><strong>Ireland</strong></td>
+                <td class="number">3.62B</td>
+                <td class="number">3.89B</td>
+                <td class="number growth-negative">-7.0%</td>
+            </tr>
+            <tr>
+                <td><strong>Germany</strong></td>
+                <td class="number">2.95B</td>
+                <td class="number">3.91B</td>
+                <td class="number growth-negative">-24.6%</td>
+            </tr>
+            <tr>
+                <td><strong>Netherlands</strong></td>
+                <td class="number">2.19B</td>
+                <td class="number">2.39B</td>
+                <td class="number growth-negative">-8.3%</td>
+            </tr>
+            <tr>
+                <td><strong>Singapore</strong></td>
+                <td class="number">1.86B</td>
+                <td class="number">1.53B</td>
+                <td class="number growth-positive">+21.7%</td>
+            </tr>
+            <tr>
+                <td><strong>United Kingdom</strong></td>
+                <td class="number">1.34B</td>
+                <td class="number">1.81B</td>
+                <td class="number growth-negative">-26.0%</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Geographic Insights</h3>
+    <p><strong>Singapore emerged as a significant growth market</strong>, with downloads increasing 21.7% month-over-month, likely driven by increased AI/ML development activities in the Asia-Pacific region. Conversely, traditional European markets like Germany and the UK saw notable declines, possibly due to summer vacation patterns affecting enterprise development activities.</p>
+
+    <h2>Most Popular Packages</h2>
+    
+    <p>AWS-related packages continue to dominate the PyPI ecosystem, with cloud infrastructure and data processing tools maintaining strong positions.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Package</th>
+                <th class="number">Downloads</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td><strong>boto3</strong></td>
+                <td class="number">1.20B</td>
+                <td>AWS SDK</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td><strong>urllib3</strong></td>
+                <td class="number">926M</td>
+                <td>HTTP Client</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td><strong>botocore</strong></td>
+                <td class="number">894M</td>
+                <td>AWS Core</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td><strong>requests</strong></td>
+                <td class="number">835M</td>
+                <td>HTTP Library</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td><strong>certifi</strong></td>
+                <td class="number">825M</td>
+                <td>SSL/TLS</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td><strong>typing-extensions</strong></td>
+                <td class="number">808M</td>
+                <td>Type Hints</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td><strong>charset-normalizer</strong></td>
+                <td class="number">779M</td>
+                <td>Text Processing</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td><strong>aiobotocore</strong></td>
+                <td class="number">752M</td>
+                <td>Async AWS SDK</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td><strong>grpcio-status</strong></td>
+                <td class="number">739M</td>
+                <td>RPC Framework</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td><strong>numpy</strong></td>
+                <td class="number">519M</td>
+                <td>Scientific Computing</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Emerging Packages</h2>
+    
+    <p>August 2025 revealed several packages experiencing exceptional growth, primarily in AI/ML, observability, and developer productivity sectors.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Package</th>
+                <th class="number">August Downloads</th>
+                <th class="number">Growth %</th>
+                <th>Category</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="package-highlight">protego</span></td>
+                <td class="number">9.03M</td>
+                <td class="number growth-positive">+298%</td>
+                <td>Web Scraping</td>
+                <td>Robots.txt parser for web scraping frameworks</td>
+            </tr>
+            <tr>
+                <td><span class="package-highlight">nexus-rpc</span></td>
+                <td class="number">4.61M</td>
+                <td class="number growth-positive">+262%</td>
+                <td>RPC Framework</td>
+                <td>HTTP-based RPC framework with Python SDK</td>
+            </tr>
+            <tr>
+                <td><span class="package-highlight">protovalidate</span></td>
+                <td class="number">4.37M</td>
+                <td class="number growth-positive">+233%</td>
+                <td>Data Validation</td>
+                <td>Protocol Buffer validation for Python</td>
+            </tr>
+            <tr>
+                <td><span class="package-highlight">uvicorn-worker</span></td>
+                <td class="number">4.99M</td>
+                <td class="number growth-positive">+200%</td>
+                <td>Web Server</td>
+                <td>Gunicorn worker for uvicorn ASGI applications</td>
+            </tr>
+            <tr>
+                <td><span class="package-highlight">mem0ai</span></td>
+                <td class="number">4.06M</td>
+                <td class="number growth-positive">+197%</td>
+                <td>AI/ML</td>
+                <td>Long-term memory for AI agents</td>
+            </tr>
+            <tr>
+                <td><span class="package-highlight">invoke</span></td>
+                <td class="number">41.14M</td>
+                <td class="number growth-positive">+155%</td>
+                <td>Task Management</td>
+                <td>Pythonic task execution framework</td>
+            </tr>
+            <tr>
+                <td><span class="package-highlight">modal</span></td>
+                <td class="number">9.06M</td>
+                <td class="number growth-positive">+145%</td>
+                <td>Cloud Computing</td>
+                <td>Python client for Modal serverless platform</td>
+            </tr>
+            <tr>
+                <td><span class="package-highlight">logfire</span></td>
+                <td class="number">3.09M</td>
+                <td class="number growth-positive">+140%</td>
+                <td>Observability</td>
+                <td>Developer-focused observability framework</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Emerging Package Insights</h3>
+
+    <p><strong>AI and Agent Infrastructure</strong>: The spectacular growth of <span class="package-highlight">mem0ai</span> (+197%) reflects the increasing focus on AI agent development, particularly around persistent memory capabilities. This aligns with broader industry trends toward more sophisticated AI applications.</p>
+
+    <p><strong>Developer Experience Tools</strong>: <span class="package-highlight">logfire</span> (+140%) represents the growing demand for better observability solutions tailored to developer workflows. Its growth coincides with increased adoption of microservices and distributed systems.</p>
+
+    <p><strong>Serverless and Cloud Infrastructure</strong>: <span class="package-highlight">modal</span> (+145%) shows strong adoption among developers building serverless applications, indicating a shift toward more accessible cloud computing platforms.</p>
+
+    <p><strong>Data Processing and Validation</strong>: The growth of <span class="package-highlight">protovalidate</span> (+233%) and <span class="package-highlight">protego</span> (+298%) suggests increased adoption of Protocol Buffers and web scraping activities, respectively.</p>
+
+    <h2>Key Trends and Analysis</h2>
+
+    <h3>Overall Market Health</h3>
+    <p>Despite a 5% month-over-month decline in total downloads (79.7B vs 83.8B), the PyPI ecosystem shows healthy diversity with 668,877 active projects—an increase of 14,487 projects compared to July 2025.</p>
+
+    <h3>Technology Adoption Patterns</h3>
+    <ul>
+        <li><strong>AI/ML Expansion</strong>: Growing demand for AI agent infrastructure and memory management tools</li>
+        <li><strong>Observability Focus</strong>: Increased adoption of developer-centric monitoring and logging solutions</li>
+        <li><strong>Serverless Growth</strong>: Rising interest in accessible cloud computing platforms</li>
+        <li><strong>Data Processing</strong>: Continued emphasis on validation and processing frameworks</li>
+    </ul>
+
+    <h3>Geographic Market Dynamics</h3>
+    <p>The shift toward Asia-Pacific markets (Singapore +21.7%) combined with declines in traditional European markets suggests evolving global development patterns, potentially driven by AI/ML investment concentrations and seasonal factors.</p>
+
+    <div class="summary">
+        <strong>Looking Ahead:</strong> The August 2025 data suggests a maturing Python ecosystem with strong growth in specialized areas like AI infrastructure and developer tooling. The geographic shifts indicate changing global development patterns, while the emergence of new high-growth packages shows continued innovation in the Python community.
+    </div>
+</body>
+</html>
