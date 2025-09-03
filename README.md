@@ -30,7 +30,7 @@ Analytics via live dashboards
 
 - Top packages and recent releases
 - Emerging repos - most popular new packages released in the last 6 months
-- Needing a refresh - popular packages not updated in the last 6 months
+- Stable packages - popular packages not updated in the last 6 months
 - Hot packages - Biggest changes in downloads in the last 6 months
 - Download statistics for any Python package over time
 - For any package:
