@@ -107,6 +107,14 @@ export default function PunchCard({
       data: yValues,
       axisLine: {
         show: false
+       
+      },
+      axisLabel: {
+        formatter: function (value) {
+          const str = String(value);
+          const maxLength = 15; // set your cutoff length
+          return str.length > maxLength ? str.slice(0, maxLength) + "…" : str;
+        }
       },
       splitLine: {
         show: true,
