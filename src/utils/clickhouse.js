@@ -703,11 +703,50 @@ export async function getPackageRanking(package_name, min_date, max_date, countr
 
 export const revalidate = 3600;
 
-async function query(query_name, query, query_params) {
-    const start = performance.now()
-    const results = await clickhouse.query({
-        query: query,
-        query_params: query_params,
+const tracer = trace.getTracer('clickpy');
+
+function safeJson(v) {
+  try { return JSON.stringify(v); } catch { return String(v); }
+}
+
+function truncate(str, max) {
+    return str.length > max ? str.slice(0, max) + '…' : str;
+}
+
+export async function query(query_name, query, query_params) {
+  const span = tracer.startSpan(query_name, {
+    attributes: {
+      'db.system': 'clickhouse',
+      // Add a short/obfuscated statement if you want. Full SQL can be large/PII.
+      // 'db.statement': truncate(query),
+      'db.parameters': truncate(safeJson(query_params ?? {})), // ← your params
+      'db.query': query,
+    },
+  });
+
+  try {
+    const start = performance.now();
+
+    // derive the link early so we can attach it, too
+    let query_link = `${process.env.NEXT_PUBLIC_QUERY_LINK_HOST || process.env.CLICKHOUSE_HOST}?query=${base64Encode(query)}`;
+    if (query_params != null) {
+      const prefixedParams = Object.fromEntries(
+        Object.entries(query_params)
+          .filter(([, v]) => v !== undefined)
+          .map(([k, v]) => [`param_${k}`, Array.isArray(v) ? `['${v.join("','")}']` : v])
+      );
+      const qs = Object.entries(prefixedParams)
+        .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`)
+        .join('&');
+      query_link = `${query_link}&tab=results&${qs}`;
+    }
+    span.setAttribute('clickhouse.query_link', query_link);
+
+    // run the query inside the span’s context
+    const results = await context.with(trace.setSpan(context.active(), span), () =>
+      clickhouse.query({
+        query,
+        query_params,
         format: 'JSONEachRow',
         clickhouse_settings: getQueryCustomSettings(query_name)
     })

@@ -11,6 +11,7 @@ import {
 
 export default function CountryMap({ data, selected, onClick, link }) {
   const [loading, setLoading] = useState(true);
+
   const scaledValues = data.map((p) => {
     return {
       name: p.name,
