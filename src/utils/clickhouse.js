@@ -382,7 +382,7 @@ export async function getPackageDetails(package_name, version) {
                 SELECT version
                 FROM ${PYPI_DATABASE}.projects
                 WHERE name = {package_name:String}
-                ORDER BY arrayMap(x -> toUInt8OrDefault(x, 0), splitByChar('.', version)) DESC
+                ORDER BY arrayMap(x -> toUInt16OrDefault(x, 0::UInt16), splitByChar('.', version)) DESC
                 LIMIT 1
             ) AS max_version
         SELECT
