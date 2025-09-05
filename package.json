@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3000",
-    "vercel-build": "unset NODE_OPTIONS && next build",
+    "vercel-build": "next build",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -17,8 +17,8 @@
     "@headlessui/react": "^1.7.16",
     "@heroicons/react": "^2.0.18",
     "@hyperdx/browser": "^0.21.2",
-    "@hyperdx/node-opentelemetry": "^0.8.2",
     "@next/third-parties": "^14.2.15",
+    "@opentelemetry/api": "^1.8.0",
     "@opentelemetry/api-logs": "^0.57.2",
     "@opentelemetry/instrumentation": "^0.57.2",
     "@opentelemetry/sdk-logs": "^0.57.2",
@@ -27,6 +27,7 @@
     "@tailwindcss/forms": "^0.5.4",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/typography": "^0.5.9",
+    "@vercel/otel": "^1.13.0",
     "autoprefixer": "10.4.14",
     "dayjs": "^1.11.11",
     "echarts": "^5.4.3",

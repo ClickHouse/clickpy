@@ -770,6 +770,7 @@ export async function query(query_name, query, query_params) {
       // Add a short/obfuscated statement if you want. Full SQL can be large/PII.
       // 'db.statement': truncate(query),
       'db.parameters': truncate(safeJson(query_params ?? {})), // ← your params
+      'db.query': query,
     },
   });
 
