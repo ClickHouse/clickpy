@@ -204,7 +204,10 @@ export async function getDependents({ package_name, version, min_date, max_date,
         SELECT
             downloads.gem AS package,
             downloads.downloads AS downloads,
-            stars.stars AS stars
+            CASE 
+                WHEN downloads.repo_id = '0' AND (stars.stars IS NULL OR stars.stars = 0) THEN 'N/A'
+                ELSE toString(stars.stars) 
+            END AS stars
         FROM downloads
         LEFT JOIN stars ON downloads.repo_name = stars.repo_name`, {
         package_name: package_name,
@@ -258,7 +261,10 @@ export async function getDependencies({ package_name, version, min_date, max_dat
         SELECT
             d.gem AS package,
             d.downloads AS downloads,
-            s.stars AS stars
+            CASE 
+                WHEN downloads.repo_id = '0' AND (stars.stars IS NULL OR stars.stars = 0) THEN 'N/A'
+                ELSE toString(stars.stars) 
+            END AS stars
         FROM downloads AS d
         LEFT JOIN stars AS s ON d.repo_name = s.repo_name;
         `, {
