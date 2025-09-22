@@ -209,7 +209,7 @@ export async function getDependents({ package_name, version, min_date, max_date,
             downloads.project AS package,
             downloads.downloads AS downloads,
             CASE 
-                WHEN downloads.repo_id = '0' AND (stars.stars IS NULL OR stars.stars = 0) THEN 'NA'
+                WHEN downloads.repo_id = '0' AND (stars.stars IS NULL OR stars.stars = 0) THEN 'N/A'
                 ELSE toString(stars.stars) 
             END AS stars
         FROM downloads
@@ -264,7 +264,10 @@ export async function getDependencies({ package_name, version, min_date, max_dat
         )
         SELECT downloads.project AS package,
             downloads.downloads AS downloads,
-            stars.stars AS stars
+            CASE 
+                WHEN downloads.repo_id = '0' AND (stars.stars IS NULL OR stars.stars = 0) THEN 'N/A'
+                ELSE toString(stars.stars) 
+            END AS stars
             FROM downloads
             LEFT JOIN stars ON downloads.repo_id::String = stars.repo_id
         `, {
