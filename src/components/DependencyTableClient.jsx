@@ -39,7 +39,9 @@ export default function DependencyTableClient({ dependencies,  dependents}) {
     }).map((row, index) => ({
         id: `row-${index + 1}`,
         items: Object.keys(row).map(key => ({
-            label: key === 'package' ? <Link target='_blank' href={`/dashboard/${row[key].toString()}`}>{row[key].toString()}</Link> : formatNumber(Number(row[key]))
+            label: key === 'package' 
+                ? <Link target='_blank' href={`/dashboard/${row[key].toString()}`}>{row[key].toString()}</Link> 
+                : (!isNaN(parseFloat(row[key])) && isFinite(row[key]) ? formatNumber(Number(row[key])) : row[key])
         }))
     }));
 
@@ -53,9 +55,12 @@ export default function DependencyTableClient({ dependencies,  dependents}) {
     }).map((row, index) => ({
         id: `row-${index + 1}`,
         items: Object.keys(row).map(key => ({
-            label: key === 'package' ? <Link target='_blank' href={`/dashboard/${row[key].toString()}`}>{row[key].toString()}</Link> : formatNumber(Number(row[key]))
+            label: key === 'package' 
+                ? <Link target='_blank' href={`/dashboard/${row[key].toString()}`}>{row[key].toString()}</Link> 
+                : (!isNaN(parseFloat(row[key])) && isFinite(row[key]) ? formatNumber(Number(row[key])) : row[key])
         }))
     }));
+
 
     return (
         <div>
