@@ -108,7 +108,7 @@ export default function MultiLine({ data, stack, fill, onSelect, link }) {
     },
     series: series,
     brush: {
-      toolbox: ['lineX', 'clear'],
+      toolbox: ['lineX'],
       brushType: 'lineX',
       brushMode: 'single',
       transformable: false

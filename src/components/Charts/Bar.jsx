@@ -106,7 +106,7 @@ export default function Bar({ data, stack, onSelect, link }) {
     },
     series: series,
     brush: {
-      toolbox: ['lineX', 'clear'],
+      toolbox: ['lineX'],
       brushType: 'lineX',
       brushMode: 'single',
       transformable: false
@@ -141,6 +141,10 @@ export default function Bar({ data, stack, onSelect, link }) {
     }
   };
 
+  const onClearSelection = () => {
+    console.log("clear selection")
+  };
+
   const onChartReady = (echarts) => {
     setLoading(false);
   };
@@ -164,7 +168,7 @@ export default function Bar({ data, stack, onSelect, link }) {
         onChartReady={onChartReady}
         onEvents={{
           brushEnd: onBrushEnd
-        }}
+          }}
         shouldSetOption={(prevProps, currentProps) => {
           const shouldRender = !isEqual(prevProps, currentProps);
           if (shouldRender) {
