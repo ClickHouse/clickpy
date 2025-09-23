@@ -249,7 +249,7 @@ export default async function Dashboard({ params, searchParams }) {
                 <Chart
                   type='horizontal_bar'
                   getData={getTopContributors}
-                  options={{ show_icons: true }}
+                  options={{ show_icons: true, title: 'All PRs, issues, comments & pushes' }}
                   params={{
                     package_name: package_name,
                     min_date: min_date,
