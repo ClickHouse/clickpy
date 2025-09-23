@@ -16,7 +16,8 @@ export default function HorizontalBar({
   onClick,
   link,
   header,
-  show_icons
+  show_icons,
+  title
 }) {
   const chartRef = useRef();
   const [loading, setLoading] = useState(true);
@@ -93,6 +94,16 @@ export default function HorizontalBar({
 
   const options = {
     animation: false,
+    title: {
+      text: title || '',
+      left: 'center',
+      bottom: 0,
+      textStyle: {
+        color: '#666',
+        fontSize: 14,
+        fontWeight: 'normal'
+      }
+    },
     grid: {
       right: 50,
       top: 10,
