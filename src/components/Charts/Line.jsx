@@ -118,7 +118,7 @@ export default function Line({ data, onSelect, onClear, link }) {
       }
     },
     brush: {
-      toolbox: ['lineX', 'clear'],
+      toolbox: ['lineX'],
       brushType: 'lineX',
       brushMode: 'single',
       transformable: false
@@ -161,7 +161,7 @@ export default function Line({ data, onSelect, onClear, link }) {
   return (
     <div
       className='relative rounded-lg bg-slate-850 border border-slate-700 h-full justify-between flex flex-col'
-      onMouseMove={onMouseOver}
+      onMouseOver={onMouseOver}
       onMouseOut={onMouseOut}
       onDoubleClickCapture={onDoubleClick}>
       <div className='px-[4px] pt-[4px] flex-row flex justify-end'>
