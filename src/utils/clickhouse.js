@@ -1,6 +1,7 @@
 import { createClient } from '@clickhouse/client';
 import { createClient as createWebClient } from '@clickhouse/client-web';
 import { base64Encode } from './utils';
+import { context, trace, SpanStatusCode } from '@opentelemetry/api';
 
 
 export const clickhouse = createClient({
@@ -703,7 +704,7 @@ export async function getPackageRanking(package_name, min_date, max_date, countr
 
 export const revalidate = 3600;
 
-const tracer = trace.getTracer('clickpy');
+const tracer = trace.getTracer('clickgems');
 
 function safeJson(v) {
   try { return JSON.stringify(v); } catch { return String(v); }
@@ -714,59 +715,64 @@ function truncate(str, max) {
 }
 
 export async function query(query_name, query, query_params) {
-  const span = tracer.startSpan(query_name, {
-    attributes: {
-      'db.system': 'clickhouse',
-      // Add a short/obfuscated statement if you want. Full SQL can be large/PII.
-      // 'db.statement': truncate(query),
-      'db.parameters': truncate(safeJson(query_params ?? {})), // ← your params
-      'db.query': query,
-    },
-  });
-
-  try {
-    const start = performance.now();
-
-    // derive the link early so we can attach it, too
-    let query_link = `${process.env.NEXT_PUBLIC_QUERY_LINK_HOST || process.env.CLICKHOUSE_HOST}?query=${base64Encode(query)}`;
-    if (query_params != null) {
-      const prefixedParams = Object.fromEntries(
-        Object.entries(query_params)
-          .filter(([, v]) => v !== undefined)
-          .map(([k, v]) => [`param_${k}`, Array.isArray(v) ? `['${v.join("','")}']` : v])
-      );
-      const qs = Object.entries(prefixedParams)
-        .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`)
-        .join('&');
-      query_link = `${query_link}&tab=results&${qs}`;
-    }
-    span.setAttribute('clickhouse.query_link', query_link);
-
-    // run the query inside the span’s context
-    const results = await context.with(trace.setSpan(context.active(), span), () =>
-      clickhouse.query({
-        query,
-        query_params,
-        format: 'JSONEachRow',
-        clickhouse_settings: getQueryCustomSettings(query_name)
-    })
-    const end = performance.now()
-    // console.log(`Execution time for ${query_name}: ${end - start} ms`)
-    // if (end - start > 0) {
-    //     if (query_params) {
-    //         console.log(query, query_params)
-    //     } else {
-    //         console.log(query)
-    //     }
-    // }
-    let query_link = `${process.env.NEXT_PUBLIC_QUERY_LINK_HOST || process.env.CLICKHOUSE_HOST}?query=${base64Encode(query)}`
-    if (query_params != undefined) {
+    const span = tracer.startSpan(query_name, {
+      attributes: {
+        'db.system': 'clickhouse',
+        // Add a short/obfuscated statement if you want. Full SQL can be large/PII.
+        // 'db.statement': truncate(query),
+        'db.parameters': truncate(safeJson(query_params ?? {})), // ← your params
+        'db.query': query,
+      },
+    });
+  
+    try {
+      const start = performance.now();
+  
+      // derive the link early so we can attach it, too
+      let query_link = `${process.env.NEXT_PUBLIC_QUERY_LINK_HOST || process.env.CLICKHOUSE_HOST}?query=${base64Encode(query)}`;
+      if (query_params != null) {
         const prefixedParams = Object.fromEntries(
-            Object.entries(query_params)
-                .filter(([, value]) => value !== undefined)
-                .map(([key, value]) => [`param_${key}`, Array.isArray(value) ? `['${value.join("','")}']` : value])
+          Object.entries(query_params)
+            .filter(([, v]) => v !== undefined)
+            .map(([k, v]) => [`param_${k}`, Array.isArray(v) ? `['${v.join("','")}']` : v])
         );
-        query_link = `${query_link}&tab=results&${Object.entries(prefixedParams).map(([name, value]) => `${encodeURIComponent(name)}=${encodeURIComponent(value)}`).join('&')}`
+        const qs = Object.entries(prefixedParams)
+          .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`)
+          .join('&');
+        query_link = `${query_link}&tab=results&${qs}`;
+      }
+      span.setAttribute('clickhouse.query_link', query_link);
+  
+      // run the query inside the span’s context
+      const results = await context.with(trace.setSpan(context.active(), span), () =>
+        clickhouse.query({
+          query,
+          query_params,
+          format: 'JSONEachRow',
+          clickhouse_settings: getQueryCustomSettings(query_name),
+        })
+      );
+  
+      const data = await results.json(); // materialize rows to count
+      const end = performance.now();
+  
+      // annotate outcome
+      if (span.isRecording()) {
+        span.setAttribute('db.response_time_ms', Math.round(end - start));
+        span.setAttribute('db.rows_returned', Array.isArray(data) ? data.length : 0);
+        // attach useful customs
+        span.setAttribute('clickhouse.settings', truncate(safeJson(getQueryCustomSettings(query_name))));
+      }
+  
+      span.setStatus({ code: SpanStatusCode.UNSET });
+      span.end();
+      return Promise.all([Promise.resolve(query_link), Promise.resolve(data)]);
+    } catch (err) {
+      if (span.isRecording()) {
+        span.recordException(err);
+        span.setStatus({ code: SpanStatusCode.ERROR, message: err?.message });
+      }
+      span.end();
+      throw err;
     }
-    return Promise.all([Promise.resolve(query_link), results.json()]);
-}
+  }
