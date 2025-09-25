@@ -65,6 +65,13 @@ export default function HeatMap({ data, title, subtitle, onClick, link }) {
       data: yValues,
       axisLine: {
         onZero: false
+      },
+      axisLabel: {
+        formatter: function (value) {
+          const str = String(value);
+          const maxLength = 8; // set your cutoff length
+          return str.length > maxLength ? str.slice(0, maxLength) + "…" : str;
+        }
       }
     },
     tooltip: {

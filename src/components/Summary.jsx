@@ -122,7 +122,7 @@ export default function Summary({
             <div className='flex space-x-2'>
               <Image alt='recent' src='/refresh.svg' width={20} height={20} />
               <span className='text-white font-bold space-x-0.5'>
-                Needing a refresh
+                Stable packages
               </span>
             </div>
           }

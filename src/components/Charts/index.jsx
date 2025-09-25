@@ -97,6 +97,7 @@ export default function ClientComponent({ type, data = [], options = {}, link })
       <HorizontalBar
         data={data}
         show_icons={options.show_icons}
+        title={options.title}
         link={link}
       />
     )
