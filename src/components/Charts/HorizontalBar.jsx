@@ -17,7 +17,8 @@ export default function HorizontalBar({
   link,
   header,
   show_icons,
-  title
+  title,
+  metabaseLink
 }) {
   const chartRef = useRef();
   const [loading, setLoading] = useState(true);
@@ -182,6 +183,7 @@ export default function HorizontalBar({
       {
         header ? header : (
           <div className='px-2 pt-1 pb-0 flex-row flex justify-end'>
+            { metabaseLink && <CopyDropdown link={metabaseLink} />}
             { link && <Link href={link} target='_blank' className='w-4 ml-2'>
                 <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover'  aria-hidden='true'/>
             </Link>}

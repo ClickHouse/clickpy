@@ -11,7 +11,7 @@ import Guage from './Guage'
 import Spark from './Spark'
 import HorizontalBar from './HorizontalBar'
 
-export default function ClientComponent({ type, data = [], options = {}, link }) {
+export default function ClientComponent({ type, data = [], options = {}, link, metabaseLink }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const pathname = usePathname()
@@ -27,6 +27,7 @@ export default function ClientComponent({ type, data = [], options = {}, link })
           router.push(`${pathname}?${current.toString()}`, { scroll: false })
         }}
         link={link}
+        metabaseLink={metabaseLink}
       />
     ),
     'pie': (
@@ -37,6 +38,7 @@ export default function ClientComponent({ type, data = [], options = {}, link })
           router.push(`${pathname}?${current.toString()}`, { scroll: false })
         }}
         link={link}
+        metabaseLink={metabaseLink}
       />
     ),
     'line': (
@@ -55,6 +57,7 @@ export default function ClientComponent({ type, data = [], options = {}, link })
           router.push(`${pathname}?${current.toString()}`, { scroll: false })
         }}
         link={link}
+        metabaseLink={metabaseLink}
       />
     ),
     'map': (
@@ -66,6 +69,7 @@ export default function ClientComponent({ type, data = [], options = {}, link })
           router.push(`${pathname}?${current.toString()}`, { scroll: false })
         }}
         link={link}
+        metabaseLink={metabaseLink}
       />
     ),
     'radar': (<Radar data={data} link={link} onClick={(value) => {
@@ -85,12 +89,14 @@ export default function ClientComponent({ type, data = [], options = {}, link })
           router.push(`${pathname}?${current.toString()}`, { scroll: false })
         }}
         link={link}
+        metabaseLink={metabaseLink}
       />
     ),
     'spark': (
       <Spark
           data = {data}
           link={link}
+          metabaseLink={metabaseLink}
       />
     ),
     'horizontal_bar': (
@@ -99,6 +105,7 @@ export default function ClientComponent({ type, data = [], options = {}, link })
         show_icons={options.show_icons}
         title={options.title}
         link={link}
+        metabaseLink={metabaseLink}
       />
     )
   }[type]

@@ -6,6 +6,8 @@ import Link from 'next/link';
 import {
   ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/20/solid';
+import CopyDropdown from './CopyDropdown';
+import { getMetabaseLink } from '@/utils/metabase';
 
 async function DownloadList({
   package_name,
@@ -24,6 +26,9 @@ async function DownloadList({
     country_code,
     type
   );
+
+  const metabaseLink = getMetabaseLink('getDownloadSummary', package_name);
+
   if (data.length === 0) {
     return null;
   }
@@ -66,9 +71,11 @@ async function DownloadList({
             </div>
           </div>
         </div>
+       
+        <div className='flex-row flex justify-end w-4 mt-[-14px] mr-[-12px]'>
+          { metabaseLink && <CopyDropdown link={metabaseLink} />}
 
-        <div className='flex-row flex justify-end w-4 mt-[-12px] mr-[-12px]'>
-          { link && <Link href={link} target='_blank' className='w-5 ml-5'>
+          { link && <Link href={link} target='_blank' className='w-5 ml-2'>
               <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
           </Link>} 
         </div>

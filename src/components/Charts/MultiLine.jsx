@@ -7,8 +7,9 @@ import Link from 'next/link';
 import {
   ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/20/solid';
+import CopyDropdown from '../CopyDropdown';
 
-export default function MultiLine({ data, stack, fill, onSelect, link }) {
+export default function MultiLine({ data, stack, fill, onSelect, link, metabaseLink }) {
   const [loading, setLoading] = useState(true);
   const xAxis = Array.from(new Set(data.map((p) => p.x)));
   const values = data.reduce((accumulator, val) => {
@@ -153,6 +154,7 @@ export default function MultiLine({ data, stack, fill, onSelect, link }) {
       onMouseOver={onMouseOver}>
 
       <div className='px-[4px] pt-[4px] flex-row flex justify-end'>
+        { metabaseLink && <CopyDropdown link={metabaseLink} />}
           { link && <Link href={link} target='_blank' className='w-5 ml-5'>
               <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
           </Link>}   

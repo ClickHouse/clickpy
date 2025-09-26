@@ -7,6 +7,7 @@ import Link from 'next/link';
 import {
   ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/20/solid';
+import CopyDropdown from '../CopyDropdown';
 
 export default function PunchCard({
   data,
@@ -14,7 +15,8 @@ export default function PunchCard({
   subtitle,
   onClick,
   scale = 'linear',
-  link
+  link,
+  metabaseLink
 }) {
   const [loading, setLoading] = useState(true);
   // we assume data is sorted by x-values
@@ -173,6 +175,7 @@ export default function PunchCard({
               }>
               {subtitle}
             </p>
+            { metabaseLink && <CopyDropdown link={metabaseLink} />}
             { link && <Link href={link} target='_blank' className='w-4 ml-2'>
                   <ArrowTopRightOnSquareIcon
                           className='h-4 w-4 flex-none icon-hover'
