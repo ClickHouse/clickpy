@@ -153,9 +153,9 @@ export default function MultiLine({ data, stack, fill, onSelect, link, metabaseL
       className='relative rounded-lg bg-slate-850 border border-slate-700 h-full justify-between flex flex-col'
       onMouseOver={onMouseOver}>
 
-      <div className='px-[4px] pt-[4px] flex-row flex justify-end'>
+      <div className='px-[8px] pt-[8px] flex-row flex justify-end'>
         { metabaseLink && <CopyDropdown link={metabaseLink} />}
-          { link && <Link href={link} target='_blank' className='w-5 ml-5'>
+          { link && <Link href={link} target='_blank' className='w-5 ml-2'>
               <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
           </Link>}   
       </div>   

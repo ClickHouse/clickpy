@@ -9,6 +9,7 @@ const METABASE_DASHBOARD_URLS = {
     getDownloadsOverTimeBySystem: "https://rubygems-analytics.metabaseapp.com/public/dashboard/970fd2a5-570a-48a0-805a-58f74707b589",
     getDependents: "https://rubygems-analytics.metabaseapp.com/public/dashboard/6e1cdf2b-acd8-4112-88a7-06b39bdfa0de",
     getDownloadsByCountry: "https://rubygems-analytics.metabaseapp.com/public/dashboard/ba2663af-de08-45fe-bd9c-6f4dba8b6f3a",
+  
 
 };
 

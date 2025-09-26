@@ -165,11 +165,11 @@ export default function Line({ data, onSelect, onClear, link, metabaseLink }) {
       onMouseOver={onMouseOver}
       onMouseOut={onMouseOut}
       onDoubleClickCapture={onDoubleClick}>
-      <div className='px-[4px] pt-[4px] flex-row flex justify-end'>
+      <div className='px-[8px] pt-[8px] flex-row flex justify-end'>
         { metabaseLink && <CopyDropdown link={metabaseLink} />}
-          { link && <Link href={link} target='_blank' className='w-5 ml-5 icon-hover'>
-              <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
-          </Link>}   
+        { link && <Link href={link} target='_blank' className='w-5 ml-2 icon-hover'>
+            <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
+        </Link>}   
       </div>    
 
       <ReactECharts

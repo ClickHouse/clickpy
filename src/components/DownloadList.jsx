@@ -36,7 +36,7 @@ async function DownloadList({
   return (
     <div {...props}>
          
-      <div className='rounded-lg bg-slate-850 flex md:justify-between p-4 h-24 border border-slate-700'>
+      <div className='rounded-lg bg-slate-850 flex md:justify-between p-4 h-28 border border-slate-700'>
 
         <div className='flex items-center grow justify-between'>
           <div className='h-16 w-16 flex gap-4'>
@@ -72,7 +72,7 @@ async function DownloadList({
           </div>
         </div>
        
-        <div className='flex-row flex justify-end w-4 mt-[-14px] mr-[-12px]'>
+        <div className='flex-row flex justify-end w-4 mt-[-10px] mr-[-10px] '>
           { metabaseLink && <CopyDropdown link={metabaseLink} />}
 
           { link && <Link href={link} target='_blank' className='w-5 ml-2'>
