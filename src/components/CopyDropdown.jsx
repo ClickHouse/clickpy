@@ -40,7 +40,7 @@ export default function CopyDropdown({ link, className = '' }) {
   };
 
   return (
-    <div className={`relative inline-block ${className}`} ref={dropdownRef}>
+    <div ref={dropdownRef}>
       <button
         type='button'
         onClick={() => setOpen((prev) => !prev)}
