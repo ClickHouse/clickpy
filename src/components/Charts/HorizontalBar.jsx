@@ -9,6 +9,7 @@ import Link from 'next/link';
 import {
   ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/20/solid';
+import CopyDropdown from '../CopyDropdown';
 
 export default function HorizontalBar({
   data,
