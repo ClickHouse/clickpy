@@ -6,8 +6,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import isEqual from 'lodash/isEqual';
 import Image from 'next/image';
+import CopyDropdown from '../CopyDropdown';
 
-export default function Spark({ name, data, link, type='bar' }) {
+export default function Spark({ name, data, link, metabaseLink, type='bar' }) {
   const chartRef = useRef();
   const [selected, setSelected] = useState(false);
 
@@ -139,6 +140,7 @@ export default function Spark({ name, data, link, type='bar' }) {
               {(data && data.length > 0) ? formatQuantity(data[data.length - 1].y): 0} <span className='text-base font-normal'>({(data && data.length > 0) ? `+${data[data.length - 1].y - data[0].y }`: ''} )</span>
             </p>
           </div>
+          { metabaseLink && <CopyDropdown link={metabaseLink} />}
           <Link href={link} target='_blank'>
             <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover-2' aria-hidden='true'/>
           </Link>

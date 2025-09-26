@@ -6,8 +6,9 @@ import Link from 'next/link';
 import {
   ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/20/solid';
+import CopyDropdown from '../CopyDropdown';
 
-export default function Pie({ data, onClick, link }) {
+export default function Pie({ data, onClick, link, metabaseLink }) {
   const [loading, setLoading] = useState(true);
   const options = {
     animation: false,
@@ -87,6 +88,7 @@ export default function Pie({ data, onClick, link }) {
   return (
     <div className='relative rounded-lg bg-slate-850 border border-slate-700 h-full'>
       <div className='px-[4px] pt-[4px] flex-row flex justify-end'>
+          { metabaseLink && <CopyDropdown link={metabaseLink} />}
           { link && <Link href={link} target='_blank' className='w-5 ml-5'>
               <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
           </Link>}   
