@@ -59,7 +59,7 @@ export default function CopyDropdown({ link, className = '' }) {
                 setOpen(false);
               }}
               className='block w-full px-4 py-2 text-left text-sm text-white hover:bg-slate-700'>
-              Copy link
+              Copy chart link
             </button>
             <button
               type='button'
@@ -68,8 +68,9 @@ export default function CopyDropdown({ link, className = '' }) {
                 setOpen(false);
               }}
               className='block w-full px-4 py-2 text-left text-sm text-white hover:bg-slate-700'>
-              Copy iframe code
+              Copy embed code
             </button>
+            
           </div>
         </div>
       )}
