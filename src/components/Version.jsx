@@ -6,7 +6,7 @@ import {
 
 export default function Version({ current, latest, link }) {
   return (
-    <div className='rounded-lg col-span-1 bg-slate-850 flex md:justify-between gap-4 p-4 h-24 w-full border border-slate-700'>
+    <div className='rounded-lg col-span-1 bg-slate-850 flex md:justify-between gap-4 p-4 h-28 w-full border border-slate-700'>
       <div className='items-center flex grow'>
         <Image
           width={16}

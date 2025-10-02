@@ -8,8 +8,9 @@ import Link from 'next/link';
 import {
   ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/20/solid';
+import CopyDropdown from '../CopyDropdown';
 
-export default function CountryMap({ data, selected, onClick, link }) {
+export default function CountryMap({ data, selected, onClick, link, metabaseLink }) {
   const [loading, setLoading] = useState(true);
 
   const scaledValues = data.map((p) => {
@@ -114,8 +115,9 @@ export default function CountryMap({ data, selected, onClick, link }) {
   return (
     <div className='relative rounded-lg bg-slate-850 border border-slate-700 h-full'>
 
-      <div className='px-[4px] pt-[4px] flex-row flex justify-end'>
-          { link && <Link href={link} target='_blank' className='w-5 ml-5'>
+      <div className='px-[8px] pt-[8px] flex-row flex justify-end'>
+        { metabaseLink && <CopyDropdown link={metabaseLink} />}
+          { link && <Link href={link} target='_blank' className='w-5 ml-2'>
               <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
           </Link>}   
       </div>   
