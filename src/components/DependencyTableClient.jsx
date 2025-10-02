@@ -5,11 +5,14 @@ import {
   } from '@heroicons/react/20/solid';
 import { useState, useEffect } from 'react';
 import { formatNumber } from '@/utils/utils';
+import CopyDropdown from './CopyDropdown';
+
 
 export default function DependencyTableClient({ dependencies,  dependents}) {
-    
+
     const [isDependency, setIsDependency] = useState(false);
     const [rowHeight, setRowHeight] = useState('auto');
+
 
     const [order, setOrder] = useState({column: 'downloads', order: 'desc'});
 
@@ -62,6 +65,22 @@ export default function DependencyTableClient({ dependencies,  dependents}) {
     }));
 
 
+    const displayCopyDropdown = () => {
+        let metabaseLink = ''
+        if (isDependency) {
+            metabaseLink = dependencies[2];
+        } else {
+            metabaseLink = dependents[2];
+        }
+        if (metabaseLink) {
+            return (
+                <div className='flex items-center justify-items-center pt-2 pr-2'><CopyDropdown link={metabaseLink} /></div>
+            )
+        }
+        return null
+    }
+    
+
     return (
         <div>
             <ClickUIProvider theme={'dark'}>
@@ -75,9 +94,12 @@ export default function DependencyTableClient({ dependencies,  dependents}) {
                                 Dependencies
                             </Tabs.Trigger>
                         </Tabs.TriggersList>
-                        <Link href={isDependency ? dependencies[0]: dependents[0]} target='_blank' className='w-5 ml-5'>
-                            <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
-                        </Link>
+                        <div className='flex'>
+                            {displayCopyDropdown()}
+                            <Link href={isDependency ? dependencies[0]: dependents[0]} target='_blank' className='w-5'>
+                                <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
+                            </Link>
+                        </div>
                     </div>
                     <Tabs.Content value='dependents' className='h-full'>
                         <ClickTable

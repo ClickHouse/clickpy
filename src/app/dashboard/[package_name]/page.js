@@ -189,6 +189,7 @@ export default async function Dashboard({ params, searchParams }) {
             <Suspense key={key} fallback={<Loading />}>
               <Chart
                 type='line'
+                name='getDownloadsOverTime'
                 getData={getDownloadsOverTime}
                 params={{
                   package_name: package_name,
@@ -206,6 +207,7 @@ export default async function Dashboard({ params, searchParams }) {
             <Suspense key={key} fallback={<Loading />}>
               <Chart
                 type='pie'
+                name='getTopVersions'
                 getData={getTopVersions}
                 params={{
                   package_name: package_name,
@@ -229,6 +231,7 @@ export default async function Dashboard({ params, searchParams }) {
             <Suspense key={key} fallback={<Loading />}>
               <Chart
                 type='bar'
+                name='getDownloadsOverTimeByPython'
                 options={{ stack: true }}
                 getData={getDownloadsOverTimeByPython}
                 params={{
@@ -269,6 +272,7 @@ export default async function Dashboard({ params, searchParams }) {
             <Suspense key={key} fallback={<Loading />}>
               <Chart
                 type='multiline'
+                name='getDownloadsOverTimeBySystem'
                 options={{ stack: false, fill: false }}
                 getData={getDownloadsOverTimeBySystem}
                 params={{
@@ -303,6 +307,7 @@ export default async function Dashboard({ params, searchParams }) {
             <Suspense key={key} fallback={<Loading />}>
               <Chart
                 type='map'
+                name='getDownloadsByCountry'
                 options={{ filter_name: 'version' }}
                 getData={getDownloadsByCountry}
                 params={{
