@@ -231,7 +231,7 @@ export default async function Dashboard({ params, searchParams }) {
             <Suspense key={key} fallback={<Loading />}>
               <Chart
                 type='bar'
-                name='getDownloadsOverTimeByRuby'
+                name='getDownloadsOverTimeByPython'
                 options={{ stack: true }}
                 getData={getDownloadsOverTimeByPython}
                 params={{
