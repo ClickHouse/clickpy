@@ -1,3 +1,4 @@
+import { getDependencies } from "./clickhouse";
 
 
 
@@ -9,8 +10,9 @@ const METABASE_DASHBOARD_URLS = {
     getDownloadsOverTimeBySystem: "https://clickhouse-analytics.metabaseapp.com/public/dashboard/970fd2a5-570a-48a0-805a-58f74707b589",
     getDependents: "https://clickhouse-analytics.metabaseapp.com/public/dashboard/6e1cdf2b-acd8-4112-88a7-06b39bdfa0de",
     getDownloadsByCountry: "https://clickhouse-analytics.metabaseapp.com/public/dashboard/ba2663af-de08-45fe-bd9c-6f4dba8b6f3a",
-    getDownloadsOverTimeByRuby: "https://clickhouse-analytics.metabaseapp.com/public/dashboard/88cd933e-fd45-4a5e-a45b-3bd3e5d396d3"
-  
+    getDownloadsOverTimeByRuby: "https://clickhouse-analytics.metabaseapp.com/public/dashboard/88cd933e-fd45-4a5e-a45b-3bd3e5d396d3",
+    getDependencies: "https://clickhouse-analytics.metabaseapp.com/public/dashboard/5c7e6bed-af6e-436e-b297-0d493ec7dc76",
+    getDependents: "https://clickhouse-analytics.metabaseapp.com/public/dashboard/09bb891c-4b07-4591-9ae7-fd1bdb90e9b1"
 
 };
 
