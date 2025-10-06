@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyPI Usage Report: September 2025</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #ffffff;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3776ab;
+            padding-bottom: 15px;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .executive-summary {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3776ab;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        th {
+            background-color: #3776ab;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        .key-observations {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .package-highlight {
+            margin: 25px 0;
+            padding: 15px;
+            background-color: #f0f8ff;
+            border-radius: 4px;
+            border-left: 4px solid #2196f3;
+        }
+        .trend-section {
+            background-color: #f1f8f4;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+            border-left: 4px solid #4caf50;
+        }
+        .metric {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #e3f2fd;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1976d2;
+            margin: 0 5px;
+        }
+        .footer {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+            color: #7f8c8d;
+            text-align: center;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>PyPI Usage Report: September 2025</h1>
+    <p class="subtitle">Monthly Insights for Python Developers</p>
+
+    <div class="executive-summary">
+        <h2 style="margin-top: 0; border: none;">Executive Summary</h2>
+        <p>September 2025 saw <span class="metric">83.6 billion downloads</span> from PyPI, representing a <span class="metric">4.9% increase</span> over August's 79.7 billion downloads. This growth reflects continued expansion in Python adoption, particularly driven by AI/ML infrastructure and cloud computing workloads. The geographic distribution remained stable with the United States dominating, while emerging packages showed strong momentum in AI tooling and development workflow automation.</p>
+    </div>
+
+    <h2>Geographic Distribution</h2>
+    <h3>Top Regions by Download Volume</h3>
+    <p>PyPI downloads in September 2025 were heavily concentrated in North America and Europe, with notable contributions from Asia-Pacific regions:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Country</th>
+                <th>Downloads</th>
+                <th>Share</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td>United States</td><td>60.6B</td><td>72.6%</td></tr>
+            <tr><td>2</td><td>Ireland</td><td>3.5B</td><td>4.2%</td></tr>
+            <tr><td>3</td><td>Germany</td><td>3.0B</td><td>3.6%</td></tr>
+            <tr><td>4</td><td>Singapore</td><td>2.4B</td><td>2.9%</td></tr>
+            <tr><td>5</td><td>Netherlands</td><td>2.1B</td><td>2.5%</td></tr>
+            <tr><td>6</td><td>India</td><td>1.4B</td><td>1.7%</td></tr>
+            <tr><td>7</td><td>United Kingdom</td><td>1.1B</td><td>1.3%</td></tr>
+            <tr><td>8</td><td>Japan</td><td>1.1B</td><td>1.3%</td></tr>
+            <tr><td>9</td><td>France</td><td>1.0B</td><td>1.2%</td></tr>
+            <tr><td>10</td><td>Australia</td><td>746M</td><td>0.9%</td></tr>
+        </tbody>
+    </table>
+
+    <div class="key-observations">
+        <h3 style="margin-top: 0;">Key Observations</h3>
+        <ul>
+            <li><strong>United States dominance:</strong> The U.S. continues to account for nearly three-quarters of all PyPI downloads, driven by large-scale cloud infrastructure deployments and CI/CD pipelines from major tech companies.</li>
+            <li><strong>Cloud hub concentration:</strong> Ireland, Singapore, and the Netherlands show outsized download volumes relative to their populations, reflecting their role as major cloud data center locations for AWS, Google Cloud, and Azure.</li>
+            <li><strong>Notable shifts from August:</strong>
+                <ul>
+                    <li><strong>Singapore</strong> jumped from 5th to 4th place, growing 30.7% month-over-month (1.86B → 2.43B downloads).</li>
+                    <li><strong>India</strong> showed strong growth of 18.7% (1.21B → 1.44B downloads).</li>
+                    <li><strong>UK</strong> downloads declined by 17.4% (1.34B → 1.11B).</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <h2>Most Popular Packages</h2>
+    <p>The top 20 packages in September 2025 demonstrate the Python ecosystem's continued focus on AWS infrastructure, data processing, and foundational utilities:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Package</th>
+                <th>Downloads</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td>boto3</td><td>1.37B</td><td>AWS SDK</td></tr>
+            <tr><td>2</td><td>botocore</td><td>1.02B</td><td>AWS Core</td></tr>
+            <tr><td>3</td><td>urllib3</td><td>963M</td><td>HTTP Client</td></tr>
+            <tr><td>4</td><td>typing-extensions</td><td>900M</td><td>Type Hints</td></tr>
+            <tr><td>5</td><td>requests</td><td>875M</td><td>HTTP Client</td></tr>
+            <tr><td>6</td><td>certifi</td><td>849M</td><td>SSL/TLS</td></tr>
+            <tr><td>7</td><td>charset-normalizer</td><td>808M</td><td>Text Processing</td></tr>
+            <tr><td>8</td><td>aiobotocore</td><td>796M</td><td>Async AWS</td></tr>
+            <tr><td>9</td><td>idna</td><td>774M</td><td>Domain Handling</td></tr>
+            <tr><td>10</td><td>grpcio-status</td><td>764M</td><td>gRPC</td></tr>
+            <tr><td>11</td><td>setuptools</td><td>725M</td><td>Packaging</td></tr>
+            <tr><td>12</td><td>packaging</td><td>687M</td><td>Packaging</td></tr>
+            <tr><td>13</td><td>python-dateutil</td><td>629M</td><td>Date/Time</td></tr>
+            <tr><td>14</td><td>s3transfer</td><td>603M</td><td>S3 Operations</td></tr>
+            <tr><td>15</td><td>six</td><td>596M</td><td>Compatibility</td></tr>
+            <tr><td>16</td><td>s3fs</td><td>543M</td><td>S3 Filesystem</td></tr>
+            <tr><td>17</td><td>numpy</td><td>538M</td><td>Scientific Computing</td></tr>
+            <tr><td>18</td><td>pyyaml</td><td>523M</td><td>YAML Parser</td></tr>
+            <tr><td>19</td><td>cryptography</td><td>497M</td><td>Security</td></tr>
+            <tr><td>20</td><td>fsspec</td><td>466M</td><td>Filesystem Spec</td></tr>
+        </tbody>
+    </table>
+
+    <div class="key-observations">
+        <h3 style="margin-top: 0;">Analysis</h3>
+        <ul>
+            <li><strong>AWS ecosystem dominance:</strong> boto3 leads with 1.37 billion downloads.</li>
+            <li><strong>HTTP and networking utilities:</strong> urllib3, requests, certifi, and idna remain fundamental.</li>
+            <li><strong>Type safety trend:</strong> typing-extensions in 4th place shows continued embrace of static typing.</li>
+        </ul>
+    </div>
+
+    <h2>Emerging Packages</h2>
+
+    <h3>🚀 Breakout Growth</h3>
+
+    <div class="package-highlight">
+        <strong>1. fastuuid</strong> <span style="color: #4caf50; font-weight: 600;">(+2,874%)</span><br>
+        <strong>Downloads:</strong> 7.1M (up from 240K)<br>
+        <strong>Why emerging:</strong> Python bindings to Rust's UUID library, offering significantly faster UUID generation. Explosive growth reflects adoption by high-throughput microservices.
+    </div>
+
+    <div class="package-highlight">
+        <strong>2. fastmcp</strong> <span style="color: #4caf50; font-weight: 600;">(+249%)</span><br>
+        <strong>Downloads:</strong> 15.9M (up from 4.6M)<br>
+        <strong>Why emerging:</strong> Fast, Pythonic way to build MCP servers for LLM applications. Riding the wave of AI agent development with rapid enterprise adoption.
+    </div>
+
+    <div class="package-highlight">
+        <strong>3. prek</strong> <span style="color: #4caf50; font-weight: 600;">(+241%)</span><br>
+        <strong>Downloads:</strong> 7.4M (up from 2.2M)<br>
+        <strong>Why emerging:</strong> Better pre-commit, re-engineered in Rust. Teams upgrading workflows for better performance in large monorepos.
+    </div>
+
+    <h3>💡 AI & ML Infrastructure</h3>
+
+    <div class="package-highlight">
+        <strong>4. genai-prices</strong> <span style="color: #4caf50; font-weight: 600;">(+443%)</span><br>
+        <strong>Downloads:</strong> 1.6M<br>
+        <strong>Why emerging:</strong> LLM cost management for API calls. Critical for production AI deployments.
+    </div>
+
+    <div class="package-highlight">
+        <strong>5. open-webui</strong> <span style="color: #4caf50; font-weight: 600;">(+263%)</span><br>
+        <strong>Downloads:</strong> 1.9M<br>
+        <strong>Why emerging:</strong> Web interface for self-hosted LLM interactions.
+    </div>
+
+    <h3>☁️ Cloud & Data Engineering</h3>
+
+    <div class="package-highlight">
+        <strong>6. purecloudplatformclientv2</strong> <span style="color: #4caf50; font-weight: 600;">(+666%)</span><br>
+        <strong>Downloads:</strong> 6.4M<br>
+        <strong>Why emerging:</strong> Genesys Cloud API client. Massive growth in contact center automation.
+    </div>
+
+    <div class="package-highlight">
+        <strong>7. lakefs</strong> <span style="color: #4caf50; font-weight: 600;">(+253%)</span><br>
+        <strong>Downloads:</strong> 1.8M<br>
+        <strong>Why emerging:</strong> Git-like operations for data lakes. Focus on data governance and versioning.
+    </div>
+
+    <div class="trend-section">
+        <h2 style="margin-top: 0; border: none;">Trends & Insights</h2>
+        <p><strong>AI Infrastructure Boom:</strong> Packages like fastmcp, genai-prices, and open-webui show triple-digit growth, indicating AI development has moved from experimentation to production deployment.</p>
+        <p><strong>Rust-powered performance:</strong> Both fastuuid and prek leverage Rust for performance-critical tasks, reflecting a broader trend of using Rust bindings to accelerate Python tooling.</p>
+        <p><strong>Cloud-native patterns:</strong> Strong growth in async cloud clients and data infrastructure demonstrates Python's evolution toward cloud-native, event-driven architectures.</p>
+    </div>
+
+    <h2>Conclusion</h2>
+    <p>September 2025 demonstrated healthy growth across the Python ecosystem, with total downloads increasing 4.9% to reach 83.6 billion. While established infrastructure packages like boto3 continue to dominate, the explosive growth in AI tooling and Rust-enhanced utilities signals important shifts in how Python developers are building and deploying applications.</p>
+    <p>The geographic distribution remained stable, though Singapore's 30% growth suggests accelerating cloud infrastructure deployment in Asia-Pacific. For developers planning technology investments, emerging trends clearly point toward: (1) AI/LLM application infrastructure, (2) performance optimization through Rust bindings, and (3) enhanced developer productivity tooling.</p>
+
+    <div class="footer">
+        <p>Report generated using ClickHouse real-time analytics on PyPI download statistics.</p>
+    </div>
+
+</body>
+</html>
