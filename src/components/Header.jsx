@@ -33,11 +33,11 @@ export default function Header() {
                 </a>
               </p>
             </div>
-            <Link href='https://github.com/ClickHouse/clickpy' target='_blank'>
+            <Link href='https://github.com/ClickHouse/clickpy/tree/clickgems' target='_blank'>
                   <Image
                     className='w-8 h-8'
                     src='/github.svg'
-                    alt='ClickPy Github'
+                    alt='ClickGems Github'
                     width='32'
                     height='32'
                   />

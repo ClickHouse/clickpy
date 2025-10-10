@@ -35,8 +35,8 @@ export async function generateMetadata({ params, searchParams }, parent) {
   const package_name = params.package_name;
 
   return {
-    title: `ClickPy - Download analytics for ${package_name}`,
-    description: `Analytics for the python package ${package_name}, powered by ClickHouse`,
+    title: `ClickGems - Download analytics for ${package_name}`,
+    description: `Analytics for the gem ${package_name}, powered by ClickHouse`,
   }
 }
 
@@ -126,11 +126,11 @@ export default async function Dashboard({ params, searchParams }) {
                 ClickHouse
               </a>
             </p>
-            <Link href='https://github.com/ClickHouse/clickpy' target='_blank' className='w-32 ml-4'>
+            <Link href='https://github.com/ClickHouse/clickpy/tree/clickgems' target='_blank' className='w-32 ml-4'>
               <Image
                 className='w-8 h-8'
                 src='/github.svg'
-                alt='ClickPy Github'
+                alt='ClickGems Github'
                 width='32'
                 height='32' />
             </Link>

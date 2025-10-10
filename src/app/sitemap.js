@@ -33,7 +33,7 @@ export default async function sitemap() {
 
     // Create dynamic sitemap entries based on the rows
     const dynamicEntries = projects.map(project => ({
-        url: `https://clickpy.clickhouse.com/dashboard/${encodeURIComponent(project)}`,
+        url: `https://clickgems.clickhouse.com/dashboard/${encodeURIComponent(project)}`,
         lastModified: new Date(),
         changeFrequency: 'daily',
         priority: 0.7,
@@ -42,7 +42,7 @@ export default async function sitemap() {
     // Simplified static entries for your sitemap
     const staticEntries = [
         {
-            url: 'https://clickpy.clickhouse.com/dashboard/',
+            url: 'https://clickgems.clickhouse.com/dashboard/',
             lastModified: new Date(),
             changeFrequency: 'yearly',
             priority: 1,

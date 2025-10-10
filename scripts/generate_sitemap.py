@@ -10,6 +10,7 @@ import datetime
 import clickhouse_connect
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
+import os
 
 def generate_sitemap(urls, file):
     # Create the root element for the XML tree
@@ -49,7 +50,8 @@ def generate_sitemap(urls, file):
 client = clickhouse_connect.get_client(
     host='sql-clickhouse.clickhouse.com', 
     port=8443, 
-    username='pme', password='XkaeJ}#4U85/'
+    username=os.getenv("CLICKHOUSE_USER"), 
+    password=os.getenv("CLICKHOUSE_PASSWORD")
 )
 
 query = """
@@ -65,7 +67,7 @@ LIMIT 50000
 result = client.query(query)
 
 urls = [
-    f"https://clickpy.clickhouse.com/dashboard/{row[0]}"
+    f"https://clickgems.clickhouse.com/dashboard/{row[0]}"
     for row in result.result_rows
 ] 
 
