@@ -4,6 +4,6 @@
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'https://clickpy.clickhouse.com/sitemap.xml',
+    sitemap: 'https://clickgems.clickhouse.com/sitemap.xml',
   }
 }
