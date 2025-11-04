@@ -37,6 +37,9 @@ export async function generateMetadata({ params, searchParams }, parent) {
   return {
     title: `ClickGems - Download analytics for ${package_name}`,
     description: `Analytics for the gem ${package_name}, powered by ClickHouse`,
+    verification: {
+      google: 'vu8LQ6LSMjSpZE8h8UlLByhNrhrrufGB6dlJ07hGCUA',
+    }
   }
 }
 

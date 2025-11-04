@@ -17,6 +17,10 @@ import 'server-only';
 export const metadata = {
   title: 'ClickGems - RubyGems analytics',
   description: 'Free Analytics service for Rubygems downloads, powered by ClickHouse',
+  verification: {
+    google: 'vu8LQ6LSMjSpZE8h8UlLByhNrhrrufGB6dlJ07hGCUA',
+  }
+
 }
 
 export const revalidate = 3600
