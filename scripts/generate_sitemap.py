@@ -19,6 +19,14 @@ def generate_sitemap(urls, file):
 
     current_time = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"    
     
+
+    # Start with root element
+    url_elem = ET.SubElement(root, "url")
+    loc_elem = ET.SubElement(url_elem, "loc")
+    loc_elem.text = "https://clickgems.clickhouse.com"
+    lastmod_elem = ET.SubElement(url_elem, "lastmod")
+    lastmod_elem.text = current_time
+
     # Iterate over each URL and create XML elements
     for url in urls:
         # Create <url> element

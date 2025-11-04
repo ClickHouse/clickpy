@@ -41,6 +41,12 @@ export default async function sitemap() {
 
     // Simplified static entries for your sitemap
     const staticEntries = [
+         {
+            url: 'https://clickgems.clickhouse.com/',
+            lastModified: new Date(),
+            changeFrequency: 'yearly',
+            priority: 1,
+        },
         {
             url: 'https://clickgems.clickhouse.com/dashboard/',
             lastModified: new Date(),
