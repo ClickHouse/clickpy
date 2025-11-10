@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyPI Usage Report - October 2025</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: white;
+            color: #333;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        
+        .summary-box {
+            background: #ecf0f1;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .summary-stat {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .summary-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        thead {
+            background: #34495e;
+            color: white;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .number {
+            text-align: right;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .growth-positive {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .growth-high {
+            background: #d5f4e6;
+            color: #27ae60;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        .package-name {
+            font-family: 'Courier New', monospace;
+            color: #e74c3c;
+            font-weight: 500;
+        }
+        
+        .insight {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .insight-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 8px;
+        }
+        
+        p {
+            margin: 15px 0;
+            color: #555;
+        }
+        
+        ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+        
+        li {
+            margin: 8px 0;
+            color: #555;
+        }
+        
+        .country-flag {
+            margin-right: 8px;
+        }
+        
+        .section-intro {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>PyPI Package Download Report</h1>
+    <div class="subtitle">October 2025 • Monthly Insights for Python Developers</div>
+    
+    <div class="summary-box">
+        <div class="summary-label">Total Downloads</div>
+        <div class="summary-stat">93.1 Billion</div>
+        <div style="margin-top: 10px; color: #555;">
+            <strong>683,298</strong> unique packages were downloaded across <strong>150+ countries</strong>
+        </div>
+    </div>
+
+    <h2>📊 Executive Summary</h2>
+    <p>
+        October 2025 saw robust growth in PyPI downloads, surpassing 93 billion downloads—a continued testament to Python's dominance in modern software development. The United States maintained its overwhelming lead at 71.8% of global traffic, while emerging markets like Brazil showed explosive triple-digit growth. The month was marked by significant momentum in the data processing and AI tooling ecosystem, with packages like polars-runtime-32 and nvidia-nvshmem-cu12 experiencing remarkable adoption.
+    </p>
+
+    <h2>🌍 Geographic Distribution</h2>
+    <p class="section-intro">
+        PyPI downloads continue to concentrate in North America and Western Europe, though we're seeing rapid expansion in emerging developer markets.
+    </p>
+
+    <h3>Top 15 Countries by Downloads</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Country</th>
+                <th class="number">Downloads</th>
+                <th class="number">% of Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>🇺🇸 United States</td>
+                <td class="number">66.8B</td>
+                <td class="number">71.8%</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>🇮🇪 Ireland</td>
+                <td class="number">3.9B</td>
+                <td class="number">4.2%</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>🇩🇪 Germany</td>
+                <td class="number">3.3B</td>
+                <td class="number">3.5%</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>🇳🇱 Netherlands</td>
+                <td class="number">2.3B</td>
+                <td class="number">2.5%</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>🇬🇧 United Kingdom</td>
+                <td class="number">2.2B</td>
+                <td class="number">2.4%</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>🇸🇬 Singapore</td>
+                <td class="number">2.0B</td>
+                <td class="number">2.1%</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>🇧🇷 Brazil</td>
+                <td class="number">1.7B</td>
+                <td class="number">1.9%</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>🇮🇳 India</td>
+                <td class="number">1.3B</td>
+                <td class="number">1.4%</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>🇫🇷 France</td>
+                <td class="number">1.2B</td>
+                <td class="number">1.2%</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>🇯🇵 Japan</td>
+                <td class="number">1.1B</td>
+                <td class="number">1.2%</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>🇦🇺 Australia</td>
+                <td class="number">765.6M</td>
+                <td class="number">0.8%</td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td>🇨🇦 Canada</td>
+                <td class="number">712.1M</td>
+                <td class="number">0.8%</td>
+            </tr>
+            <tr>
+                <td>13</td>
+                <td>🇧🇪 Belgium</td>
+                <td class="number">561.7M</td>
+                <td class="number">0.6%</td>
+            </tr>
+            <tr>
+                <td>14</td>
+                <td>🇰🇷 South Korea</td>
+                <td class="number">525.8M</td>
+                <td class="number">0.6%</td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td>🇨🇳 China</td>
+                <td class="number">451.5M</td>
+                <td class="number">0.5%</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Notable Geographic Shifts (vs. September 2025)</h3>
+    
+    <div class="insight">
+        <div class="insight-title">🚀 Key Insight: Explosive Growth in Emerging Markets</div>
+        Brazil continues its meteoric rise, posting <strong>+187% growth</strong> month-over-month with over 1.1 billion additional downloads. This represents the fastest growth among major markets and signals deepening Python adoption in South America's tech ecosystem.
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Country</th>
+                <th class="number">Sept 2025</th>
+                <th class="number">Oct 2025</th>
+                <th class="number">Growth %</th>
+                <th class="number">Absolute Change</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="background: #fff9e6;">
+                <td>🇧🇷 <strong>Brazil</strong></td>
+                <td class="number">601.8M</td>
+                <td class="number">1.7B</td>
+                <td class="number growth-high">+187.2%</td>
+                <td class="number">+1.1B</td>
+            </tr>
+            <tr style="background: #fff9e6;">
+                <td>🇬🇧 <strong>United Kingdom</strong></td>
+                <td class="number">1.1B</td>
+                <td class="number">2.2B</td>
+                <td class="number growth-high">+99.9%</td>
+                <td class="number">+1.1B</td>
+            </tr>
+            <tr>
+                <td>🇨🇳 China</td>
+                <td class="number">289.3M</td>
+                <td class="number">451.5M</td>
+                <td class="number growth-positive">+56.1%</td>
+                <td class="number">+162.2M</td>
+            </tr>
+            <tr>
+                <td>🇭🇰 Hong Kong</td>
+                <td class="number">232.0M</td>
+                <td class="number">355.8M</td>
+                <td class="number growth-positive">+53.4%</td>
+                <td class="number">+123.9M</td>
+            </tr>
+            <tr>
+                <td>🇫🇷 France</td>
+                <td class="number">1.0B</td>
+                <td class="number">1.2B</td>
+                <td class="number growth-positive">+15.5%</td>
+                <td class="number">+155.6M</td>
+            </tr>
+            <tr>
+                <td>🇺🇸 United States</td>
+                <td class="number">60.6B</td>
+                <td class="number">66.8B</td>
+                <td class="number growth-positive">+10.2%</td>
+                <td class="number">+6.2B</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p><strong>Key Observations:</strong></p>
+    <ul>
+        <li><strong>Brazil and UK leading percentage growth:</strong> Both markets doubled their download volumes, likely driven by expanding CI/CD infrastructure and cloud adoption.</li>
+        <li><strong>Asia-Pacific acceleration:</strong> China (+56%) and Hong Kong (+53%) showed strong growth, suggesting increased enterprise Python adoption and regional cloud expansion.</li>
+        <li><strong>US maintains absolute dominance:</strong> Despite slower percentage growth (+10.2%), the United States added 6.2 billion downloads—more than most countries' total volumes.</li>
+        <li><strong>European stability:</strong> Major EU markets (Germany, Netherlands, Ireland) showed steady 7-11% growth, consistent with mature market patterns.</li>
+    </ul>
+
+    <h2>📦 Most Popular Packages</h2>
+    <p class="section-intro">
+        The top 20 packages collectively account for over 17 billion downloads, representing the foundational infrastructure of modern Python development.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Package</th>
+                <th class="number">Downloads</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td class="package-name">boto3</td>
+                <td class="number">1,452.8M</td>
+                <td>AWS SDK</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td class="package-name">urllib3</td>
+                <td class="number">1,168.3M</td>
+                <td>HTTP Client</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td class="package-name">botocore</td>
+                <td class="number">1,065.8M</td>
+                <td>AWS SDK (Core)</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td class="package-name">requests</td>
+                <td class="number">1,055.3M</td>
+                <td>HTTP Client</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td class="package-name">certifi</td>
+                <td class="number">1,048.2M</td>
+                <td>SSL/TLS</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td class="package-name">charset-normalizer</td>
+                <td class="number">999.2M</td>
+                <td>Text Encoding</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td class="package-name">idna</td>
+                <td class="number">993.9M</td>
+                <td>Domain Names</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td class="package-name">typing-extensions</td>
+                <td class="number">992.7M</td>
+                <td>Type Hints</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td class="package-name">aiobotocore</td>
+                <td class="number">895.9M</td>
+                <td>Async AWS SDK</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td class="package-name">setuptools</td>
+                <td class="number">830.6M</td>
+                <td>Build Tools</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td class="package-name">python-dateutil</td>
+                <td class="number">786.6M</td>
+                <td>Date/Time</td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td class="package-name">grpcio-status</td>
+                <td class="number">776.8M</td>
+                <td>gRPC</td>
+            </tr>
+            <tr>
+                <td>13</td>
+                <td class="package-name">packaging</td>
+                <td class="number">746.6M</td>
+                <td>Package Metadata</td>
+            </tr>
+            <tr>
+                <td>14</td>
+                <td class="package-name">six</td>
+                <td class="number">742.9M</td>
+                <td>Py2/3 Compat</td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td class="package-name">s3transfer</td>
+                <td class="number">636.1M</td>
+                <td>AWS S3</td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td class="package-name">numpy</td>
+                <td class="number">603.4M</td>
+                <td>Scientific Computing</td>
+            </tr>
+            <tr>
+                <td>17</td>
+                <td class="package-name">cryptography</td>
+                <td class="number">593.2M</td>
+                <td>Security</td>
+            </tr>
+            <tr>
+                <td>18</td>
+                <td class="package-name">pyyaml</td>
+                <td class="number">592.2M</td>
+                <td>Configuration</td>
+            </tr>
+            <tr>
+                <td>19</td>
+                <td class="package-name">s3fs</td>
+                <td class="number">577.9M</td>
+                <td>AWS S3 FS</td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td class="package-name">pydantic</td>
+                <td class="number">545.5M</td>
+                <td>Data Validation</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p><strong>Analysis:</strong></p>
+    <ul>
+        <li><strong>AWS ecosystem dominance:</strong> Five of the top 20 packages (boto3, botocore, aiobotocore, s3transfer, s3fs) are AWS-related, underlining cloud-native Python's tight integration with AWS infrastructure.</li>
+        <li><strong>HTTP foundations remain critical:</strong> urllib3 and requests together account for over 2.2 billion downloads, serving as the backbone for virtually all Python web communication.</li>
+        <li><strong>Modern Python typing gains traction:</strong> typing-extensions in the top 10 reflects the community's embrace of type hints and static analysis tools.</li>
+        <li><strong>AI/ML infrastructure:</strong> numpy maintains its position as the scientific computing foundation, while pydantic's rise reflects the data validation needs of ML pipelines and API development.</li>
+    </ul>
+
+    <h2>🚀 Emerging Packages</h2>
+    <p class="section-intro">
+        These packages showed exceptional growth rates in October 2025, signaling shifting developer interests and emerging technology trends. We've filtered for packages with meaningful absolute download volumes (1,000+ in September) to focus on genuine adoption trends rather than base effects.
+    </p>
+
+    <div class="insight">
+        <div class="insight-title">💡 What Makes a Package "Emerging"?</div>
+        We identify emerging packages using three criteria: <strong>(1)</strong> High percentage growth month-over-month, <strong>(2)</strong> Meaningful baseline adoption (avoiding "zero to hero" effects), and <strong>(3)</strong> Absolute download volumes indicating real community traction. These packages represent technologies developers are actively adopting right now.
+    </div>
+
+    <h3>Top Emerging Packages by Growth Rate</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Package</th>
+                <th class="number">Sept 2025</th>
+                <th class="number">Oct 2025</th>
+                <th class="number">Growth %</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="background: #f0f9ff;">
+                <td class="package-name">polars-runtime-32</td>
+                <td class="number">12.5K</td>
+                <td class="number">14.7M</td>
+                <td class="number growth-high">+117,873%</td>
+                <td>Data Processing</td>
+            </tr>
+            <tr>
+                <td class="package-name">msgraphfs</td>
+                <td class="number">1.4K</td>
+                <td class="number">1.3M</td>
+                <td class="number growth-high">+92,595%</td>
+                <td>Microsoft Graph</td>
+            </tr>
+            <tr>
+                <td class="package-name">claude-agent-sdk</td>
+                <td class="number">4.4K</td>
+                <td class="number">413.9K</td>
+                <td class="number growth-high">+9,361%</td>
+                <td>AI Agents</td>
+            </tr>
+            <tr>
+                <td class="package-name">anysqlite</td>
+                <td class="number">7.0K</td>
+                <td class="number">603.7K</td>
+                <td class="number growth-high">+8,574%</td>
+                <td>Database</td>
+            </tr>
+            <tr>
+                <td class="package-name">pact-python-ffi</td>
+                <td class="number">1.2K</td>
+                <td class="number">43.4K</td>
+                <td class="number growth-high">+3,398%</td>
+                <td>Contract Testing</td>
+            </tr>
+            <tr>
+                <td class="package-name">backports-zstd</td>
+                <td class="number">19.5K</td>
+                <td class="number">660.7K</td>
+                <td class="number growth-high">+3,293%</td>
+                <td>Compression</td>
+            </tr>
+            <tr style="background: #f0f9ff;">
+                <td class="package-name">nvidia-nvshmem-cu12</td>
+                <td class="number">340.5K</td>
+                <td class="number">10.6M</td>
+                <td class="number growth-high">+3,013%</td>
+                <td>GPU Computing</td>
+            </tr>
+            <tr>
+                <td class="package-name">python-doctr</td>
+                <td class="number">78.0K</td>
+                <td class="number">2.0M</td>
+                <td class="number growth-high">+2,524%</td>
+                <td>OCR / Document AI</td>
+            </tr>
+            <tr>
+                <td class="package-name">pathway</td>
+                <td class="number">18.4K</td>
+                <td class="number">479.1K</td>
+                <td class="number growth-high">+2,500%</td>
+                <td>Stream Processing</td>
+            </tr>
+            <tr>
+                <td class="package-name">typed-ffmpeg-compatible</td>
+                <td class="number">23.0K</td>
+                <td class="number">569.6K</td>
+                <td class="number growth-high">+2,381%</td>
+                <td>Video Processing</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Deep Dive: Key Emerging Packages</h3>
+
+    <h4>1. <span class="package-name">polars-runtime-32</span> — Data Processing Revolution</h4>
+    <p>
+        <strong>Growth:</strong> 12.5K → 14.7M downloads (+117,873%)<br>
+        <strong>Category:</strong> DataFrame library (Rust-based)<br>
+        <strong>Why it's emerging:</strong> Polars is rapidly becoming the performance-conscious developer's alternative to Pandas. The explosive growth in polars-runtime-32 (a platform-specific runtime component) reflects widespread adoption of Polars as an out-of-core, Arrow-native DataFrame solution. This represents a significant shift in how Python developers approach large-scale data processing, with Polars offering 10-100x speedups on many operations through parallel processing and zero-copy operations.
+    </p>
+
+    <h4>2. <span class="package-name">nvidia-nvshmem-cu12</span> — Enterprise GPU Clustering</h4>
+    <p>
+        <strong>Growth:</strong> 340.5K → 10.6M downloads (+3,013%)<br>
+        <strong>Category:</strong> NVIDIA GPU communication library<br>
+        <strong>Why it's emerging:</strong> NVSHMEM provides efficient memory sharing and communication between GPUs in distributed clusters. The dramatic October surge indicates enterprise adoption of multi-GPU training infrastructure for large language models and other demanding AI workloads. This aligns with the broader trend of organizations building private AI infrastructure rather than relying solely on API services.
+    </p>
+
+    <h4>3. <span class="package-name">python-doctr</span> — Document Intelligence Goes Mainstream</h4>
+    <p>
+        <strong>Growth:</strong> 78.0K → 2.0M downloads (+2,524%)<br>
+        <strong>Category:</strong> OCR and document text recognition<br>
+        <strong>Why it's emerging:</strong> Python-doctr offers deep learning-based OCR for document processing, supporting both TensorFlow and PyTorch backends. The massive October spike suggests enterprises are actively building document processing pipelines, possibly driven by AI-assisted document understanding use cases. The library's production-ready nature and support for complex document layouts make it ideal for automating document workflows.
+    </p>
+
+    <h4>4. <span class="package-name">pathway</span> — Real-Time Stream Processing</h4>
+    <p>
+        <strong>Growth:</strong> 18.4K → 479.1K downloads (+2,500%)<br>
+        <strong>Category:</strong> Streaming data processing framework<br>
+        <strong>Why it's emerging:</strong> Pathway automatically handles streaming data updates, providing incremental computation for real-time analytics. This surge reflects growing demand for Python-native stream processing solutions that compete with traditional JVM-based tools like Kafka Streams or Flink. The framework's focus on developer ergonomics makes it particularly attractive for data scientists transitioning to production streaming systems.
+    </p>
+
+    <h4>5. <span class="package-name">claude-agent-sdk</span> — AI Agent Development Tooling</h4>
+    <p>
+        <strong>Growth:</strong> 4.4K → 413.9K downloads (+9,361%)<br>
+        <strong>Category:</strong> Anthropic Claude SDK for agent development<br>
+        <strong>Why it's emerging:</strong> This SDK facilitates building AI agents powered by Anthropic's Claude models. The dramatic October growth signals the AI agent wave moving from experimentation to production. Developers are building autonomous systems that can use tools, make decisions, and complete complex multi-step tasks—a paradigm shift from simple prompt-response interactions.
+    </p>
+
+    <h4>6. <span class="package-name">backports-zstd</span> — Modern Compression Standards</h4>
+    <p>
+        <strong>Growth:</strong> 19.5K → 660.7K downloads (+3,293%)<br>
+        <strong>Category:</strong> Zstandard compression backport<br>
+        <strong>Why it's emerging:</strong> Zstandard offers superior compression ratios and speed compared to gzip/zlib, increasingly becoming the default for data serialization. The surge suggests widespread adoption in data engineering pipelines, particularly for parquet files, logging systems, and data transfer protocols. Organizations optimizing cloud storage and bandwidth costs are driving this transition.
+    </p>
+
+    <h3>Thematic Trends in Emerging Packages</h3>
+    <ul>
+        <li><strong>Performance-first data tools:</strong> Polars, Pathway, and anysqlite represent a shift toward Rust-backed, performance-optimized Python libraries.</li>
+        <li><strong>AI/ML infrastructure maturation:</strong> nvidia-nvshmem-cu12, python-doctr, and claude-agent-sdk show enterprises building production AI systems with specialized tooling.</li>
+        <li><strong>Developer experience improvements:</strong> Packages like typed-ffmpeg-compatible and pact-python-ffi reflect increasing emphasis on type safety and testing best practices.</li>
+        <li><strong>Enterprise integration focus:</strong> msgraphfs demonstrates continued Microsoft ecosystem integration as more enterprises adopt hybrid cloud architectures.</li>
+    </ul>
+
+    <h2>🔮 Looking Ahead</h2>
+    <p>
+        October 2025's PyPI trends point to several key themes for Python's future:
+    </p>
+    <ul>
+        <li><strong>The Rust invasion continues:</strong> Polars' explosive growth exemplifies the trend of Rust-powered Python libraries offering performance without sacrificing ergonomics.</li>
+        <li><strong>AI infrastructure goes distributed:</strong> nvidia-nvshmem-cu12's surge reflects enterprise investment in multi-GPU systems for training and inference at scale.</li>
+        <li><strong>Emerging markets catching up fast:</strong> Brazil's 187% growth suggests Python adoption is accelerating in regions with growing tech sectors.</li>
+        <li><strong>Document AI coming of age:</strong> python-doctr's growth indicates document processing is moving from niche use case to mainstream enterprise tooling.</li>
+        <li><strong>Agent frameworks consolidating:</strong> claude-agent-sdk's rise shows framework-based agent development replacing ad-hoc implementations.</li>
+    </ul>
+
+    <div class="summary-box" style="margin-top: 40px;">
+        <strong>Report Generated:</strong> November 2025<br>
+        <strong>Data Source:</strong> PyPI download statistics via ClickHouse<br>
+        <strong>Coverage:</strong> October 1-31, 2025<br>
+        <strong>Methodology:</strong> Analysis based on daily download counts aggregated by package, country, and version
+    </div>
+</body>
+</html>
