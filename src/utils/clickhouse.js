@@ -3,7 +3,6 @@ import { createClient as createWebClient } from '@clickhouse/client-web';
 import { base64Encode } from './utils';
 import { context, trace, SpanStatusCode } from '@opentelemetry/api';
 
-
 export const clickhouse = createClient({
     host: process.env.CLICKHOUSE_HOST,
     username: process.env.CLICKHOUSE_USERNAME,
@@ -382,20 +381,21 @@ export async function getPackageDateRanges(package_name, version) {
 
 export async function getPackageDetails(package_name, version) {
     return query('getPackageDetails', `WITH (
-                SELECT number
+                SELECT number, substring(gem_full_name, 1, (length(gem_full_name) - length(splitByChar('-', gem_full_name)[-1])) - 1) AS gem_name
                 FROM ${GEMS_DATABASE}.versions
-                WHERE summary = {package_name:String}
+                WHERE gem_name = {package_name:String}
                 ORDER BY arrayMap(x -> toUInt8OrDefault(x, 0), splitByChar('.', number)) DESC
                 LIMIT 1
             ) AS max_version
         SELECT
             number,
-            summary,
+            description as summary,
             authors,
             licenses,
-            max_version
+            max_version,
+            substring(gem_full_name, 1, (length(gem_full_name) - length(splitByChar('-', gem_full_name)[-1])) - 1) AS gem_name
         FROM ${GEMS_DATABASE}.versions
-        WHERE (summary = {package_name:String}) AND ${version ? `number={version:String}` : '1=1'} 
+        WHERE (gem_name = {package_name:String}) AND ${version ? `number={version:String}` : '1=1'} 
         ORDER BY created_at DESC
         LIMIT 1`, {
         package_name: package_name,
