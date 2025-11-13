@@ -3,9 +3,9 @@ import Image from 'next/image';
 
 export default function PackageDetails({
   name,
-  author,
+  authors,
   author_email,
-  license,
+  licenses,
   summary,
   home_page,
   repo_name
@@ -41,13 +41,53 @@ export default function PackageDetails({
           ) 
         }
       </div>
-      { author || author_email || license || summary ? (
-        <div className='mt-5 leading-6 tracking-wide text-slate-200'>
-          {author && <p>Author: {author}</p>}
-          {author_email && <p>Author Email: {author_email}</p>}
-          {license && <p>License: { license.split(' ').slice(0, 10).join(' ')}{license.split(' ').length > 10 && '...' }</p>}
+      { authors || author_email || licenses || summary ? (
+        <div className='mt-5 leading-6 tracking-wide text-slate-200 max-w-[600px] space-y-2'>
+          {authors && (
+            <div>
+              <span className='font-semibold text-slate-100'>Authors: </span>
+              <span className='text-slate-300'>
+                {authors.split(',').length > 3 
+                  ? (
+                    <>
+                      {authors.split(',').slice(0, 3).join(',').trim()}... 
+                      <span 
+                        className='hover:text-blue-300 underline decoration-dotted'
+                        title={authors}
+                      >
+                        (+{authors.split(',').length - 3} more)
+                      </span>
+                    </>
+                  )
+                  : authors
+                }
+              </span>
+            </div>
+          )}
+          {author_email && (
+            <div>
+              <span className='font-semibold text-slate-100'>Author Email: </span>
+              <span className='text-slate-300'>{author_email}</span>
+            </div>
+          )}
+          {licenses && (
+            <div>
+              <span className='font-semibold text-slate-100'>License: </span>
+              <span className='text-slate-300'>
+                {licenses.replace(/^[-\s]+|[-\s]+$/g, '').split(' ').slice(0, 10).join(' ')}{licenses.split(' ').length > 10 && '...'}
+              </span>
+            </div>
+          )}
           {summary && (
-            <p>Summary: { summary.split(' ').slice(0, 10).join(' ')}{summary.split(' ').length > 10 && '...' }</p>
+            <div>
+              <span className='font-semibold text-slate-100'>Summary: </span>
+              <span className='text-slate-300'>
+                {summary.split(' ').length > 25 
+                  ? `${summary.split(' ').slice(0, 25).join(' ')}...`
+                  : summary
+                }
+              </span>
+            </div>
           )}
         </div>
       ) : (
