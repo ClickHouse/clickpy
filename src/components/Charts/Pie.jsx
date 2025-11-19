@@ -44,7 +44,6 @@ export default function Pie({ data, onClick, link, metabaseLink }) {
     },
     series: [
       {
-        name: 'Distribution types',
         type: 'pie',
         radius: ['50%', '70%'],
         avoidLabelOverlap: true,
@@ -88,11 +87,11 @@ export default function Pie({ data, onClick, link, metabaseLink }) {
   return (
     <div className='relative rounded-lg bg-slate-850 border border-slate-700 h-full'>
       <div className='px-[8px] pt-[8px] flex-row flex justify-end'>
-          { metabaseLink && <CopyDropdown link={metabaseLink} />}
-          { link && <Link href={link} target='_blank' className='w-5 ml-2'>
-              <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
-          </Link>}   
-      </div>    
+        {metabaseLink && <CopyDropdown link={metabaseLink} />}
+        {link && <Link href={link} target='_blank' className='w-5 ml-2'>
+          <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true' />
+        </Link>}
+      </div>
       <ReactECharts
         option={options}
         notMerge={true}
