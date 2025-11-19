@@ -116,7 +116,7 @@ export default async function Dashboard({ params, searchParams }) {
               />
               <DatePicker dates={[min_date, max_date]} />
             </div>
-            
+
           </div>
 
           <div className='hidden 2xl:flex grow width-20 max-w-[122px] md:mt-2 ml-4'>
@@ -143,22 +143,22 @@ export default async function Dashboard({ params, searchParams }) {
       <div className='relative isolate'>
         <div className='pt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 flex flex-row gap-4  justify-between'>
           <PackageDetails name={package_name} {...packageDetails[1][0]} />
-          
+
           <div className='flex flex-col'>
-          <Suspense key={key} fallback={<Loading />}>
-            <PackageBadge package_name={package_name}
-                    version={version}
-                    min_date={min_date}
-                    max_date={max_date}
-                    country_code={country_code} />
+            <Suspense key={key} fallback={<Loading />}>
+              <PackageBadge package_name={package_name}
+                version={version}
+                min_date={min_date}
+                max_date={max_date}
+                country_code={country_code} />
             </Suspense>
           </div>
-          
+
         </div>
         <div className='mt-4 flex flex-col w-11/12 lg:w-full xl:w-11/12 lg:px-16 mx-auto items-end'>
-        <PlaygroundLink package_name={package_name} />
+          <PlaygroundLink package_name={package_name} />
         </div>
-        {
+        {/* {
           repo_name && (
             <div className='mt-4 md:mt-8 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16'>
               <Suspense key={key} fallback={<Loading height='208px' />}>
@@ -166,7 +166,7 @@ export default async function Dashboard({ params, searchParams }) {
               </Suspense>
             </div>
           )
-        }
+        } */}
         <div className='mt-4 w-11/12 xl:w-11/12 lg:w-full mx-auto md:grid md:grid-cols-4 lg:grid-cols-3 gap-6 lg:px-16'>
           <DownloadList
             package_name={package_name}
@@ -257,7 +257,7 @@ export default async function Dashboard({ params, searchParams }) {
                   getData={getTopContributors}
                   options={{ show_icons: true, title: 'All PRs, issues, comments & pushes' }}
                   params={{
-                    package_name: package_name,
+                    package_name: repo_name,
                     min_date: min_date,
                     max_date: max_date,
                   }}
