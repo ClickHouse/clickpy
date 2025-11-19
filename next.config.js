@@ -5,7 +5,11 @@ const nextConfig = {
       {
         source: '/dashboard',
         destination: '/'
-      }
+      },
+      {
+        source: '/sitemap-:index(\\d{1,}).xml',
+        destination: '/sitemap/:index',
+      },
     ]
   },
 }
