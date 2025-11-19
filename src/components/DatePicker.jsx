@@ -6,7 +6,7 @@ import './datepicker.css';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
-import { parseDate} from '@/utils/utils';
+import { parseDate } from '@/utils/utils';
 
 function ClearLogo(clearable) {
   return (
@@ -50,7 +50,7 @@ export default function DatePicker({ dates }) {
       max_date ? current.set('max_date', max_date) : current.delete('max_date');
       router.push(`${pathname}?${current.toString()}`, { scroll: false });
     }
-    
+
   };
 
   const onSelectDates = (values) => {
@@ -58,18 +58,24 @@ export default function DatePicker({ dates }) {
       ? onChange(
         `${values[0].getFullYear()}-${(values[0].getMonth() + 1).toString().padStart(2, '0')}-${values[0].getDate().toString().padStart(2, '0')}`,
         `${values[1].getFullYear()}-${(values[1].getMonth() + 1).toString().padStart(2, '0')}-${values[1].getDate().toString().padStart(2, '0')}`
-        )
+      )
       : onChange();
   };
 
   return (
-    <div className='width-[353px] max-w-[353px] min-w-[353px]'>
+    <div className='width-[353px] max-w-[353px] min-w-[353px] relative'>
+      {clearable && (
+        <span className="absolute -top-1 -right-1 flex h-3 w-3 z-10">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-primary-500"></span>
+        </span>
+      )}
       <Suspense>
         <DateRangePicker
           format='y-MM-dd'
           showLeadingZeros={true}
           calendarClassName='calendar'
-          className='date_picker'
+          className={`date_picker ${clearable ? 'border-primary-300 ring-1 ring-primary-300' : ''}`}
           onChange={onSelectDates}
           rangeDivider={' to '}
           calendarIcon={
