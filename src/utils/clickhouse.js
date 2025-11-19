@@ -277,7 +277,7 @@ export async function getDependencies({ package_name, version, min_date, max_dat
 }
 
 export async function getTopContributors({ package_name, min_date, max_date }) {
-    return query('getTopContributors', `WITH getRepoId({package_name:String}) AS id,
+    return query('getTopContributors', `WITH toString(dictGet(github.repo_name_to_id_dict, 'repo_id', cityHash64({package_name:String}))) AS id,
         (
         SELECT count() AS total
         FROM ${GITHUB_DATABASE}.github_events
@@ -393,7 +393,8 @@ export async function getPackageDetails(package_name, version) {
             authors,
             licenses,
             max_version,
-            substring(gem_full_name, 1, (length(gem_full_name) - length(splitByChar('-', gem_full_name)[-1])) - 1) AS gem_name
+            substring(gem_full_name, 1, (length(gem_full_name) - length(splitByChar('-', gem_full_name)[-1])) - 1) AS gem_name,
+            dictGet(rubygems.gem_to_repo_name_dict, 'repo_name', gem_name) AS repo_name
         FROM ${GEMS_DATABASE}.versions
         WHERE (gem_name = {package_name:String}) AND ${version ? `number={version:String}` : '1=1'} 
         ORDER BY created_at DESC
@@ -468,8 +469,8 @@ export async function getDownloadsOverTimeByRuby({ package_name, version, min_da
         if (ruby_minor IN
             (SELECT ruby_minor FROM ${GEMS_DATABASE}.${table}
                                 WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (gem = {package_name:String}) 
-                                AND ${version ? `version={version:String}`: '1=1'} AND ruby_minor != '' 
-                                AND ${country_code ? `country_code={country_code:String}`: '1=1'}
+                                AND ${version ? `version={version:String}` : '1=1'} AND ruby_minor != '' 
+                                AND ${country_code ? `country_code={country_code:String}` : '1=1'}
                                 GROUP BY ruby_minor
                                 ORDER BY count() DESC LIMIT 10
             ), ruby_minor, 'other') as name,
@@ -477,8 +478,8 @@ export async function getDownloadsOverTimeByRuby({ package_name, version, min_da
         sum(count) AS y
         FROM ${GEMS_DATABASE}.${table}
         WHERE (date >= {min_date:Date32}) AND (date < if(date_diff('month', {min_date:Date32},{max_date:Date32}) <= 6,toStartOfDay({max_date:Date32})::Date32, toStartOfWeek({max_date:Date32})::Date32)) AND (gem = {package_name:String}) 
-        AND ${version ? `version={version:String}`: '1=1'} AND ruby_minor != '' 
-        AND ${country_code ? `country_code={country_code:String}`: '1=1'}
+        AND ${version ? `version={version:String}` : '1=1'} AND ruby_minor != '' 
+        AND ${country_code ? `country_code={country_code:String}` : '1=1'}
         GROUP BY name, x
         ORDER BY x ASC, y DESC`, {
         package_name: package_name,
@@ -688,23 +689,23 @@ export async function getPackageRanking(package_name, min_date, max_date, countr
     const columns = ['gem', 'date']
     if (country_code) { columns.push('country_code') }
     const table = findOptimalTable(columns)
-    
-    return query('getPackageRanking',`WITH
+
+    return query('getPackageRanking', `WITH
     (   SELECT
         sum(count) AS total
-        FROM ${GEMS_DATABASE}.${table} WHERE gem = {package_name:String} AND 1=1 AND date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}`: '1=1'} 
+        FROM ${GEMS_DATABASE}.${table} WHERE gem = {package_name:String} AND 1=1 AND date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}` : '1=1'} 
     ) AS downloads,
-    (SELECT count() FROM ( SELECT gem as project FROM ${GEMS_DATABASE}.${table} WHERE date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}`: '1=1'} GROUP BY project HAVING sum(count) >= downloads )) as rank,
-    (SELECT uniqExact(gem) FROM ${GEMS_DATABASE}.${table} WHERE date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}`: '1=1'}) as total_packages
+    (SELECT count() FROM ( SELECT gem as project FROM ${GEMS_DATABASE}.${table} WHERE date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}` : '1=1'} GROUP BY project HAVING sum(count) >= downloads )) as rank,
+    (SELECT uniqExact(gem) FROM ${GEMS_DATABASE}.${table} WHERE date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}` : '1=1'}) as total_packages
         SELECT rank, total_packages, CASE
         WHEN total_packages = 0 THEN NULL
         ELSE (rank / total_packages) * 100
     END AS percentile;`, {
-            package_name: package_name,
-            min_date: min_date,
-            max_date: max_date,
-            country_code: country_code,
-        })
+        package_name: package_name,
+        min_date: min_date,
+        max_date: max_date,
+        country_code: country_code,
+    })
 }
 
 
@@ -713,7 +714,7 @@ export const revalidate = 3600;
 const tracer = trace.getTracer('clickgems');
 
 function safeJson(v) {
-  try { return JSON.stringify(v); } catch { return String(v); }
+    try { return JSON.stringify(v); } catch { return String(v); }
 }
 
 function truncate(str, max) {
@@ -722,63 +723,63 @@ function truncate(str, max) {
 
 export async function query(query_name, query, query_params) {
     const span = tracer.startSpan(query_name, {
-      attributes: {
-        'db.system': 'clickhouse',
-        // Add a short/obfuscated statement if you want. Full SQL can be large/PII.
-        // 'db.statement': truncate(query),
-        'db.parameters': truncate(safeJson(query_params ?? {})), // ← your params
-        'db.query': query,
-      },
+        attributes: {
+            'db.system': 'clickhouse',
+            // Add a short/obfuscated statement if you want. Full SQL can be large/PII.
+            // 'db.statement': truncate(query),
+            'db.parameters': truncate(safeJson(query_params ?? {})), // ← your params
+            'db.query': query,
+        },
     });
-  
+
     try {
-      const start = performance.now();
-  
-      // derive the link early so we can attach it, too
-      let query_link = `${process.env.NEXT_PUBLIC_QUERY_LINK_HOST || process.env.CLICKHOUSE_HOST}?query=${base64Encode(query)}`;
-      if (query_params != null) {
-        const prefixedParams = Object.fromEntries(
-          Object.entries(query_params)
-            .filter(([, v]) => v !== undefined)
-            .map(([k, v]) => [`param_${k}`, Array.isArray(v) ? `['${v.join("','")}']` : v])
+        const start = performance.now();
+
+        // derive the link early so we can attach it, too
+        let query_link = `${process.env.NEXT_PUBLIC_QUERY_LINK_HOST || process.env.CLICKHOUSE_HOST}?query=${base64Encode(query)}`;
+        if (query_params != null) {
+            const prefixedParams = Object.fromEntries(
+                Object.entries(query_params)
+                    .filter(([, v]) => v !== undefined)
+                    .map(([k, v]) => [`param_${k}`, Array.isArray(v) ? `['${v.join("','")}']` : v])
+            );
+            const qs = Object.entries(prefixedParams)
+                .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`)
+                .join('&');
+            query_link = `${query_link}&tab=results&${qs}`;
+        }
+        span.setAttribute('clickhouse.query_link', query_link);
+
+        // run the query inside the span’s context
+        const results = await context.with(trace.setSpan(context.active(), span), () =>
+            clickhouse.query({
+                query,
+                query_params,
+                format: 'JSONEachRow',
+                clickhouse_settings: getQueryCustomSettings(query_name),
+            })
         );
-        const qs = Object.entries(prefixedParams)
-          .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`)
-          .join('&');
-        query_link = `${query_link}&tab=results&${qs}`;
-      }
-      span.setAttribute('clickhouse.query_link', query_link);
-  
-      // run the query inside the span’s context
-      const results = await context.with(trace.setSpan(context.active(), span), () =>
-        clickhouse.query({
-          query,
-          query_params,
-          format: 'JSONEachRow',
-          clickhouse_settings: getQueryCustomSettings(query_name),
-        })
-      );
-  
-      const data = await results.json(); // materialize rows to count
-      const end = performance.now();
-  
-      // annotate outcome
-      if (span.isRecording()) {
-        span.setAttribute('db.response_time_ms', Math.round(end - start));
-        span.setAttribute('db.rows_returned', Array.isArray(data) ? data.length : 0);
-        // attach useful customs
-        span.setAttribute('clickhouse.settings', truncate(safeJson(getQueryCustomSettings(query_name))));
-      }
-  
-      span.setStatus({ code: SpanStatusCode.UNSET });
-      span.end();
-      return Promise.all([Promise.resolve(query_link), Promise.resolve(data)]);
+
+        const data = await results.json(); // materialize rows to count
+        const end = performance.now();
+
+        // annotate outcome
+        if (span.isRecording()) {
+            span.setAttribute('db.response_time_ms', Math.round(end - start));
+            span.setAttribute('db.rows_returned', Array.isArray(data) ? data.length : 0);
+            // attach useful customs
+            span.setAttribute('clickhouse.settings', truncate(safeJson(getQueryCustomSettings(query_name))));
+        }
+
+        span.setStatus({ code: SpanStatusCode.UNSET });
+        span.end();
+        return Promise.all([Promise.resolve(query_link), Promise.resolve(data)]);
     } catch (err) {
-      if (span.isRecording()) {
-        span.recordException(err);
-        span.setStatus({ code: SpanStatusCode.ERROR, message: err?.message });
-      }
-      span.end();
-      throw err;
+        if (span.isRecording()) {
+            span.recordException(err);
+            span.setStatus({ code: SpanStatusCode.ERROR, message: err?.message });
+        }
+        span.end();
+        throw err;
     }
-  }
+}
