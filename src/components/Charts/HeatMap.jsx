@@ -1,7 +1,6 @@
 'use client';
 import React, { useRef, useState } from 'react';
 import isEqual from 'lodash/isEqual';
-import ReactECharts from 'echarts-for-react';
 import styles from './styles.module.css';
 import Loading from '../Loading';
 import Link from 'next/link';
@@ -9,6 +8,13 @@ import {
   ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/20/solid';
 import CopyDropdown from '../CopyDropdown';
+import dynamic from 'next/dynamic'
+
+// ECharts depends on browser APIs (window/document), so it breaks during Next.js SSR.
+// We load it dynamically on the client only.
+const ReactECharts = dynamic(() => import('echarts-for-react'), {
+  ssr: false,
+})
 
 export default function HeatMap({ data, title, subtitle, onClick, link, metabaseLink }) {
   const chartRef = useRef();

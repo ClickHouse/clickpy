@@ -1,4 +1,3 @@
-import ReactECharts from 'echarts-for-react';
 import Loading from '../Loading';
 import isEqual from 'lodash/isEqual';
 import { useState } from 'react';
@@ -7,6 +6,13 @@ import {
   ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/20/solid';
 import CopyDropdown from '../CopyDropdown';
+import dynamic from 'next/dynamic'
+
+// ECharts depends on browser APIs (window/document), so it breaks during Next.js SSR.
+// We load it dynamically on the client only.
+const ReactECharts = dynamic(() => import('echarts-for-react'), {
+  ssr: false,
+})
 
 export default function Pie({ data, onClick, link, metabaseLink }) {
   const [loading, setLoading] = useState(true);

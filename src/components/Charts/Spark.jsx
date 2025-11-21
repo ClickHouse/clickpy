@@ -1,12 +1,18 @@
 'use client';
 import React, { useRef, useState } from 'react';
-import ReactECharts from 'echarts-for-react';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import isEqual from 'lodash/isEqual';
 import Image from 'next/image';
 import CopyDropdown from '../CopyDropdown';
+import dynamic from 'next/dynamic'
+
+// ECharts depends on browser APIs (window/document), so it breaks during Next.js SSR.
+// We load it dynamically on the client only.
+const ReactECharts = dynamic(() => import('echarts-for-react'), {
+  ssr: false,
+})
 
 export default function Spark({ name, data, link, metabaseLink, type='bar' }) {
   const chartRef = useRef();
