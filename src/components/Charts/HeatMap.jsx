@@ -102,7 +102,8 @@ export default function HeatMap({ data, title, subtitle, onClick, link, metabase
       },
       extraCssText: 'visibility: hidden;padding:0px;',
       position: (point, params, dom, rect, size) => {
-        const echartsInstance = chartRef.current.getEchartsInstance();
+        const echartsInstance = chartRef.current?.getEchartsInstance();
+        if (!echartsInstance) return;
         const pos = echartsInstance.convertToPixel({ seriesIndex: 0 }, [
           params.value[0],
           params.value[1]

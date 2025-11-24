@@ -123,7 +123,8 @@ export default function MultiLine({ data, stack, fill, onSelect, link, metabaseL
   };
 
   const onMouseOver = () => {
-    const echartsInstance = chartRef.current.getEchartsInstance();
+    const echartsInstance = chartRef.current?.getEchartsInstance();
+    if (!echartsInstance) return;
     echartsInstance.dispatchAction({
       type: 'takeGlobalCursor',
       key: 'brush',
@@ -135,7 +136,8 @@ export default function MultiLine({ data, stack, fill, onSelect, link, metabaseL
 
   const onBrushEnd = (params) => {
     if (params.areas.length > 0) {
-      const echartsInstance = chartRef.current.getEchartsInstance();
+      const echartsInstance = chartRef.current?.getEchartsInstance();
+      if (!echartsInstance) return;
       let start = echartsInstance.convertFromPixel(
         { xAxisIndex: 0 },
         params.areas[0].range[0]

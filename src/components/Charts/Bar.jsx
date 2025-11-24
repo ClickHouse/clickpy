@@ -121,7 +121,8 @@ export default function Bar({ data, stack, onSelect, link, metabaseLink }) {
   };
 
   const onMouseOver = () => {
-    const echartsInstance = chartRef.current.getEchartsInstance();
+    const echartsInstance = chartRef.current?.getEchartsInstance();
+    if (!echartsInstance) return;
     echartsInstance.dispatchAction({
       type: 'takeGlobalCursor',
       key: 'brush',
@@ -133,7 +134,8 @@ export default function Bar({ data, stack, onSelect, link, metabaseLink }) {
 
   const onBrushEnd = (params) => {
     if (params.areas.length > 0) {
-      const echartsInstance = chartRef.current.getEchartsInstance();
+      const echartsInstance = chartRef.current?.getEchartsInstance();
+      if (!echartsInstance) return;
       let start = echartsInstance.convertFromPixel(
         { xAxisIndex: 0 },
         params.areas[0].range[0]

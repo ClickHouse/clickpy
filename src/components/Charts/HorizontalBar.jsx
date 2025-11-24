@@ -176,7 +176,8 @@ export default function HorizontalBar({
   };
 
   const onMouseOver = () => {
-    const echartsInstance = chartRef.current.getEchartsInstance();
+    const echartsInstance = chartRef.current?.getEchartsInstance();
+    if (!echartsInstance) return;
   };
 
   const onChartReady = (echarts) => {
