@@ -3,7 +3,8 @@ import { NextResponse } from 'next/server';
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.has('icon_url') ? searchParams.get('icon_url') : '';
-  const iconUrl = query || 'https://github.com/hugovk.png?size=80';
+  const allowedDomain = 'github.com';
+  const iconUrl = query && new URL(query).hostname === allowedDomain ? query : 'https://github.com/hugovk.png?size=80';
 
     // Fetch the image and convert it to a Base64-encoded string. Revalidate cache every 30days.
     const imageResponse = await fetch(iconUrl, { next: { revalidate: 2592000 } });
