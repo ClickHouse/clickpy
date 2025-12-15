@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyPI Usage Report - November 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .executive-summary {
+            background: #f8f9fa;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+            margin: 30px 0;
+            border-radius: 5px;
+        }
+        
+        .section {
+            margin: 40px 0;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            display: block;
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .growth-positive {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .growth-negative {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .highlight-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .highlight-box strong {
+            color: #856404;
+        }
+        
+        .package-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.3s;
+        }
+        
+        .package-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+        
+        .package-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .package-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .package-growth {
+            background: #28a745;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .package-stats {
+            display: flex;
+            gap: 20px;
+            margin: 10px 0;
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        
+        .badge-aws { background: #FF9900; color: white; }
+        .badge-http { background: #007bff; color: white; }
+        .badge-types { background: #17a2b8; color: white; }
+        .badge-ml { background: #76b900; color: white; }
+        .badge-cli { background: #6f42c1; color: white; }
+        .badge-async { background: #e83e8c; color: white; }
+        
+        .footer {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: center;
+            color: #6c757d;
+        }
+        
+        .implications-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .implication-card {
+            background: white;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .implication-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            .header {
+                background: #667eea;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🐍 PyPI Monthly Usage Report</h1>
+        <div class="subtitle">November 2025 • Global Python Package Insights</div>
+    </div>
+
+    <div class="executive-summary">
+        <h2 style="color: #667eea; margin-bottom: 15px;">📊 Executive Summary</h2>
+        <p>November 2025 showed stable PyPI download volumes with <strong>91.9 billion total downloads</strong>, marking a slight decrease from October's numbers. The ecosystem demonstrated interesting geographic shifts, particularly with Singapore emerging as a growing hub for Python package adoption. The month also witnessed exceptional growth in specialized packages, with task queue systems, CLI frameworks, and inference serving tools leading the charge.</p>
+    </div>
+
+    <div class="section">
+        <h2>🌍 Geographic Distribution</h2>
+        
+        <h3>Top Regions</h3>
+        <p>The United States continues to dominate PyPI downloads, accounting for <strong>72.0%</strong> of all November traffic with 66.2 billion downloads. However, this represents a 0.99% month-over-month decline from October, suggesting a slight normalization after previous growth periods.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Country</th>
+                    <th>Downloads</th>
+                    <th>Share</th>
+                    <th>MoM Change</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>🇺🇸 United States</td>
+                    <td>66.2B</td>
+                    <td>72.0%</td>
+                    <td class="growth-negative">-0.99%</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>🇮🇪 Ireland</td>
+                    <td>3.8B</td>
+                    <td>4.2%</td>
+                    <td class="growth-negative">-2.93%</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>🇩🇪 Germany</td>
+                    <td>3.3B</td>
+                    <td>3.6%</td>
+                    <td class="growth-positive">+0.08%</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>🇸🇬 Singapore</td>
+                    <td>2.6B</td>
+                    <td>2.8%</td>
+                    <td class="growth-positive">+31.2%</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>🇳🇱 Netherlands</td>
+                    <td>2.3B</td>
+                    <td>2.5%</td>
+                    <td class="growth-negative">-0.77%</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>🇬🇧 United Kingdom</td>
+                    <td>2.0B</td>
+                    <td>2.1%</td>
+                    <td class="growth-negative">-11.5%</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>🇮🇳 India</td>
+                    <td>1.4B</td>
+                    <td>1.6%</td>
+                    <td class="growth-positive">+8.0%</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>🇯🇵 Japan</td>
+                    <td>1.1B</td>
+                    <td>1.2%</td>
+                    <td class="growth-positive">+4.1%</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>🇫🇷 France</td>
+                    <td>1.0B</td>
+                    <td>1.1%</td>
+                    <td class="growth-negative">-10.6%</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>🇦🇺 Australia</td>
+                    <td>750M</td>
+                    <td>0.8%</td>
+                    <td class="growth-negative">-2.0%</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="highlight-box">
+            <strong>🚀 Singapore's Surge:</strong> The most significant geographic story of November is Singapore's remarkable <strong>+31.2% growth</strong>, jumping from 2.0 billion to 2.6 billion downloads. This spike likely reflects increased cloud infrastructure deployment and CI/CD adoption in the APAC region, particularly around machine learning and data processing workloads.
+        </div>
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <span class="stat-label">Singapore Growth</span>
+                <span class="stat-number" style="color: #28a745;">+31.2%</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">India Growth</span>
+                <span class="stat-number" style="color: #28a745;">+8.0%</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">US Market Share</span>
+                <span class="stat-number">72.0%</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📦 Most Popular Packages</h2>
+        <p>The November rankings reflect the continued dominance of AWS tooling, HTTP libraries, and fundamental Python infrastructure. Cloud-native development patterns continue to drive the ecosystem.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Package</th>
+                    <th>Downloads</th>
+                    <th>Category</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td><strong>boto3</strong></td>
+                    <td>1.36B</td>
+                    <td><span class="badge badge-aws">AWS SDK</span></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td><strong>urllib3</strong></td>
+                    <td>1.00B</td>
+                    <td><span class="badge badge-http">HTTP Client</span></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td><strong>botocore</strong></td>
+                    <td>962M</td>
+                    <td><span class="badge badge-aws">AWS Core</span></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td><strong>typing-extensions</strong></td>
+                    <td>954M</td>
+                    <td><span class="badge badge-types">Type Hints</span></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td><strong>certifi</strong></td>
+                    <td>921M</td>
+                    <td><span class="badge badge-http">SSL Certificates</span></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td><strong>requests</strong></td>
+                    <td>913M</td>
+                    <td><span class="badge badge-http">HTTP Client</span></td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td><strong>aiobotocore</strong></td>
+                    <td>895M</td>
+                    <td><span class="badge badge-async">Async AWS</span></td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td><strong>idna</strong></td>
+                    <td>871M</td>
+                    <td><span class="badge badge-http">Domain Names</span></td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td><strong>charset-normalizer</strong></td>
+                    <td>859M</td>
+                    <td><span class="badge">Character Encoding</span></td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td><strong>setuptools</strong></td>
+                    <td>842M</td>
+                    <td><span class="badge">Build Tools</span></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td><strong>grpcio-status</strong></td>
+                    <td>761M</td>
+                    <td><span class="badge">gRPC</span></td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td><strong>packaging</strong></td>
+                    <td>747M</td>
+                    <td><span class="badge">Package Metadata</span></td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td><strong>python-dateutil</strong></td>
+                    <td>647M</td>
+                    <td><span class="badge">Date/Time</span></td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td><strong>s3transfer</strong></td>
+                    <td>619M</td>
+                    <td><span class="badge badge-aws">S3 Utilities</span></td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td><strong>numpy</strong></td>
+                    <td>610M</td>
+                    <td><span class="badge badge-ml">Scientific Computing</span></td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td><strong>six</strong></td>
+                    <td>605M</td>
+                    <td><span class="badge">Compatibility</span></td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                    <td><strong>cryptography</strong></td>
+                    <td>582M</td>
+                    <td><span class="badge">Cryptography</span></td>
+                </tr>
+                <tr>
+                    <td>18</td>
+                    <td><strong>s3fs</strong></td>
+                    <td>576M</td>
+                    <td><span class="badge badge-aws">S3 Filesystem</span></td>
+                </tr>
+                <tr>
+                    <td>19</td>
+                    <td><strong>pyyaml</strong></td>
+                    <td>551M</td>
+                    <td><span class="badge">YAML Parser</span></td>
+                </tr>
+                <tr>
+                    <td>20</td>
+                    <td><strong>pydantic</strong></td>
+                    <td>551M</td>
+                    <td><span class="badge badge-types">Data Validation</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="highlight-box">
+            <strong>☁️ AWS Ecosystem Dominance:</strong> The top three positions are all AWS-related packages (boto3, botocore, and aiobotocore at #7), collectively accounting for over 3.2 billion downloads. This underscores the continued centrality of AWS in Python cloud development.
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🚀 Emerging Packages</h2>
+        <p>November 2025 showcased several packages experiencing explosive growth, driven by new use cases, improved tooling, and expanding adoption in production environments.</p>
+
+        <div class="package-card">
+            <div class="package-header">
+                <span class="package-name">huey</span>
+                <span class="package-growth">+1,395%</span>
+            </div>
+            <div class="package-stats">
+                <span>📈 300K → 4.5M downloads</span>
+                <span>🏷️ Task Queue System</span>
+            </div>
+            <p>This lightweight task queue library saw unprecedented adoption in November. The package's simplicity and Redis-backed architecture make it attractive for teams seeking alternatives to heavier solutions like Celery. The growth likely indicates increasing adoption in microservices architectures and small-to-medium production deployments.</p>
+        </div>
+
+        <div class="package-card">
+            <div class="package-header">
+                <span class="package-name">tritonclient</span>
+                <span class="package-growth">+1,139%</span>
+            </div>
+            <div class="package-stats">
+                <span>📈 2.4M → 30.2M downloads</span>
+                <span>🏷️ NVIDIA Inference Client</span>
+            </div>
+            <p>NVIDIA's Triton Inference Server client experienced explosive growth, reflecting the broader AI inference boom. With organizations racing to deploy LLM and ML models in production, Triton's ability to serve models across frameworks (TensorFlow, PyTorch, ONNX) with optimized performance has become critical infrastructure. This aligns with the broader generative AI adoption wave.</p>
+        </div>
+
+        <div class="package-card">
+            <div class="package-header">
+                <span class="package-name">typer-slim</span>
+                <span class="package-growth">+493%</span>
+            </div>
+            <div class="package-stats">
+                <span>📈 5.9M → 35.2M downloads</span>
+                <span>🏷️ Lightweight CLI Framework</span>
+            </div>
+            <p>This slimmed-down version of Typer (FastAPI's CLI sibling) provides a minimal footprint for command-line applications. The dramatic growth suggests developers are prioritizing installation speed and dependency minimization in containerized environments and CI/CD pipelines.</p>
+        </div>
+
+        <div class="package-card">
+            <div class="package-header">
+                <span class="package-name">annotated-doc</span>
+                <span class="package-growth">+284%</span>
+            </div>
+            <div class="package-stats">
+                <span>📈 32.3M → 123.8M downloads</span>
+                <span>🏷️ Inline Documentation Tool</span>
+            </div>
+            <p>This package enables documentation of parameters, attributes, and return types using Python's <code>Annotated</code> type hints. Its growth reflects the Python ecosystem's maturation around type hints and the drive for better developer experience through IDE integration and automated documentation generation. Geographic analysis shows strong adoption in the US (49.9M), UK (25.8M), and Singapore (25.7M)—major tech hubs focused on code quality.</p>
+        </div>
+
+        <div class="package-card">
+            <div class="package-header">
+                <span class="package-name">pyrogram</span>
+                <span class="package-growth">+402%</span>
+            </div>
+            <div class="package-stats">
+                <span>📈 301K → 1.5M downloads</span>
+                <span>🏷️ Telegram Bot Framework</span>
+            </div>
+            <p>This modern Telegram client library continues to gain ground, likely driven by increased bot development for automation, customer service, and community management. The async-first design and clean API make it appealing for production Telegram integrations.</p>
+        </div>
+
+        <h3>Other Notable Risers</h3>
+        <ul style="columns: 2; column-gap: 30px; margin: 20px 0;">
+            <li><strong>workos</strong> (+249%): Enterprise SSO and user management</li>
+            <li><strong>shellcheck-py</strong> (+284%): Shell script quality checking</li>
+            <li><strong>rapidocr</strong> (+468%): OCR library for document processing</li>
+            <li><strong>correctionlib</strong> (+275%): Generic correction library</li>
+            <li><strong>line-bot-sdk</strong> (+725%): LINE messaging platform SDK</li>
+            <li><strong>backports-zstd</strong> (+397%): Zstandard compression</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>💡 Industry Implications</h2>
+        
+        <div class="implications-list">
+            <div class="implication-card">
+                <h4>☁️ Cloud Infrastructure Evolution</h4>
+                <p>The continued dominance of AWS packages combined with Singapore's geographic surge suggests ongoing infrastructure expansion in APAC regions. Organizations are doubling down on cloud-native Python applications, with async patterns becoming standard practice.</p>
+            </div>
+
+            <div class="implication-card">
+                <h4>🤖 AI/ML Inference Scaling</h4>
+                <p>The tritonclient explosion signals that 2025 is the year organizations moved from AI experimentation to production deployment at scale. The challenge has shifted from model training to efficient, reliable inference serving.</p>
+            </div>
+
+            <div class="implication-card">
+                <h4>🔤 Type System Maturation</h4>
+                <p>Strong performance from typing-extensions and annotated-doc indicates the Python community has embraced type hints not just for static analysis, but as a foundation for better tooling, documentation, and runtime validation.</p>
+            </div>
+
+            <div class="implication-card">
+                <h4>⚡ Developer Productivity Focus</h4>
+                <p>The rise of lightweight, focused tools (typer-slim, huey) over monolithic frameworks suggests developers are optimizing for fast iteration cycles, minimal dependencies, and clear separation of concerns—all critical for modern DevOps practices.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🔮 Looking Ahead</h2>
+        <p>As we approach December 2025, several trends warrant monitoring:</p>
+        <ul style="margin: 20px 0; line-height: 2;">
+            <li><strong>APAC Growth:</strong> Will Singapore's momentum continue, and will other Asian markets follow?</li>
+            <li><strong>AI Infrastructure:</strong> How will inference client downloads track against the broader AI adoption cycle?</li>
+            <li><strong>Dependency Minimization:</strong> Will the "slim" package trend expand to other popular libraries?</li>
+            <li><strong>Type Hint Adoption:</strong> As Python 3.13+ features mature, will we see accelerated adoption of advanced typing features?</li>
+        </ul>
+        <p>The November data reinforces that Python remains the language of choice for cloud infrastructure, data science, and increasingly, production AI systems. The ecosystem's continued evolution toward better tooling, stricter typing, and optimized dependencies positions it well for the next phase of modern software development.</p>
+    </div>
+
+    <div class="footer">
+        <h3 style="color: #667eea; margin-bottom: 15px;">Report Details</h3>
+        <p><strong>Report Period:</strong> November 1-30, 2025</p>
+        <p><strong>Total Downloads:</strong> 91.9 billion</p>
+        <p><strong>Data Source:</strong> PyPI download statistics via ClickHouse</p>
+        <p><strong>Report Generated:</strong> December 2025</p>
+        <p style="margin-top: 20px; font-size: 0.9em;">Prepared for Python Developer Community</p>
+    </div>
+</body>
+</html>
