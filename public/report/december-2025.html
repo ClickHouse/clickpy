@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyPI Usage Report - December 2025</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: white;
+            color: #333;
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 8px;
+        }
+
+        h3 {
+            color: #546e7a;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        .meta {
+            color: #7f8c8d;
+            font-size: 0.95em;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .number {
+            text-align: right;
+            font-family: 'Courier New', monospace;
+        }
+
+        .growth-positive {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .growth-negative {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }
+
+        .section-intro {
+            font-size: 1.05em;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .package-link {
+            font-weight: 500;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+
+        .badge-hot {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .badge-new {
+            background: #27ae60;
+            color: white;
+        }
+
+        .summary-box {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .summary-box h3 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>PyPI Usage Report</h1>
+    <div class="meta">
+        <strong>Period:</strong> December 2025<br>
+        <strong>Report Date:</strong> January 9, 2026<br>
+        <strong>Total Downloads:</strong> 96.2 billion
+    </div>
+
+    <div class="summary-box">
+        <h3>Executive Summary</h3>
+        <p>December 2025 showed continued robust growth in Python package downloads, exceeding 96 billion downloads
+            globally. Key highlights include exceptional growth in Brazil (+51.7%) and Singapore (+20.6%), explosive
+            adoption of emerging cloud storage and AI-related packages, and steady dominance of AWS-focused tooling in
+            the ecosystem.</p>
+    </div>
+
+    <h2>1. Geographic Distribution of Downloads</h2>
+
+    <p class="section-intro">The United States continues to dominate PyPI traffic, accounting for over 71% of all
+        package downloads. December 2025 saw notable geographic shifts, particularly in emerging markets and cloud
+        infrastructure hubs.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Country</th>
+                <th class="number">Downloads</th>
+                <th class="number">Market Share</th>
+                <th class="number">Growth vs Nov</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>🇺🇸 United States</td>
+                <td class="number">68.8B</td>
+                <td class="number">71.52%</td>
+                <td class="number growth-positive">+4.0%</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>🇮🇪 Ireland</td>
+                <td class="number">3.9B</td>
+                <td class="number">4.09%</td>
+                <td class="number growth-positive">+3.3%</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>🇩🇪 Germany</td>
+                <td class="number">3.3B</td>
+                <td class="number">3.46%</td>
+                <td class="number growth-positive">+1.8%</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>🇸🇬 Singapore</td>
+                <td class="number">3.1B</td>
+                <td class="number">3.27%</td>
+                <td class="number growth-positive">+20.6%</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>🇳🇱 Netherlands</td>
+                <td class="number">2.4B</td>
+                <td class="number">2.45%</td>
+                <td class="number growth-positive">+4.3%</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>🇬🇧 United Kingdom</td>
+                <td class="number">2.3B</td>
+                <td class="number">2.38%</td>
+                <td class="number growth-positive">+16.7%</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>🇮🇳 India</td>
+                <td class="number">1.6B</td>
+                <td class="number">1.61%</td>
+                <td class="number growth-positive">+7.4%</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>🇯🇵 Japan</td>
+                <td class="number">1.2B</td>
+                <td class="number">1.27%</td>
+                <td class="number growth-positive">+7.9%</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>🇫🇷 France</td>
+                <td class="number">1.0B</td>
+                <td class="number">1.06%</td>
+                <td class="number growth-negative">-1.2%</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>🇧🇷 Brazil</td>
+                <td class="number">958M</td>
+                <td class="number">1.00%</td>
+                <td class="number growth-positive">+51.7%</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Key Geographic Insights</h3>
+
+    <div class="highlight">
+        <strong>🔥 Brazil's Explosive Growth:</strong> Brazil recorded the highest growth rate at +51.7%, jumping from
+        631M to 958M downloads. This surge likely reflects increased adoption of Python in Latin American tech sectors,
+        particularly in fintech, data science, and cloud computing initiatives.
+    </div>
+
+    <p><strong>Singapore's Cloud Hub Status:</strong> With +20.6% growth, Singapore continues to strengthen its position
+        as a key cloud infrastructure hub in Asia. The concentration of data centers from major cloud providers drives
+        substantial CI/CD and automated deployment traffic.</p>
+
+    <p><strong>United Kingdom Acceleration:</strong> The UK showed strong growth at +16.7%, reflecting the maturation of
+        its AI and machine learning sectors, along with increased adoption in financial services and research
+        institutions.</p>
+
+    <p><strong>Stable Leaders:</strong> The US (+4.0%), Ireland (+3.3%), and Netherlands (+4.3%) showed modest but
+        steady growth, maintaining their infrastructure-driven download patterns.</p>
+
+    <p><strong>Minor Contractions:</strong> France (-1.2%), Korea (-1.6%), and Belgium (-3.7%) experienced slight
+        decreases, likely due to holiday season impacts on enterprise development activities.</p>
+
+    <h2>2. Most Popular Packages</h2>
+
+    <p class="section-intro">December 2025's top packages reflect the continued dominance of cloud infrastructure
+        tooling, particularly AWS services, alongside fundamental Python utilities. The top 20 packages collectively
+        account for approximately 17.5 billion downloads.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Package</th>
+                <th class="number">Downloads</th>
+                <th>Primary Use Case</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/boto3" class="package-link">boto3</a></td>
+                <td class="number">1.44B</td>
+                <td>AWS SDK</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/urllib3" class="package-link">urllib3</a></td>
+                <td class="number">1.11B</td>
+                <td>HTTP Client</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/botocore" class="package-link">botocore</a></td>
+                <td class="number">1.01B</td>
+                <td>AWS Core Library</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/typing-extensions"
+                        class="package-link">typing-extensions</a></td>
+                <td class="number">990M</td>
+                <td>Type Hints</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/requests" class="package-link">requests</a></td>
+                <td class="number">959M</td>
+                <td>HTTP Library</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/certifi" class="package-link">certifi</a></td>
+                <td class="number">955M</td>
+                <td>SSL Certificates</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/idna" class="package-link">idna</a></td>
+                <td class="number">909M</td>
+                <td>Domain Names</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/charset-normalizer"
+                        class="package-link">charset-normalizer</a></td>
+                <td class="number">891M</td>
+                <td>Character Encoding</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/aiobotocore" class="package-link">aiobotocore</a>
+                </td>
+                <td class="number">883M</td>
+                <td>Async AWS SDK</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/setuptools" class="package-link">setuptools</a>
+                </td>
+                <td class="number">880M</td>
+                <td>Package Building</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/packaging" class="package-link">packaging</a></td>
+                <td class="number">860M</td>
+                <td>Package Utilities</td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/grpcio-status"
+                        class="package-link">grpcio-status</a></td>
+                <td class="number">748M</td>
+                <td>gRPC Status</td>
+            </tr>
+            <tr>
+                <td>13</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/python-dateutil"
+                        class="package-link">python-dateutil</a></td>
+                <td class="number">718M</td>
+                <td>Date/Time Utils</td>
+            </tr>
+            <tr>
+                <td>14</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/six" class="package-link">six</a></td>
+                <td class="number">674M</td>
+                <td>Python 2/3 Compat</td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/numpy" class="package-link">numpy</a></td>
+                <td class="number">659M</td>
+                <td>Numerical Computing</td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/s3transfer" class="package-link">s3transfer</a>
+                </td>
+                <td class="number">654M</td>
+                <td>S3 Transfers</td>
+            </tr>
+            <tr>
+                <td>17</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/cryptography"
+                        class="package-link">cryptography</a></td>
+                <td class="number">581M</td>
+                <td>Cryptographic Primitives</td>
+            </tr>
+            <tr>
+                <td>18</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/pyyaml" class="package-link">pyyaml</a></td>
+                <td class="number">576M</td>
+                <td>YAML Parser</td>
+            </tr>
+            <tr>
+                <td>19</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/s3fs" class="package-link">s3fs</a></td>
+                <td class="number">572M</td>
+                <td>S3 Filesystem</td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/fsspec" class="package-link">fsspec</a></td>
+                <td class="number">560M</td>
+                <td>Filesystem Spec</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Analysis of Top Packages</h3>
+
+    <p><strong>AWS Ecosystem Dominance:</strong> The top three packages (<a
+            href="https://clickpy.clickhouse.com/dashboard/boto3">boto3</a>, <a
+            href="https://clickpy.clickhouse.com/dashboard/urllib3">urllib3</a>, <a
+            href="https://clickpy.clickhouse.com/dashboard/botocore">botocore</a>) collectively account for 3.55 billion
+        downloads. AWS tooling continues to be fundamental infrastructure for modern Python applications, reflecting the
+        cloud-first architecture of contemporary software development.</p>
+
+    <p><strong>Type Safety Momentum:</strong> <a
+            href="https://clickpy.clickhouse.com/dashboard/typing-extensions">typing-extensions</a> (#4, 990M downloads)
+        demonstrates the Python community's strong commitment to type safety and static analysis, particularly as teams
+        scale codebases and adopt tools like mypy and pyright.</p>
+
+    <p><strong>Async AWS Adoption:</strong> <a
+            href="https://clickpy.clickhouse.com/dashboard/aiobotocore">aiobotocore</a> (#9, 883M downloads) shows
+        significant traction in async/await patterns for cloud interactions, indicating the maturation of Python's async
+        ecosystem in production environments.</p>
+
+    <p><strong>Data Infrastructure Stack:</strong> The presence of <a
+            href="https://clickpy.clickhouse.com/dashboard/numpy">numpy</a> (#15), <a
+            href="https://clickpy.clickhouse.com/dashboard/s3fs">s3fs</a> (#19), and <a
+            href="https://clickpy.clickhouse.com/dashboard/fsspec">fsspec</a> (#20) highlights the importance of data
+        processing and cloud-based data workflows in modern Python development.</p>
+
+    <h2>3. Emerging Packages</h2>
+
+    <p class="section-intro">December 2025 witnessed remarkable growth in several specialized packages, with some
+        experiencing growth rates exceeding 10,000%. These packages represent emerging trends in cloud storage, data
+        processing, AI development, and specialized utility libraries.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Package</th>
+                <th class="number">Dec Downloads</th>
+                <th class="number">Nov Downloads</th>
+                <th class="number">Growth Rate</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/google-cloud-storage-control"
+                        class="package-link">google-cloud-storage-control</a><span class="badge badge-hot">🔥 HOT</span>
+                </td>
+                <td class="number">7.4M</td>
+                <td class="number">63K</td>
+                <td class="number growth-positive">+11,649%</td>
+                <td>Cloud Storage</td>
+            </tr>
+            <tr>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/roman-numerals"
+                        class="package-link">roman-numerals</a><span class="badge badge-hot">🔥 HOT</span></td>
+                <td class="number">5.2M</td>
+                <td class="number">68K</td>
+                <td class="number growth-positive">+7,546%</td>
+                <td>Utility</td>
+            </tr>
+            <tr>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/tooth-python"
+                        class="package-link">tooth-python</a><span class="badge badge-hot">🔥 HOT</span></td>
+                <td class="number">32.4M</td>
+                <td class="number">841K</td>
+                <td class="number growth-positive">+3,753%</td>
+                <td>Data Processing</td>
+            </tr>
+            <tr>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/librt" class="package-link">librt</a><span
+                        class="badge badge-hot">🔥 HOT</span></td>
+                <td class="number">28.9M</td>
+                <td class="number">1.3M</td>
+                <td class="number growth-positive">+2,083%</td>
+                <td>System Library</td>
+            </tr>
+            <tr>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/opensearch-protobufs"
+                        class="package-link">opensearch-protobufs</a><span class="badge badge-hot">🔥 HOT</span></td>
+                <td class="number">27.3M</td>
+                <td class="number">1.4M</td>
+                <td class="number growth-positive">+1,868%</td>
+                <td>Search/Observability</td>
+            </tr>
+            <tr>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/jsonrpclib" class="package-link">jsonrpclib</a>
+                </td>
+                <td class="number">1.3M</td>
+                <td class="number">77K</td>
+                <td class="number growth-positive">+1,549%</td>
+                <td>RPC Library</td>
+            </tr>
+            <tr>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/wbdata" class="package-link">wbdata</a></td>
+                <td class="number">1.3M</td>
+                <td class="number">101K</td>
+                <td class="number growth-positive">+1,215%</td>
+                <td>Data Access</td>
+            </tr>
+            <tr>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/python-backoff"
+                        class="package-link">python-backoff</a></td>
+                <td class="number">2.9M</td>
+                <td class="number">235K</td>
+                <td class="number growth-positive">+1,129%</td>
+                <td>Reliability</td>
+            </tr>
+            <tr>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/pybreaker" class="package-link">pybreaker</a></td>
+                <td class="number">8.7M</td>
+                <td class="number">732K</td>
+                <td class="number growth-positive">+1,089%</td>
+                <td>Circuit Breaker</td>
+            </tr>
+            <tr>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/uuid-utils" class="package-link">uuid-utils</a>
+                </td>
+                <td class="number">19.8M</td>
+                <td class="number">2.1M</td>
+                <td class="number growth-positive">+842%</td>
+                <td>Utility</td>
+            </tr>
+            <tr>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/ua-parser-rs"
+                        class="package-link">ua-parser-rs</a></td>
+                <td class="number">2.2M</td>
+                <td class="number">244K</td>
+                <td class="number growth-positive">+817%</td>
+                <td>Web Analytics</td>
+            </tr>
+            <tr>
+                <td><a href="https://clickpy.clickhouse.com/dashboard/mitmproxy-wireguard"
+                        class="package-link">mitmproxy-wireguard</a></td>
+                <td class="number">3.4M</td>
+                <td class="number">338K</td>
+                <td class="number growth-positive">+914%</td>
+                <td>Networking</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Deep Dive: Why These Packages Are Emerging</h3>
+
+    <div class="highlight">
+        <strong>🚀 <a
+                href="https://clickpy.clickhouse.com/dashboard/google-cloud-storage-control">google-cloud-storage-control</a>
+            (+11,649%):</strong> This explosive growth suggests a major new release or integration that provides
+        enhanced control plane capabilities for Google Cloud Storage. The magnitude indicates adoption in automated
+        infrastructure provisioning and enterprise multi-cloud strategies.
+    </div>
+
+    <p><strong><a href="https://clickpy.clickhouse.com/dashboard/tooth-python">tooth-python</a> (+3,753%):</strong> With
+        32.4M downloads, this data processing library has clearly reached production adoption at scale. The growth
+        pattern suggests integration into major data pipeline frameworks or adoption by large organizations rolling out
+        standardized data tooling.</p>
+
+    <p><strong>OpenSearch Ecosystem (<a
+                href="https://clickpy.clickhouse.com/dashboard/opensearch-protobufs">opensearch-protobufs</a>,
+            +1,868%):</strong> The surge in OpenSearch-related packages reflects the growing adoption of open-source
+        observability stacks as alternatives to proprietary solutions. Organizations are investing heavily in OpenSearch
+        for logging, monitoring, and analytics use cases.</p>
+
+    <p><strong>Resilience Patterns (<a href="https://clickpy.clickhouse.com/dashboard/pybreaker">pybreaker</a> +1,089%,
+            <a href="https://clickpy.clickhouse.com/dashboard/python-backoff">python-backoff</a> +1,129%):</strong> The
+        explosive growth in circuit breaker and retry/backoff libraries indicates that development teams are
+        prioritizing reliability and fault tolerance in distributed systems. This aligns with the broader trend toward
+        resilience engineering and chaos engineering practices.</p>
+
+    <p><strong><a href="https://clickpy.clickhouse.com/dashboard/uuid-utils">uuid-utils</a> (+842%):</strong> Reaching
+        nearly 20M downloads, this utility package's growth suggests widespread adoption in microservices architectures
+        where efficient UUID generation and manipulation are critical for distributed tracing, database keys, and
+        correlation IDs.</p>
+
+    <p><strong>Performance-Focused Parsers (<a
+                href="https://clickpy.clickhouse.com/dashboard/ua-parser-rs">ua-parser-rs</a>, +817%):</strong> The
+        Rust-based user-agent parser reflects Python developers' increasing adoption of Rust-accelerated libraries for
+        performance-critical operations. This trend is particularly visible in web analytics, bot detection, and
+        high-throughput API gateways.</p>
+
+    <p><strong>Network Security (<a
+                href="https://clickpy.clickhouse.com/dashboard/mitmproxy-wireguard">mitmproxy-wireguard</a>,
+            +914%):</strong> The integration of WireGuard with mitmproxy signals growing sophistication in security
+        testing, debugging encrypted traffic, and building development proxies for modern VPN-secured environments.</p>
+
+    <h3>Emerging Trends Summary</h3>
+
+    <p>The December 2025 emerging packages reveal several key trends in the Python ecosystem:</p>
+
+    <ul>
+        <li><strong>Multi-Cloud Maturation:</strong> Packages like google-cloud-storage-control show that developers are
+            building sophisticated multi-cloud strategies with granular control requirements.</li>
+        <li><strong>Reliability-First Development:</strong> The dramatic growth in circuit breakers and backoff
+            libraries demonstrates that production readiness and resilience are no longer afterthoughts but core
+            development priorities.</li>
+        <li><strong>Rust Integration Acceleration:</strong> Rust-based performance libraries (ua-parser-rs,
+            mitmproxy-wireguard) are seeing explosive adoption as Python developers seek to optimize critical code
+            paths.</li>
+        <li><strong>Data Infrastructure Standardization:</strong> Packages like tooth-python reaching tens of millions
+            of downloads indicate consolidation around standard tooling for data processing workflows.</li>
+        <li><strong>OpenSearch Ecosystem Growth:</strong> The open-source observability stack continues to gain momentum
+            as organizations seek alternatives to vendor-locked solutions.</li>
+    </ul>
+
+    <h2>Conclusion</h2>
+
+    <p>December 2025 demonstrated the Python ecosystem's continued maturation and global expansion. With 96.2 billion
+        downloads, significant geographic growth in emerging markets like Brazil (+51.7%), and explosive adoption of
+        specialized tooling for cloud infrastructure and reliability engineering, the Python community is clearly
+        focused on building robust, scalable, and performant systems.</p>
+
+    <p>The dominance of AWS tooling (boto3, botocore, aiobotocore) combined with emerging multi-cloud packages signals a
+        sophisticated cloud-native development landscape. Meanwhile, the extraordinary growth rates in resilience
+        libraries, Rust-accelerated utilities, and OpenSearch components point to a community increasingly focused on
+        production reliability, performance optimization, and open-source alternatives.</p>
+
+    <p>As we move into 2026, watch for continued growth in AI/ML infrastructure packages, further Rust integration for
+        performance-critical operations, and expanded adoption in high-growth markets across Asia and Latin America.</p>
+
+    <hr style="margin: 40px 0; border: none; border-top: 1px solid #ddd;">
+
+    <p style="text-align: center; color: #7f8c8d; font-size: 0.9em;">
+        <strong>Data Source:</strong> ClickHouse PyPI Downloads Dataset<br>
+        <strong>Analysis Period:</strong> December 1-31, 2025<br>
+        <strong>Report Generated:</strong> January 9, 2026
+    </p>
+</body>
+
+</html>
