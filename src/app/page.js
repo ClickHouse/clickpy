@@ -10,7 +10,8 @@ import {
   getRecentReleases,
   getPopularEmergingRepos,
   getPopularReposNeedingRefresh,
-  hotPackages
+  hotPackages,
+  installationsPerInstaller,
 } from '@/utils/clickhouse';
 import 'server-only';
 
@@ -24,12 +25,13 @@ export const revalidate = 3600
 export default async function Home() {
   const total_downloads = await getTotalDownloads();
   const projects = await getProjectCount();
-  const [recent_releases, emerging_repos, needing_refresh, hot_packages] =
+  const [recent_releases, emerging_repos, needing_refresh, hot_packages, installations_per_installer] =
     await Promise.all([
       getRecentReleases(projects[1].map((p) => p.project)),
       getPopularEmergingRepos(),
       getPopularReposNeedingRefresh(),
-      hotPackages()
+      hotPackages(),
+      installationsPerInstaller(),
   ]);
 
 
@@ -67,6 +69,7 @@ export default async function Home() {
                     emerging_repos={emerging_repos}
                     needing_refresh={needing_refresh}
                     hot_packages={hot_packages}
+                    installations_per_installer={installations_per_installer}
                   />
                 </div>
               </div>
