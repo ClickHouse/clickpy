@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { GoogleAnalytics } from '@next/third-parties/google';
+import { GoogleTagManager } from '@next/third-parties/google';
 import HyperDX from '@hyperdx/browser';
 
 
@@ -32,7 +32,7 @@ export default function GAWithConsent({ children }) {
 
   return (
     <>
-      {hasConsent && <GoogleAnalytics gaId="G-KF1LLRTQ5Q" />}
+      {hasConsent && <GoogleTagManager gtmId="GTM-T55CC768" />}
       {children}
     </>
   );
