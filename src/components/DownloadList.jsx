@@ -34,7 +34,7 @@ async function DownloadList({
   }
   const { total, last_day, last_week, last_month } = data[0];
   return (
-    <div {...props}>
+    <section {...props}>
          
       <div className='rounded-lg bg-slate-850 flex md:justify-between p-4 h-28 border border-slate-700'>
 
@@ -47,29 +47,29 @@ async function DownloadList({
               width={16}
               height={16}
             />
-            <div className='hidden lg:flex flex-col pt-1.5'>
-              <p className='text-xl font-bold'>Downloads</p>
-              <p className='text-slate-200'>by period</p>
-            </div>
+            <h3 className='hidden lg:flex flex-col pt-1.5'>
+              <span className='text-xl font-bold'>Downloads</span>
+              <span className='text-slate-200'>by period</span>
+            </h3>
           </div>
-          <div className='md:justify-items-end flex flex-row mr-4 gap-4'>
-            <div className='xl:block'>
-              <p className='text-xl mr-2 font-bold'>{formatNumber(last_day)}</p>
-              <p className='text-slate-200 text-center'>last day</p>
-            </div>
-            <div className='hidden lg:block'>
-              <p className='text-xl mr-2 font-bold'>{formatNumber(last_week)}</p>
-              <p className='text-slate-200 text-center'>last week</p>
-            </div>
-            <div className='lg:block'>
-              <p className='text-xl mr-2 font-bold'>{formatNumber(last_month)}</p>
-              <p className='text-slate-200 text-center'>last month</p>
-            </div>
-            <div>
-              <p className='text-xl font-bold'>{formatNumber(total)}</p>
-              <p className='text-slate-200 md:text-center'>total</p>
-            </div>
-          </div>
+          <ul className='md:justify-items-end flex flex-row mr-4 gap-4'>
+            <li className='xl:flex flex-col'>
+              <span className='text-xl mr-2 font-bold'>{formatNumber(last_day)}</span>
+              <span className='text-slate-200 text-center'>last day</span>
+            </li>
+            <li className='hidden lg:flex flex-col'>
+              <span className='text-xl mr-2 font-bold'>{formatNumber(last_week)}</span>
+              <span className='text-slate-200 text-center'>last week</span>
+            </li>
+            <li className='lg:flex flex-col'>
+              <span className='text-xl mr-2 font-bold'>{formatNumber(last_month)}</span>
+              <span className='text-slate-200 text-center'>last month</span>
+            </li>
+            <li className='flex flex-col'>
+              <span className='text-xl font-bold'>{formatNumber(total)}</span>
+              <span className='text-slate-200 md:text-center'>total</span>
+            </li>
+          </ul>
         </div>
        
         <div className='flex-row flex justify-end w-4 mt-[-10px] mr-[-10px] '>
@@ -81,7 +81,7 @@ async function DownloadList({
         </div>
 
       </div>
-    </div>
+    </section>
   );
 }
 

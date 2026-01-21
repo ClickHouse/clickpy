@@ -1,6 +1,5 @@
 'use client';
 import React, { useRef, useState } from 'react';
-import ReactECharts from 'echarts-for-react';
 import isEqual from 'lodash/isEqual';
 import Loading from '../Loading';
 import Link from 'next/link';
@@ -8,6 +7,13 @@ import {
   ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/20/solid';
 import CopyDropdown from '../CopyDropdown';
+import dynamic from 'next/dynamic'
+
+// ECharts depends on browser APIs (window/document), so it breaks during Next.js SSR.
+// We load it dynamically on the client only.
+const ReactECharts = dynamic(() => import('echarts-for-react'), {
+  ssr: false,
+})
 
 export default function MultiLine({ data, stack, fill, onSelect, link, metabaseLink }) {
   const [loading, setLoading] = useState(true);
@@ -117,7 +123,8 @@ export default function MultiLine({ data, stack, fill, onSelect, link, metabaseL
   };
 
   const onMouseOver = () => {
-    const echartsInstance = chartRef.current.getEchartsInstance();
+    const echartsInstance = chartRef.current?.getEchartsInstance();
+    if (!echartsInstance) return;
     echartsInstance.dispatchAction({
       type: 'takeGlobalCursor',
       key: 'brush',
@@ -129,7 +136,8 @@ export default function MultiLine({ data, stack, fill, onSelect, link, metabaseL
 
   const onBrushEnd = (params) => {
     if (params.areas.length > 0) {
-      const echartsInstance = chartRef.current.getEchartsInstance();
+      const echartsInstance = chartRef.current?.getEchartsInstance();
+      if (!echartsInstance) return;
       let start = echartsInstance.convertFromPixel(
         { xAxisIndex: 0 },
         params.areas[0].range[0]

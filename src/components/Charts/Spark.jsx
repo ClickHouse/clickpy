@@ -1,12 +1,18 @@
 'use client';
 import React, { useRef, useState } from 'react';
-import ReactECharts from 'echarts-for-react';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import isEqual from 'lodash/isEqual';
 import Image from 'next/image';
 import CopyDropdown from '../CopyDropdown';
+import dynamic from 'next/dynamic'
+
+// ECharts depends on browser APIs (window/document), so it breaks during Next.js SSR.
+// We load it dynamically on the client only.
+const ReactECharts = dynamic(() => import('echarts-for-react'), {
+  ssr: false,
+})
 
 export default function Spark({ name, data, link, metabaseLink, type='bar' }) {
   const chartRef = useRef();
@@ -20,7 +26,8 @@ export default function Spark({ name, data, link, metabaseLink, type='bar' }) {
   };
 
   const onMouseOver = () => {
-    const echartsInstance = chartRef.current.getEchartsInstance();
+    const echartsInstance = chartRef.current?.getEchartsInstance();
+    if (!echartsInstance) return;
     const newOptions = echartsInstance.getOption();
     newOptions.series[0].lineStyle.opacity = 0.8;
     newOptions.series[0].lineStyle.shadowColor = '#262626';
@@ -59,8 +66,6 @@ export default function Spark({ name, data, link, metabaseLink, type='bar' }) {
       top: '10px'
     },
     xAxis: {
-      type: 'category',
-      data: data.map((p) => p.x),
       show: true,
       type: 'category',
       data: xAxis,
@@ -116,7 +121,8 @@ export default function Spark({ name, data, link, metabaseLink, type='bar' }) {
   };
 
   const onMouseOut = () => {
-    const echartsInstance = chartRef.current.getEchartsInstance();
+    const echartsInstance = chartRef.current?.getEchartsInstance();
+    if (!echartsInstance) return;
     echartsInstance.setOption(options);
     setSelected(false);
   };
