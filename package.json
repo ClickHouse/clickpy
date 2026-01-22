@@ -35,7 +35,7 @@
     "echarts-for-react": "^3.0.2",
     "eslint": "8.46.0",
     "eslint-config-next": "13.4.13",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "next": "^14.2.35",
     "numeral": "^2.0.6",
     "postcss": "8.4.31",
