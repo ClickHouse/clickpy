@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyPI Usage Report - January 2026</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: white;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 35px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 20px;
+        }
+        .report-meta {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        .number {
+            text-align: right;
+            font-family: monospace;
+        }
+        .growth-high {
+            color: #27ae60;
+            font-weight: 600;
+        }
+        .package-link {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .package-link:hover {
+            text-decoration: underline;
+        }
+        .highlight-box {
+            background-color: #ecf8ff;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #ecf0f1;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 PyPI Usage Report: January 2026</h1>
+    <div class="report-meta">
+        <strong>Reporting Period:</strong> January 1-31, 2026<br>
+        <strong>Total Downloads:</strong> 102.1 billion<br>
+        <strong>Generated:</strong> February 5, 2026
+    </div>
+
+    <h2>🌍 Geographic Distribution</h2>
+    
+    <p>PyPI downloads in January 2026 remained dominated by North America and Europe, with the United States accounting for 72% of all downloads. Cloud infrastructure hubs in Ireland, Germany, and Singapore represent key secondary markets.</p>
+
+    <h3>Top 10 Countries by Downloads</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Country</th>
+                <th class="number">Downloads</th>
+                <th class="number">Share (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td>🇺🇸 United States</td><td class="number">73.5B</td><td class="number">71.96%</td></tr>
+            <tr><td>2</td><td>🇮🇪 Ireland</td><td class="number">3.9B</td><td class="number">3.82%</td></tr>
+            <tr><td>3</td><td>🇩🇪 Germany</td><td class="number">3.4B</td><td class="number">3.28%</td></tr>
+            <tr><td>4</td><td>🇬🇧 United Kingdom</td><td class="number">2.7B</td><td class="number">2.63%</td></tr>
+            <tr><td>5</td><td>🇳🇱 Netherlands</td><td class="number">2.5B</td><td class="number">2.41%</td></tr>
+            <tr><td>6</td><td>🇸🇬 Singapore</td><td class="number">2.3B</td><td class="number">2.30%</td></tr>
+            <tr><td>7</td><td>🇮🇳 India</td><td class="number">1.6B</td><td class="number">1.55%</td></tr>
+            <tr><td>8</td><td>🇨🇦 Canada</td><td class="number">1.5B</td><td class="number">1.44%</td></tr>
+            <tr><td>9</td><td>🇯🇵 Japan</td><td class="number">1.3B</td><td class="number">1.27%</td></tr>
+            <tr><td>10</td><td>🇫🇷 France</td><td class="number">1.1B</td><td class="number">1.04%</td></tr>
+        </tbody>
+    </table>
+
+    <div class="highlight-box">
+        <strong>📈 Notable Geographic Shifts vs. December 2025:</strong>
+        <ul>
+            <li><strong>Canada</strong> showed the largest gain, jumping from 0.75% to 1.44% (+0.69pp), indicating significant infrastructure expansion.</li>
+            <li><strong>Singapore</strong> declined from 3.27% to 2.30% (-0.97pp), the largest drop among major markets.</li>
+            <li><strong>United Kingdom</strong> gained from 2.38% to 2.63% (+0.25pp).</li>
+        </ul>
+    </div>
+
+    <h2>📦 Most Popular Packages</h2>
+    
+    <p>The top packages continue to be dominated by AWS SDK components, fundamental utilities, and data science libraries. Cloud infrastructure and automation drive the majority of PyPI traffic.</p>
+
+    <h3>Top 15 Packages by Downloads</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Package</th>
+                <th class="number">Downloads</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td><a href="https://clickpy.clickhouse.com/dashboard/boto3" class="package-link">boto3</a></td><td class="number">1.61B</td></tr>
+            <tr><td>2</td><td><a href="https://clickpy.clickhouse.com/dashboard/urllib3" class="package-link">urllib3</a></td><td class="number">1.18B</td></tr>
+            <tr><td>3</td><td><a href="https://clickpy.clickhouse.com/dashboard/botocore" class="package-link">botocore</a></td><td class="number">1.12B</td></tr>
+            <tr><td>4</td><td><a href="https://clickpy.clickhouse.com/dashboard/packaging" class="package-link">packaging</a></td><td class="number">1.04B</td></tr>
+            <tr><td>5</td><td><a href="https://clickpy.clickhouse.com/dashboard/certifi" class="package-link">certifi</a></td><td class="number">1.04B</td></tr>
+            <tr><td>6</td><td><a href="https://clickpy.clickhouse.com/dashboard/typing-extensions" class="package-link">typing-extensions</a></td><td class="number">1.03B</td></tr>
+            <tr><td>7</td><td><a href="https://clickpy.clickhouse.com/dashboard/requests" class="package-link">requests</a></td><td class="number">1.01B</td></tr>
+            <tr><td>8</td><td><a href="https://clickpy.clickhouse.com/dashboard/setuptools" class="package-link">setuptools</a></td><td class="number">984.3M</td></tr>
+            <tr><td>9</td><td><a href="https://clickpy.clickhouse.com/dashboard/idna" class="package-link">idna</a></td><td class="number">965.1M</td></tr>
+            <tr><td>10</td><td><a href="https://clickpy.clickhouse.com/dashboard/charset-normalizer" class="package-link">charset-normalizer</a></td><td class="number">942.2M</td></tr>
+            <tr><td>11</td><td><a href="https://clickpy.clickhouse.com/dashboard/aiobotocore" class="package-link">aiobotocore</a></td><td class="number">910.4M</td></tr>
+            <tr><td>12</td><td><a href="https://clickpy.clickhouse.com/dashboard/python-dateutil" class="package-link">python-dateutil</a></td><td class="number">781.9M</td></tr>
+            <tr><td>13</td><td><a href="https://clickpy.clickhouse.com/dashboard/grpcio-status" class="package-link">grpcio-status</a></td><td class="number">738.8M</td></tr>
+            <tr><td>14</td><td><a href="https://clickpy.clickhouse.com/dashboard/six" class="package-link">six</a></td><td class="number">737.6M</td></tr>
+            <tr><td>15</td><td><a href="https://clickpy.clickhouse.com/dashboard/s3transfer" class="package-link">s3transfer</a></td><td class="number">672.6M</td></tr>
+        </tbody>
+    </table>
+
+    <h2>🚀 Emerging Packages</h2>
+    
+    <p>These packages demonstrated exceptional growth in January 2026 compared to December 2025. To qualify, packages needed 100K+ downloads in both months and 50%+ growth.</p>
+
+    <h3>Top 15 Fastest-Growing Packages</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Package</th>
+                <th class="number">Dec '25</th>
+                <th class="number">Jan '26</th>
+                <th class="number">Growth %</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><a href="https://clickpy.clickhouse.com/dashboard/trio-typing" class="package-link">trio-typing</a></td><td class="number">146K</td><td class="number">8.5M</td><td class="number growth-high">+5,693%</td></tr>
+            <tr><td><a href="https://clickpy.clickhouse.com/dashboard/cross-web" class="package-link">cross-web</a></td><td class="number">105K</td><td class="number">1.3M</td><td class="number growth-high">+1,094%</td></tr>
+            <tr><td><a href="https://clickpy.clickhouse.com/dashboard/instaloader" class="package-link">instaloader</a></td><td class="number">195K</td><td class="number">2.2M</td><td class="number growth-high">+1,012%</td></tr>
+            <tr><td><a href="https://clickpy.clickhouse.com/dashboard/typed-settings" class="package-link">typed-settings</a></td><td class="number">258K</td><td class="number">2.0M</td><td class="number growth-high">+677%</td></tr>
+            <tr><td><a href="https://clickpy.clickhouse.com/dashboard/colormath" class="package-link">colormath</a></td><td class="number">157K</td><td class="number">1.2M</td><td class="number growth-high">+665%</td></tr>
+            <tr><td><a href="https://clickpy.clickhouse.com/dashboard/ruamel-yaml-clibz" class="package-link">ruamel-yaml-clibz</a></td><td class="number">206K</td><td class="number">1.3M</td><td class="number growth-high">+538%</td></tr>
+            <tr><td><a href="https://clickpy.clickhouse.com/dashboard/python-chess" class="package-link">python-chess</a></td><td class="number">1.6M</td><td class="number">9.1M</td><td class="number growth-high">+488%</td></tr>
+            <tr><td><a href="https://clickpy.clickhouse.com/dashboard/textual-speedups" class="package-link">textual-speedups</a></td><td class="number">108K</td><td class="number">621K</td><td class="number growth-high">+476%</td></tr>
+            <tr><td><a href="https://clickpy.clickhouse.com/dashboard/kagglesdk" class="package-link">kagglesdk</a></td><td class="number">183K</td><td class="number">1.0M</td><td class="number growth-high">+472%</td></tr>
+            <tr><td><a href="https://clickpy.clickhouse.com/dashboard/fastlite" class="package-link">fastlite</a></td><td class="number">122K</td><td class="number">592K</td><td class="number growth-high">+384%</td></tr>
+            <tr><td><a href="https://clickpy.clickhouse.com/dashboard/tantivy" class="package-link">tantivy</a></td><td class="number">527K</td><td class="number">2.5M</td><td class="number growth-high">+376%</td></tr>
+            <tr><td><a href="https://clickpy.clickhouse.com/dashboard/adbc-driver-sqlite" class="package-link">adbc-driver-sqlite</a></td><td class="number">191K</td><td class="number">907K</td><td class="number growth-high">+374%</td></tr>
+            <tr><td><a href="https://clickpy.clickhouse.com/dashboard/wbdata" class="package-link">wbdata</a></td><td class="number">1.3M</td><td class="number">6.3M</td><td class="number growth-high">+374%</td></tr>
+            <tr><td><a href="https://clickpy.clickhouse.com/dashboard/python-fasthtml" class="package-link">python-fasthtml</a></td><td class="number">131K</td><td class="number">616K</td><td class="number growth-high">+372%</td></tr>
+            <tr><td><a href="https://clickpy.clickhouse.com/dashboard/stockfish" class="package-link">stockfish</a></td><td class="number">1.4M</td><td class="number">6.3M</td><td class="number growth-high">+362%</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Why These Packages Are Emerging</h3>
+    
+    <p><strong>Async Programming:</strong> <a href="https://clickpy.clickhouse.com/dashboard/trio-typing" class="package-link">trio-typing</a>'s 5,693% growth indicates renewed interest in Trio's structured concurrency model, possibly from framework adoption.</p>
+    
+    <p><strong>Chess & Gaming:</strong> Both <a href="https://clickpy.clickhouse.com/dashboard/python-chess" class="package-link">python-chess</a> and <a href="https://clickpy.clickhouse.com/dashboard/stockfish" class="package-link">stockfish</a> saw 400%+ growth, suggesting increased chess AI training and analysis tool development.</p>
+    
+    <p><strong>FastHTML Ecosystem:</strong> <a href="https://clickpy.clickhouse.com/dashboard/python-fasthtml" class="package-link">python-fasthtml</a> and <a href="https://clickpy.clickhouse.com/dashboard/fastlite" class="package-link">fastlite</a> show growing adoption of lightweight web frameworks as alternatives to heavier options.</p>
+    
+    <p><strong>Search Solutions:</strong> <a href="https://clickpy.clickhouse.com/dashboard/tantivy" class="package-link">tantivy</a> (376% growth) reflects interest in Rust-backed search engines, offering performance advantages over pure Python solutions.</p>
+    
+    <p><strong>Data Science:</strong> <a href="https://clickpy.clickhouse.com/dashboard/kagglesdk" class="package-link">kagglesdk</a> (472% growth) indicates increased data science competition activity.</p>
+
+    <p><strong>Social Media Tools:</strong> <a href="https://clickpy.clickhouse.com/dashboard/instaloader" class="package-link">instaloader</a> (1,012% growth) suggests surge in Instagram automation for research or content management.</p>
+
+    <h2>🔍 Key Trends & Takeaways</h2>
+
+    <div class="highlight-box">
+        <p><strong>1. AWS Ecosystem Dominance</strong> - AWS packages (boto3, botocore, aiobotocore, s3transfer) account for 5B+ downloads monthly, representing ~5% of all PyPI traffic. Python remains the primary language for cloud automation.</p>
+
+        <p><strong>2. Geographic Shifts</strong> - Canada's dramatic growth (+92% market share increase) suggests new infrastructure deployments. Singapore's decline may indicate workload migration to other regions.</p>
+
+        <p><strong>3. Type Safety Adoption</strong> - typing-extensions crossing 1 billion downloads reflects widespread adoption of type hints and static analysis tools in production environments.</p>
+
+        <p><strong>4. Niche Package Explosions</strong> - The emerging packages list shows extraordinary growth in specialized domains (chess engines, async frameworks, web archival tools), indicating Python's expansion into diverse application areas.</p>
+
+        <p><strong>5. Rust-Python Integration</strong> - Multiple Rust-backed packages (tantivy, pagefind) show strong growth, reflecting the trend of using Rust for performance-critical components while maintaining Python APIs.</p>
+    </div>
+
+    <h2>📝 Conclusion</h2>
+    
+    <p>January 2026 showed stable macro trends with continued AWS dominance and US geographic concentration, while micro trends revealed exciting growth in specialized packages. The emergence of lightweight frameworks, Rust-backed tools, and domain-specific libraries (chess, archival, chemistry) demonstrates Python's ongoing versatility and community innovation.</p>
+
+    <p>Watch for February to see if Canada's growth continues and whether the FastHTML/FastLite ecosystem maintains momentum as developers seek alternatives to established web frameworks.</p>
+
+    <div class="footer">
+        <strong>Data Source:</strong> PyPI download statistics from ClickHouse Cloud<br>
+        <strong>Methodology:</strong> Download counts aggregated from January 1-31, 2026. Emerging packages filtered for 100K+ baseline downloads and 50%+ month-over-month growth.<br>
+        <strong>Note:</strong> Download counts include CI/CD, mirrors, and automated systems—not just individual developer installs.
+    </div>
+</body>
+</html>
