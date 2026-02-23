@@ -48,7 +48,10 @@ export async function generateMetadata({ params, searchParams }, parent) {
       description: `Analytics for the ${package_name} RubyGem. View download trends, version statistics, and release insights powered by ClickHouse.`,
       verification: {
         google: 'vu8LQ6LSMjSpZE8h8UlLByhNrhrrufGB6dlJ07hGCUA',
-      }
+      },
+      alternates: {
+        canonical: `https://clickgems.clickhouse.com/dashboard/${package_name}`,
+      },
     };
   }
 
@@ -78,7 +81,10 @@ export async function generateMetadata({ params, searchParams }, parent) {
     description,
     verification: {
       google: 'vu8LQ6LSMjSpZE8h8UlLByhNrhrrufGB6dlJ07hGCUA',
-    }
+    },
+    alternates: {
+      canonical: `https://clickgems.clickhouse.com/dashboard/${package_name}`,
+    },
   }
 }
 
