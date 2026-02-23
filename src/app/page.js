@@ -3,6 +3,7 @@ import Footer from '@/components/Footer';
 import Search from '@/components/Search';
 import Summary from '@/components/Summary';
 import Ping from '@/components/Ping';
+import Link from 'next/link';
 
 import {
   getTotalDownloads,
@@ -76,6 +77,28 @@ export default async function Home() {
               </div>
             </div>
             <div className='mb-8 w-10/12 flex justify-center mx-auto max-w-[1680px]'>
+              <section className='w-full mb-12'>
+                <h2 className='text-lg font-semibold text-white mb-4'>Popular RubyGems</h2>
+                <ul className='flex flex-wrap gap-x-6 gap-y-2'>
+                  {projects[1].slice(0, 30).map((p) => (
+                    <li key={p.name}>
+                      <Link href={`/dashboard/${p.name}`} className='text-primary-300 hover:underline text-sm'>
+                        {p.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <h2 className='text-lg font-semibold text-white mt-8 mb-4'>Emerging RubyGems</h2>
+                <ul className='flex flex-wrap gap-x-6 gap-y-2'>
+                  {emerging_repos[1].slice(0, 20).map((p) => (
+                    <li key={p.name}>
+                      <Link href={`/dashboard/${p.name}`} className='text-primary-300 hover:underline text-sm'>
+                        {p.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
               <Footer/>
             </div>
             
