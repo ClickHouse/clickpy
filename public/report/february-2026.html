@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RubyGems Downloads Report — February 2026</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: #ffffff;
+      color: #1a1a1a;
+      line-height: 1.7;
+      padding: 40px 24px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    header {
+      border-bottom: 3px solid #cc0000;
+      padding-bottom: 20px;
+      margin-bottom: 36px;
+    }
+    header .label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #cc0000;
+      margin-bottom: 6px;
+    }
+    header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: #111;
+      line-height: 1.2;
+    }
+    header .meta {
+      font-size: 13px;
+      color: #666;
+      margin-top: 8px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .kpi {
+      background: #f9f9f9;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      padding: 18px 20px;
+    }
+    .kpi .val {
+      font-size: 26px;
+      font-weight: 800;
+      color: #111;
+      letter-spacing: -0.03em;
+    }
+    .kpi .val span.unit { font-size: 16px; font-weight: 600; color: #444; }
+    .kpi .lbl { font-size: 12px; color: #666; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .kpi .change { font-size: 13px; margin-top: 6px; font-weight: 600; }
+    .change.up { color: #16a34a; }
+    .change.down { color: #cc0000; }
+    .change.neutral { color: #888; }
+
+    section { margin-bottom: 44px; }
+    h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #111;
+      border-left: 4px solid #cc0000;
+      padding-left: 12px;
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+    p {
+      font-size: 15px;
+      color: #333;
+      margin-bottom: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin-top: 16px;
+    }
+    thead tr {
+      background: #f0f0f0;
+    }
+    thead th {
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #444;
+      border-bottom: 2px solid #ddd;
+    }
+    thead th.num { text-align: right; }
+    tbody tr:nth-child(even) { background: #fafafa; }
+    tbody td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #ececec;
+      color: #333;
+    }
+    tbody td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    tbody td.rank { font-weight: 700; color: #999; width: 36px; }
+    tbody td a {
+      color: #cc0000;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    tbody td a:hover { text-decoration: underline; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+    .badge.up { background: #dcfce7; color: #15803d; }
+    .badge.down { background: #fee2e2; color: #b91c1c; }
+    .badge.flat { background: #f3f4f6; color: #6b7280; }
+
+    .bar-wrap { display: flex; align-items: center; gap: 8px; }
+    .bar-bg { flex: 1; height: 8px; background: #f0f0f0; border-radius: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; background: #cc0000; border-radius: 4px; }
+    .bar-pct { font-size: 12px; color: #888; min-width: 36px; text-align: right; }
+
+    .emerging-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-left: 4px solid #cc0000;
+      border-radius: 6px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    .emerging-card .gem-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .emerging-card h3 {
+      font-size: 16px;
+      font-weight: 800;
+      color: #111;
+    }
+    .emerging-card h3 a {
+      color: #cc0000;
+      text-decoration: none;
+    }
+    .emerging-card h3 a:hover { text-decoration: underline; }
+    .emerging-card .growth { font-size: 18px; font-weight: 800; color: #16a34a; }
+    .emerging-card p {
+      font-size: 14px;
+      color: #444;
+      margin-bottom: 0;
+    }
+    .emerging-card .stats {
+      font-size: 13px;
+      color: #777;
+      margin-top: 6px;
+    }
+
+    .monthly-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .monthly-bar-row .mo { font-size: 12px; color: #666; width: 32px; flex-shrink: 0; }
+
+    footer {
+      border-top: 1px solid #e5e5e5;
+      padding-top: 18px;
+      margin-top: 40px;
+      font-size: 12px;
+      color: #aaa;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="label">Monthly Insights</div>
+  <h1>RubyGems Downloads Report<br>February 2026</h1>
+  <div class="meta">Published March 2026 &nbsp;·&nbsp; Data source: RubyGems.org download logs via ClickHouse</div>
+</header>
+
+<!-- KPI strip -->
+<div class="kpi-grid">
+  <div class="kpi">
+    <div class="val">3.62<span class="unit">B</span></div>
+    <div class="lbl">Total Downloads</div>
+    <div class="change up">▲ +2.0% vs January</div>
+  </div>
+  <div class="kpi">
+    <div class="val">129.4<span class="unit">M</span></div>
+    <div class="lbl">Daily Average</div>
+    <div class="change up">▲ +13.0% vs Jan daily avg</div>
+  </div>
+  <div class="kpi">
+    <div class="val">73.3<span class="unit">%</span></div>
+    <div class="lbl">US Share of Downloads</div>
+    <div class="change neutral">Stable month-over-month</div>
+  </div>
+</div>
+
+<!-- Overview -->
+<section>
+  <h2>Overview</h2>
+  <p>February 2026 recorded <strong>3.62 billion RubyGems downloads</strong>, a modest 2% gain on January's absolute count. The more telling figure is the daily average: at <strong>129.4 million downloads per day</strong>, February was the highest-throughput month since October 2025 (120.7M/day) — notable given it is the shortest month of the year. The ecosystem's underlying demand is clearly accelerating heading into Q1 2026.</p>
+
+  <p>The five-month trend shows healthy recovery from the December trough:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Month</th>
+        <th class="num">Total Downloads</th>
+        <th class="num">Daily Average</th>
+        <th class="num">MoM Δ (daily)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>October 2025</td><td class="num">3.74B</td><td class="num">120.7M</td><td class="num"><span class="badge flat">—</span></td></tr>
+      <tr><td>November 2025</td><td class="num">3.17B</td><td class="num">105.7M</td><td class="num"><span class="badge down">−12.4%</span></td></tr>
+      <tr><td>December 2025</td><td class="num">3.10B</td><td class="num">99.9M</td><td class="num"><span class="badge down">−5.5%</span></td></tr>
+      <tr><td>January 2026</td><td class="num">3.55B</td><td class="num">114.5M</td><td class="num"><span class="badge up">+14.7%</span></td></tr>
+      <tr><td><strong>February 2026</strong></td><td class="num"><strong>3.62B</strong></td><td class="num"><strong>129.4M</strong></td><td class="num"><span class="badge up">+13.0%</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- Geographic distribution -->
+<section>
+  <h2>Geographic Distribution</h2>
+  <p>The United States continues to dominate by a wide margin, accounting for <strong>73.3% of all downloads</strong> (2.65 billion). Much of this is attributable to US-based cloud infrastructure (AWS, GCP, Azure) running automated CI/CD pipelines, not only individual developer machines. Ireland holds third place for the same reason — it is home to AWS's <code>eu-west-1</code> region, which generates large automated download volumes.</p>
+
+  <p>The most significant country-level shift this month is the <strong>United Kingdom (+23.6%)</strong>, which overtook France for seventh place. The Russian Federation posted a notable <strong>+42.5%</strong> rise, though its absolute volume (19.8M) keeps it outside the top ten. Germany gained 10% to reinforce its position as the second-largest European market. On the other side of the ledger, Australia (−15.8%), France (−13.0%), and Brazil (−20.8%) all posted meaningful declines — worth monitoring over the next few months to determine whether these reflect infrastructure changes or genuine demand softening.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Country</th>
+        <th class="num">Feb Downloads</th>
+        <th>Share</th>
+        <th class="num">MoM Change</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="rank">1</td>
+        <td>United States</td>
+        <td class="num">2,653.8M</td>
+        <td>
+          <div class="bar-wrap">
+            <div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div>
+            <div class="bar-pct">73.3%</div>
+          </div>
+        </td>
+        <td class="num"><span class="badge up">+3.1%</span></td>
+      </tr>
+      <tr>
+        <td class="rank">2</td>
+        <td>Germany</td>
+        <td class="num">206.6M</td>
+        <td>
+          <div class="bar-wrap">
+            <div class="bar-bg"><div class="bar-fill" style="width:7.8%"></div></div>
+            <div class="bar-pct">5.7%</div>
+          </div>
+        </td>
+        <td class="num"><span class="badge up">+10.0%</span></td>
+      </tr>
+      <tr>
+        <td class="rank">3</td>
+        <td>Ireland</td>
+        <td class="num">159.0M</td>
+        <td>
+          <div class="bar-wrap">
+            <div class="bar-bg"><div class="bar-fill" style="width:6.0%"></div></div>
+            <div class="bar-pct">4.4%</div>
+          </div>
+        </td>
+        <td class="num"><span class="badge down">−7.9%</span></td>
+      </tr>
+      <tr>
+        <td class="rank">4</td>
+        <td>Japan</td>
+        <td class="num">110.3M</td>
+        <td>
+          <div class="bar-wrap">
+            <div class="bar-bg"><div class="bar-fill" style="width:4.2%"></div></div>
+            <div class="bar-pct">3.0%</div>
+          </div>
+        </td>
+        <td class="num"><span class="badge up">+2.2%</span></td>
+      </tr>
+      <tr>
+        <td class="rank">5</td>
+        <td>Australia</td>
+        <td class="num">55.6M</td>
+        <td>
+          <div class="bar-wrap">
+            <div class="bar-bg"><div class="bar-fill" style="width:2.1%"></div></div>
+            <div class="bar-pct">1.5%</div>
+          </div>
+        </td>
+        <td class="num"><span class="badge down">−15.8%</span></td>
+      </tr>
+      <tr>
+        <td class="rank">6</td>
+        <td>Canada</td>
+        <td class="num">54.2M</td>
+        <td>
+          <div class="bar-wrap">
+            <div class="bar-bg"><div class="bar-fill" style="width:2.0%"></div></div>
+            <div class="bar-pct">1.5%</div>
+          </div>
+        </td>
+        <td class="num"><span class="badge up">+1.3%</span></td>
+      </tr>
+      <tr>
+        <td class="rank">7</td>
+        <td>United Kingdom</td>
+        <td class="num">49.8M</td>
+        <td>
+          <div class="bar-wrap">
+            <div class="bar-bg"><div class="bar-fill" style="width:1.9%"></div></div>
+            <div class="bar-pct">1.4%</div>
+          </div>
+        </td>
+        <td class="num"><span class="badge up">+23.6%</span></td>
+      </tr>
+      <tr>
+        <td class="rank">8</td>
+        <td>France</td>
+        <td class="num">48.0M</td>
+        <td>
+          <div class="bar-wrap">
+            <div class="bar-bg"><div class="bar-fill" style="width:1.8%"></div></div>
+            <div class="bar-pct">1.3%</div>
+          </div>
+        </td>
+        <td class="num"><span class="badge down">−13.0%</span></td>
+      </tr>
+      <tr>
+        <td class="rank">9</td>
+        <td>Singapore</td>
+        <td class="num">40.9M</td>
+        <td>
+          <div class="bar-wrap">
+            <div class="bar-bg"><div class="bar-fill" style="width:1.5%"></div></div>
+            <div class="bar-pct">1.1%</div>
+          </div>
+        </td>
+        <td class="num"><span class="badge down">−2.2%</span></td>
+      </tr>
+      <tr>
+        <td class="rank">10</td>
+        <td>India</td>
+        <td class="num">25.0M</td>
+        <td>
+          <div class="bar-wrap">
+            <div class="bar-bg"><div class="bar-fill" style="width:0.9%"></div></div>
+            <div class="bar-pct">0.7%</div>
+          </div>
+        </td>
+        <td class="num"><span class="badge down">−9.6%</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- Most popular gems -->
+<section>
+  <h2>Most Popular Gems</h2>
+  <p>The top of the chart remains stable and entirely unsurprising: <a href="https://clickgems.clickhouse.com/dashboard/bundler" target="_blank">bundler</a> leads by a commanding margin at <strong>60.7 million downloads</strong>, nearly triple the runner-up. The AWS SDK family (<a href="https://clickgems.clickhouse.com/dashboard/aws-sdk-core" target="_blank">aws-sdk-core</a>, <a href="https://clickgems.clickhouse.com/dashboard/aws-partitions" target="_blank">aws-partitions</a>, <a href="https://clickgems.clickhouse.com/dashboard/aws-sigv4" target="_blank">aws-sigv4</a>, <a href="https://clickgems.clickhouse.com/dashboard/aws-eventstream" target="_blank">aws-eventstream</a>, <a href="https://clickgems.clickhouse.com/dashboard/aws-sdk-s3" target="_blank">aws-sdk-s3</a>) collectively accounts for roughly 94 million downloads — a reflection of how deeply AWS-hosted Ruby workloads have permeated the ecosystem.</p>
+  <p>One notable shift: <a href="https://clickgems.clickhouse.com/dashboard/rake" target="_blank">rake</a> dropped from its January second place of 27.4M to 23.7M (−13.3%), while <a href="https://clickgems.clickhouse.com/dashboard/json" target="_blank">json</a> and <a href="https://clickgems.clickhouse.com/dashboard/concurrent-ruby" target="_blank">concurrent-ruby</a> both grew, with json jumping to 21.2M (+11.8%). <a href="https://clickgems.clickhouse.com/dashboard/faraday" target="_blank">faraday</a> entered the top 15 for the first time this cycle, signalling continued demand for HTTP client tooling.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Gem</th>
+        <th class="num">Feb 2026</th>
+        <th class="num">Jan 2026</th>
+        <th class="num">MoM Δ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="rank">1</td><td><a href="https://clickgems.clickhouse.com/dashboard/bundler" target="_blank">bundler</a></td><td class="num">60.7M</td><td class="num">56.2M</td><td class="num"><span class="badge up">+7.9%</span></td></tr>
+      <tr><td class="rank">2</td><td><a href="https://clickgems.clickhouse.com/dashboard/rake" target="_blank">rake</a></td><td class="num">23.7M</td><td class="num">27.4M</td><td class="num"><span class="badge down">−13.3%</span></td></tr>
+      <tr><td class="rank">3</td><td><a href="https://clickgems.clickhouse.com/dashboard/json" target="_blank">json</a></td><td class="num">21.2M</td><td class="num">18.9M</td><td class="num"><span class="badge up">+11.8%</span></td></tr>
+      <tr><td class="rank">4</td><td><a href="https://clickgems.clickhouse.com/dashboard/concurrent-ruby" target="_blank">concurrent-ruby</a></td><td class="num">20.8M</td><td class="num">21.2M</td><td class="num"><span class="badge down">−1.9%</span></td></tr>
+      <tr><td class="rank">5</td><td><a href="https://clickgems.clickhouse.com/dashboard/aws-sdk-core" target="_blank">aws-sdk-core</a></td><td class="num">20.5M</td><td class="num">21.5M</td><td class="num"><span class="badge down">−4.7%</span></td></tr>
+      <tr><td class="rank">6</td><td><a href="https://clickgems.clickhouse.com/dashboard/aws-partitions" target="_blank">aws-partitions</a></td><td class="num">20.4M</td><td class="num">22.2M</td><td class="num"><span class="badge down">−8.1%</span></td></tr>
+      <tr><td class="rank">7</td><td><a href="https://clickgems.clickhouse.com/dashboard/public_suffix" target="_blank">public_suffix</a></td><td class="num">19.5M</td><td class="num">20.3M</td><td class="num"><span class="badge down">−3.9%</span></td></tr>
+      <tr><td class="rank">8</td><td><a href="https://clickgems.clickhouse.com/dashboard/activesupport" target="_blank">activesupport</a></td><td class="num">19.5M</td><td class="num">19.2M</td><td class="num"><span class="badge up">+1.5%</span></td></tr>
+      <tr><td class="rank">9</td><td><a href="https://clickgems.clickhouse.com/dashboard/base64" target="_blank">base64</a></td><td class="num">19.1M</td><td class="num">18.6M</td><td class="num"><span class="badge up">+2.5%</span></td></tr>
+      <tr><td class="rank">10</td><td><a href="https://clickgems.clickhouse.com/dashboard/addressable" target="_blank">addressable</a></td><td class="num">18.5M</td><td class="num">18.9M</td><td class="num"><span class="badge down">−2.1%</span></td></tr>
+      <tr><td class="rank">11</td><td><a href="https://clickgems.clickhouse.com/dashboard/minitest" target="_blank">minitest</a></td><td class="num">18.3M</td><td class="num">17.7M</td><td class="num"><span class="badge up">+3.3%</span></td></tr>
+      <tr><td class="rank">12</td><td><a href="https://clickgems.clickhouse.com/dashboard/i18n" target="_blank">i18n</a></td><td class="num">18.3M</td><td class="num">18.7M</td><td class="num"><span class="badge down">−2.1%</span></td></tr>
+      <tr><td class="rank">13</td><td><a href="https://clickgems.clickhouse.com/dashboard/aws-sigv4" target="_blank">aws-sigv4</a></td><td class="num">18.0M</td><td class="num">19.0M</td><td class="num"><span class="badge down">−5.1%</span></td></tr>
+      <tr><td class="rank">14</td><td><a href="https://clickgems.clickhouse.com/dashboard/aws-eventstream" target="_blank">aws-eventstream</a></td><td class="num">17.8M</td><td class="num">18.9M</td><td class="num"><span class="badge down">−5.7%</span></td></tr>
+      <tr><td class="rank">15</td><td><a href="https://clickgems.clickhouse.com/dashboard/faraday" target="_blank">faraday</a></td><td class="num">17.8M</td><td class="num">—</td><td class="num"><span class="badge flat">New entry</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- Emerging gems -->
+<section>
+  <h2>Emerging Gems</h2>
+  <p>The following gems recorded strong and sustained month-over-month growth with a meaningful download base. Gems showing isolated single-day spikes (likely attributable to large-scale CI pipeline runs) have been set aside in favour of those with clear multi-week momentum.</p>
+
+  <div class="emerging-card">
+    <div class="gem-header">
+      <h3>🤖 <a href="https://clickgems.clickhouse.com/dashboard/mcp" target="_blank">mcp</a></h3>
+      <div class="growth">+238.6%</div>
+    </div>
+    <p>The Ruby implementation of Anthropic's <strong>Model Context Protocol (MCP)</strong> is one of the most significant growth stories this month. Downloads tripled from 102.9K in January to 348.3K in February, with daily numbers showing a clear upward curve: the gem was averaging ~4–5K downloads/day in mid-January, scaling to over 10K/day by mid-February, and closing the month with an acceleration spike above 80K/day in the final days. MCP provides a standardised way for AI agents to connect to external data sources and tools, and its Ruby gem is becoming a critical building block for Ruby-powered LLM integrations. As the broader AI developer tooling wave continues, this gem's trajectory deserves close attention.</p>
+    <div class="stats">Jan 2026: 102.9K &nbsp;→&nbsp; Feb 2026: 348.3K &nbsp;·&nbsp; Nov 2025: 95.7K &nbsp;·&nbsp; Dec 2025: 78.5K</div>
+  </div>
+
+  <div class="emerging-card">
+    <div class="gem-header">
+      <h3>🔍 <a href="https://clickgems.clickhouse.com/dashboard/json_schemer" target="_blank">json_schemer</a></h3>
+      <div class="growth">+78.7%</div>
+    </div>
+    <p>A fast, fully-featured JSON Schema validator, <strong>json_schemer</strong> has been on a consistent multi-month upward trend: from 716K (November) → 842K (December) → 1.02M (January) → <strong>1.82M</strong> (February). This is not a spike — it is organic, compounding growth. The likely driver is the explosion in structured output requirements from LLM pipelines: when you need to validate that a language model's response adheres to a JSON schema, you need a solid validator. json_schemer is increasingly the go-to choice in Ruby for exactly that use case.</p>
+    <div class="stats">Nov 2025: 716K &nbsp;→&nbsp; Dec 2025: 842K &nbsp;→&nbsp; Jan 2026: 1.02M &nbsp;→&nbsp; Feb 2026: 1.82M</div>
+  </div>
+
+  <div class="emerging-card">
+    <div class="gem-header">
+      <h3>📄 <a href="https://clickgems.clickhouse.com/dashboard/hana" target="_blank">hana</a></h3>
+      <div class="growth">+80.6%</div>
+    </div>
+    <p><strong>hana</strong> is a minimal JSON Patch and JSON Pointer library. Its growth closely mirrors that of json_schemer — and for similar reasons. As APIs built on top of LLMs return structured JSON that often needs to be patched or traversed programmatically, lightweight libraries like hana become foundational plumbing. The month-over-month pattern (793K → 864K → 1.02M → 1.84M) is remarkably linear, suggesting increasing adoption rather than a one-time event. Worth watching to confirm whether this stabilises at its new level or continues climbing.</p>
+    <div class="stats">Nov 2025: 793K &nbsp;→&nbsp; Dec 2025: 864K &nbsp;→&nbsp; Jan 2026: 1.02M &nbsp;→&nbsp; Feb 2026: 1.84M</div>
+  </div>
+
+  <div class="emerging-card">
+    <div class="gem-header">
+      <h3>🔧 <a href="https://clickgems.clickhouse.com/dashboard/buildkite-test_collector" target="_blank">buildkite-test_collector</a></h3>
+      <div class="growth">+96.7%</div>
+    </div>
+    <p>Buildkite's test analytics collector nearly doubled in downloads from 199K (January) to 392K (February). The gem captures test results from RSpec, Minitest, and other frameworks and ships them to Buildkite's analytics platform for historical tracking and flaky test detection. The jump suggests either a significant new adoption wave among Ruby shops migrating CI platforms, or a shift in how existing users are integrating it (e.g., running it across more pipeline steps or repositories). Given the sustained growth trajectory since November (171K → 162K → 199K → 392K), this feels like genuine platform adoption rather than a transient anomaly.</p>
+    <div class="stats">Nov 2025: 171K &nbsp;→&nbsp; Dec 2025: 162K &nbsp;→&nbsp; Jan 2026: 199K &nbsp;→&nbsp; Feb 2026: 392K</div>
+  </div>
+
+  <div class="emerging-card">
+    <div class="gem-header">
+      <h3>🌊 <a href="https://clickgems.clickhouse.com/dashboard/karafka-web" target="_blank">karafka-web</a></h3>
+      <div class="growth">+70.4%</div>
+    </div>
+    <p><strong>karafka-web</strong> is the web UI component of the Karafka Kafka framework for Ruby. After a puzzling December dip (from 419K in November down to 195K), it bounced back to 206K in January and then surged to 352K in February. Karafka has seen growing interest as more Ruby teams adopt event-driven and streaming architectures — a trend accelerated by the growing number of real-time data processing requirements in AI-augmented applications. The web UI gem being among the fastest-growing components suggests developers are not just experimenting with Karafka but investing in operational visibility tooling around it, which is a strong indicator of production-level adoption.</p>
+    <div class="stats">Nov 2025: 419K &nbsp;→&nbsp; Dec 2025: 195K &nbsp;→&nbsp; Jan 2026: 206K &nbsp;→&nbsp; Feb 2026: 352K</div>
+  </div>
+</section>
+
+<!-- Closing notes -->
+<section>
+  <h2>Takeaways</h2>
+  <p><strong>The daily download rate is at its highest point in four months</strong>, even adjusting for February's shorter length. The ecosystem's throughput is growing, not just holding steady.</p>
+  <p><strong>AI and LLM tooling is the standout theme.</strong> The <a href="https://clickgems.clickhouse.com/dashboard/mcp" target="_blank">mcp</a>, <a href="https://clickgems.clickhouse.com/dashboard/json_schemer" target="_blank">json_schemer</a>, and <a href="https://clickgems.clickhouse.com/dashboard/hana" target="_blank">hana</a> gems are all benefiting — directly or indirectly — from Ruby developers building LLM-integrated applications. Expect this trend to continue and intensify.</p>
+  <p><strong>CI/CD tooling is expanding.</strong> <a href="https://clickgems.clickhouse.com/dashboard/buildkite-test_collector" target="_blank">buildkite-test_collector</a>'s near-doubling is one of the cleanest growth signals in the data. Ruby teams are investing in test observability infrastructure.</p>
+  <p><strong>Streaming architecture is gaining momentum.</strong> <a href="https://clickgems.clickhouse.com/dashboard/karafka-web" target="_blank">karafka-web</a>'s recovery and strong growth in February reflects growing interest in event-driven Ruby applications, aligned with the broader industry shift toward real-time data pipelines.</p>
+  <p><strong>Geography to watch:</strong> The UK's +23.6% gain and Germany's sustained +10% suggest European cloud workloads are growing. The simultaneous drops in Australia, France, and Brazil may reflect infrastructure consolidation or workload migration and deserve monitoring in March.</p>
+</section>
+
+<footer>
+  Data sourced from RubyGems.org download logs stored in ClickHouse. Download counts reflect CDN-level requests and include automated CI/CD traffic. MoM comparisons use raw counts; daily rate comparisons account for differing month lengths. Report generated on 2026-03-06.
+</footer>
+
+</body>
+</html>
