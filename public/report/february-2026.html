@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PyPI Usage Report — February 2026</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #ffffff;
+    color: #1a1a2e;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 28px 60px;
+  }
+  .report-header {
+    border-bottom: 3px solid #1967d2;
+    padding-bottom: 20px;
+    margin-bottom: 36px;
+  }
+  .report-header .badge {
+    display: inline-block;
+    background: #e8f0fe;
+    color: #1967d2;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #0d1b2a;
+    margin-bottom: 6px;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: #5f6368;
+  }
+  .kpi-row {
+    display: flex;
+    gap: 16px;
+    margin: 28px 0;
+    flex-wrap: wrap;
+  }
+  .kpi {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px 20px;
+    flex: 1;
+    min-width: 170px;
+  }
+  .kpi .label { font-size: 12px; color: #5f6368; text-transform: uppercase; letter-spacing: .05em; }
+  .kpi .value { font-size: 24px; font-weight: 700; color: #1967d2; margin: 4px 0 2px; }
+  .kpi .delta { font-size: 13px; }
+  .delta.up { color: #188038; }
+  .delta.down { color: #c5221f; }
+  h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0d1b2a;
+    margin: 36px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1967d2;
+    margin: 22px 0 6px;
+  }
+  p { margin-bottom: 12px; }
+  a { color: #1967d2; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin: 14px 0 20px;
+  }
+  th {
+    background: #1967d2;
+    color: #fff;
+    text-align: left;
+    padding: 9px 12px;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+  }
+  tr:nth-child(even) td { background: #f8f9fa; }
+  tr:hover td { background: #e8f0fe; }
+  .rank { color: #9aa0a6; font-size: 12px; font-weight: 600; }
+  .num { font-variant-numeric: tabular-nums; }
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-weight: 600;
+    margin-left: 4px;
+  }
+  .tag-up   { background: #e6f4ea; color: #188038; }
+  .tag-down { background: #fce8e6; color: #c5221f; }
+  .tag-new  { background: #e8f0fe; color: #1967d2; }
+  .bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .bar-bg { background: #e8f0fe; border-radius: 2px; height: 8px; flex: 1; overflow: hidden; }
+  .bar-fill { background: #1967d2; height: 8px; border-radius: 2px; }
+  .trend-cell { font-size: 13px; font-weight: 700; }
+  .trend-up   { color: #188038; }
+  .trend-down { color: #c5221f; }
+  .callout {
+    background: #e8f0fe;
+    border-left: 4px solid #1967d2;
+    border-radius: 0 6px 6px 0;
+    padding: 14px 18px;
+    margin: 18px 0;
+    font-size: 14px;
+  }
+  .callout strong { color: #1967d2; }
+  .pkg-entry { margin-bottom: 18px; }
+  .pkg-title { font-weight: 700; font-size: 15px; }
+  .pkg-meta { font-size: 13px; color: #5f6368; margin-bottom: 4px; }
+  .footer {
+    margin-top: 52px;
+    padding-top: 18px;
+    border-top: 1px solid #e0e0e0;
+    font-size: 12px;
+    color: #9aa0a6;
+  }
+</style>
+</head>
+<body>
+
+<div class="report-header">
+  <div class="badge">Monthly Insights</div>
+  <h1>PyPI Usage Report — February 2026</h1>
+  <p class="subtitle">Data sourced from PyPI download logs via ClickHouse &nbsp;·&nbsp; Published March 6, 2026<br>
+  Coverage: February 1 – February 28, 2026 &nbsp;·&nbsp; Powered by <a href="https://clickpy.clickhouse.com" target="_blank">ClickPy</a></p>
+</div>
+
+<!-- KPIs -->
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="label">Total Downloads</div>
+    <div class="value">108.0B</div>
+    <div class="delta up">▲ +5.8% vs January</div>
+  </div>
+  <div class="kpi">
+    <div class="label">Daily Average</div>
+    <div class="value">3.86B</div>
+    <div class="delta up">▲ +17.3% vs January (3.29B/day)</div>
+  </div>
+  <div class="kpi">
+    <div class="label">Top Country</div>
+    <div class="value">🇺🇸 US</div>
+    <div class="delta">79.2B downloads · 73.3% share</div>
+  </div>
+  <div class="kpi">
+    <div class="label">#1 Package</div>
+    <div class="value">boto3</div>
+    <div class="delta">1.578B downloads</div>
+  </div>
+</div>
+
+<div class="callout">
+  <strong>February headline:</strong> Despite having three fewer days than January, PyPI recorded 108.0 billion total downloads — higher than January's 102.1 billion. The daily average jumped from 3.29B to 3.86B, a <strong>+17.3% acceleration</strong>. The weekday vs. weekend split (≈4.4B on Tue–Thu vs. ≈2.7B on weekends) confirms that CI pipelines and automated tooling continue to dominate download volume.
+</div>
+
+
+<!-- ─── GEOGRAPHIC DISTRIBUTION ─────────────────────────────────── -->
+<h2>1 · Geographic Distribution</h2>
+
+<p>The United States remains the dominant download origin by a wide margin, accounting for <strong>79.2 billion downloads (73.3%)</strong> of the February total — up from 73.5B in January. This concentration reflects the heavy footprint of US-based cloud infrastructure (AWS, GCP, Azure) where PyPI mirrors and CI runners resolve. Ireland (#2, 3.94B) and Germany (#3, 3.53B) similarly owe much of their volume to European cloud region endpoints.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Country</th>
+      <th>Feb 2026 Downloads</th>
+      <th>Share</th>
+      <th>vs Jan 2026</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="rank">1</td>
+      <td>🇺🇸 United States</td>
+      <td class="num">79,176,689,264</td>
+      <td>
+        <div class="bar-wrap">
+          <div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div>
+          <span>73.3%</span>
+        </div>
+      </td>
+      <td class="trend-cell trend-up">+7.8%</td>
+    </tr>
+    <tr>
+      <td class="rank">2</td>
+      <td>🇮🇪 Ireland</td>
+      <td class="num">3,937,731,265</td>
+      <td>
+        <div class="bar-wrap">
+          <div class="bar-bg"><div class="bar-fill" style="width:5%"></div></div>
+          <span>3.6%</span>
+        </div>
+      </td>
+      <td class="trend-cell trend-up">+1.0%</td>
+    </tr>
+    <tr>
+      <td class="rank">3</td>
+      <td>🇩🇪 Germany</td>
+      <td class="num">3,525,515,595</td>
+      <td>
+        <div class="bar-wrap">
+          <div class="bar-bg"><div class="bar-fill" style="width:4.5%"></div></div>
+          <span>3.3%</span>
+        </div>
+      </td>
+      <td class="trend-cell trend-up">+5.4%</td>
+    </tr>
+    <tr>
+      <td class="rank">4 <span class="tag tag-up">▲1</span></td>
+      <td>🇳🇱 Netherlands</td>
+      <td class="num">2,639,760,742</td>
+      <td>
+        <div class="bar-wrap">
+          <div class="bar-bg"><div class="bar-fill" style="width:3.3%"></div></div>
+          <span>2.4%</span>
+        </div>
+      </td>
+      <td class="trend-cell trend-up">+7.4%</td>
+    </tr>
+    <tr>
+      <td class="rank">5 <span class="tag tag-down">▼1</span></td>
+      <td>🇬🇧 United Kingdom</td>
+      <td class="num">2,589,898,235</td>
+      <td>
+        <div class="bar-wrap">
+          <div class="bar-bg"><div class="bar-fill" style="width:3.3%"></div></div>
+          <span>2.4%</span>
+        </div>
+      </td>
+      <td class="trend-cell trend-down">−3.3%</td>
+    </tr>
+    <tr>
+      <td class="rank">6</td>
+      <td>🇸🇬 Singapore</td>
+      <td class="num">2,364,726,959</td>
+      <td>
+        <div class="bar-wrap">
+          <div class="bar-bg"><div class="bar-fill" style="width:3.0%"></div></div>
+          <span>2.2%</span>
+        </div>
+      </td>
+      <td class="trend-cell">+0.7%</td>
+    </tr>
+    <tr>
+      <td class="rank">7</td>
+      <td>🇮🇳 India</td>
+      <td class="num">1,640,609,075</td>
+      <td>
+        <div class="bar-wrap">
+          <div class="bar-bg"><div class="bar-fill" style="width:2.1%"></div></div>
+          <span>1.5%</span>
+        </div>
+      </td>
+      <td class="trend-cell trend-up">+3.8%</td>
+    </tr>
+    <tr>
+      <td class="rank">8 <span class="tag tag-up">▲3</span></td>
+      <td>🇧🇷 Brazil</td>
+      <td class="num">1,268,611,254</td>
+      <td>
+        <div class="bar-wrap">
+          <div class="bar-bg"><div class="bar-fill" style="width:1.6%"></div></div>
+          <span>1.2%</span>
+        </div>
+      </td>
+      <td class="trend-cell trend-up">+20.2%</td>
+    </tr>
+    <tr>
+      <td class="rank">9 <span class="tag tag-down">▼1</span></td>
+      <td>🇯🇵 Japan</td>
+      <td class="num">1,264,251,176</td>
+      <td>
+        <div class="bar-wrap">
+          <div class="bar-bg"><div class="bar-fill" style="width:1.6%"></div></div>
+          <span>1.2%</span>
+        </div>
+      </td>
+      <td class="trend-cell trend-down">−2.6%</td>
+    </tr>
+    <tr>
+      <td class="rank">10</td>
+      <td>🇫🇷 France</td>
+      <td class="num">1,044,849,262</td>
+      <td>
+        <div class="bar-wrap">
+          <div class="bar-bg"><div class="bar-fill" style="width:1.3%"></div></div>
+          <span>1.0%</span>
+        </div>
+      </td>
+      <td class="trend-cell trend-down">−2.2%</td>
+    </tr>
+    <tr>
+      <td class="rank">11 <span class="tag tag-down">▼3</span></td>
+      <td>🇨🇦 Canada</td>
+      <td class="num">963,304,774</td>
+      <td>
+        <div class="bar-wrap">
+          <div class="bar-bg"><div class="bar-fill" style="width:1.2%"></div></div>
+          <span>0.9%</span>
+        </div>
+      </td>
+      <td class="trend-cell trend-down">−34.4%</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Notable Shifts This Month</h3>
+
+<p><strong>Brazil surges to #8 (+20.2%).</strong> Brazil jumped three positions from #11 in January, posting 1.27B downloads. The growth outpaces regional peers and may indicate expanding adoption of Python tooling in Brazilian tech hubs, alongside growing cloud infrastructure in the South America East (São Paulo) AWS and GCP regions.</p>
+
+<p><strong>Canada drops sharply (−34.4%).</strong> The most striking geographic change of the month: Canada fell from 8th place (1.47B in January) to 11th (963M in February). The magnitude of this decline — over a third of download volume lost in a single month — likely points to a shift in CI workload scheduling or a pipeline migration away from Canadian cloud regions rather than an organic drop in developer activity.</p>
+
+<p><strong>Netherlands overtakes the UK.</strong> The Netherlands edged past the United Kingdom for the first time this year, climbing to #4 with 2.64B downloads (+7.4%), while the UK slipped to #5 with 2.59B (−3.3%). The gap is narrow, but the trend favors the Netherlands, driven by Amsterdam's role as a major European cloud egress hub.</p>
+
+<p><strong>China continues to soften (−18%).</strong> China fell from 505M downloads in January to 414M in February, continuing a downward drift that has been visible since Q4 2025. This may reflect increased use of domestic Python mirrors (Tsinghua, Aliyun) rather than pulling from PyPI directly.</p>
+
+
+<!-- ─── MOST POPULAR PACKAGES ─────────────────────────────────── -->
+<h2>2 · Most Popular Packages</h2>
+
+<p>The February leaderboard looks familiar: AWS-ecosystem packages and HTTP/serialisation utilities continue to dominate, a reliable sign that automated dependency resolution in cloud pipelines accounts for the bulk of PyPI traffic. <strong>boto3</strong> and <strong>botocore</strong> together pulled over 2.6 billion downloads — roughly 2.5% of all PyPI traffic on their own.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Package</th>
+      <th>Feb 2026 Downloads</th>
+      <th>Category</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="rank">1</td><td><a href="https://clickpy.clickhouse.com/dashboard/boto3" target="_blank">boto3</a></td><td class="num">1,577,565,199</td><td>AWS SDK</td></tr>
+    <tr><td class="rank">2</td><td><a href="https://clickpy.clickhouse.com/dashboard/packaging" target="_blank">packaging</a></td><td class="num">1,293,053,828</td><td>Build tooling</td></tr>
+    <tr><td class="rank">3</td><td><a href="https://clickpy.clickhouse.com/dashboard/urllib3" target="_blank">urllib3</a></td><td class="num">1,216,636,342</td><td>HTTP</td></tr>
+    <tr><td class="rank">4</td><td><a href="https://clickpy.clickhouse.com/dashboard/setuptools" target="_blank">setuptools</a></td><td class="num">1,190,423,972</td><td>Build tooling</td></tr>
+    <tr><td class="rank">5</td><td><a href="https://clickpy.clickhouse.com/dashboard/certifi" target="_blank">certifi</a></td><td class="num">1,103,110,944</td><td>TLS / Security</td></tr>
+    <tr><td class="rank">6</td><td><a href="https://clickpy.clickhouse.com/dashboard/requests" target="_blank">requests</a></td><td class="num">1,069,042,689</td><td>HTTP</td></tr>
+    <tr><td class="rank">7</td><td><a href="https://clickpy.clickhouse.com/dashboard/typing-extensions" target="_blank">typing-extensions</a></td><td class="num">1,068,493,000</td><td>Typing</td></tr>
+    <tr><td class="rank">8</td><td><a href="https://clickpy.clickhouse.com/dashboard/botocore" target="_blank">botocore</a></td><td class="num">1,062,035,920</td><td>AWS SDK</td></tr>
+    <tr><td class="rank">9</td><td><a href="https://clickpy.clickhouse.com/dashboard/idna" target="_blank">idna</a></td><td class="num">1,040,689,373</td><td>Networking</td></tr>
+    <tr><td class="rank">10</td><td><a href="https://clickpy.clickhouse.com/dashboard/charset-normalizer" target="_blank">charset-normalizer</a></td><td class="num">1,006,015,167</td><td>Encoding</td></tr>
+    <tr><td class="rank">11</td><td><a href="https://clickpy.clickhouse.com/dashboard/aiobotocore" target="_blank">aiobotocore</a></td><td class="num">896,688,206</td><td>AWS SDK (async)</td></tr>
+    <tr><td class="rank">12</td><td><a href="https://clickpy.clickhouse.com/dashboard/python-dateutil" target="_blank">python-dateutil</a></td><td class="num">827,266,794</td><td>Date / Time</td></tr>
+    <tr><td class="rank">13</td><td><a href="https://clickpy.clickhouse.com/dashboard/six" target="_blank">six</a></td><td class="num">794,696,816</td><td>Compatibility</td></tr>
+    <tr><td class="rank">14</td><td><a href="https://clickpy.clickhouse.com/dashboard/cryptography" target="_blank">cryptography</a></td><td class="num">761,066,003</td><td>Security</td></tr>
+    <tr><td class="rank">15</td><td><a href="https://clickpy.clickhouse.com/dashboard/grpcio-status" target="_blank">grpcio-status</a></td><td class="num">734,904,368</td><td>gRPC</td></tr>
+    <tr><td class="rank">16</td><td><a href="https://clickpy.clickhouse.com/dashboard/cffi" target="_blank">cffi</a></td><td class="num">682,288,214</td><td>C interop</td></tr>
+    <tr><td class="rank">17</td><td><a href="https://clickpy.clickhouse.com/dashboard/numpy" target="_blank">numpy</a></td><td class="num">672,445,442</td><td>Scientific computing</td></tr>
+    <tr><td class="rank">18</td><td><a href="https://clickpy.clickhouse.com/dashboard/pyyaml" target="_blank">pyyaml</a></td><td class="num">668,225,120</td><td>Serialisation</td></tr>
+    <tr><td class="rank">19</td><td><a href="https://clickpy.clickhouse.com/dashboard/s3transfer" target="_blank">s3transfer</a></td><td class="num">646,171,099</td><td>AWS SDK</td></tr>
+    <tr><td class="rank">20</td><td><a href="https://clickpy.clickhouse.com/dashboard/pip" target="_blank">pip</a></td><td class="num">626,136,875</td><td>Package manager</td></tr>
+  </tbody>
+</table>
+
+<p>Six of the top 20 packages are part of the AWS SDK stack (boto3, botocore, aiobotocore, s3transfer, and their indirect dependencies), underscoring how thoroughly AWS workloads drive PyPI traffic. <strong>numpy</strong> at #17 (672M) is the highest-ranked pure scientific/ML package, while <strong>pydantic</strong> (587M, #23 overall) continues its steady rise as the de facto data validation layer for FastAPI and LLM frameworks alike.</p>
+
+
+<!-- ─── EMERGING PACKAGES ─────────────────────────────────── -->
+<h2>3 · Emerging Packages</h2>
+
+<p>The packages below were selected based on a combination of absolute scale (at least 1 million downloads in January as a baseline) and month-over-month growth rate. Pure one-off spikes from CI misconfiguration or dependency chain loops were filtered out by reviewing multi-month trajectories. The thread running through most of February's breakout packages is unmistakable: <strong>AI, LLM tooling, and GPU compute</strong>.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Package</th>
+      <th>Jan 2026</th>
+      <th>Feb 2026</th>
+      <th>Growth</th>
+      <th>Theme</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="https://clickpy.clickhouse.com/dashboard/pymupdf4llm" target="_blank">pymupdf4llm</a></td>
+      <td class="num">1,564,049</td>
+      <td class="num">10,984,560</td>
+      <td class="trend-cell trend-up">+602%</td>
+      <td>LLM / RAG</td>
+    </tr>
+    <tr>
+      <td><a href="https://clickpy.clickhouse.com/dashboard/skops" target="_blank">skops</a></td>
+      <td class="num">1,360,710</td>
+      <td class="num">8,088,140</td>
+      <td class="trend-cell trend-up">+494%</td>
+      <td>MLOps / HuggingFace</td>
+    </tr>
+    <tr>
+      <td><a href="https://clickpy.clickhouse.com/dashboard/ydb" target="_blank">ydb</a></td>
+      <td class="num">3,458,473</td>
+      <td class="num">15,936,138</td>
+      <td class="trend-cell trend-up">+361%</td>
+      <td>Distributed DB</td>
+    </tr>
+    <tr>
+      <td><a href="https://clickpy.clickhouse.com/dashboard/inspect-ai" target="_blank">inspect-ai</a></td>
+      <td class="num">6,758,750</td>
+      <td class="num">30,053,970</td>
+      <td class="trend-cell trend-up">+345%</td>
+      <td>LLM Evaluation</td>
+    </tr>
+    <tr>
+      <td><a href="https://clickpy.clickhouse.com/dashboard/youtube-transcript-api" target="_blank">youtube-transcript-api</a></td>
+      <td class="num">4,646,446</td>
+      <td class="num">18,220,079</td>
+      <td class="trend-cell trend-up">+292%</td>
+      <td>LLM / Data ingestion</td>
+    </tr>
+    <tr>
+      <td><a href="https://clickpy.clickhouse.com/dashboard/cuda-bindings" target="_blank">cuda-bindings</a></td>
+      <td class="num">9,158,418</td>
+      <td class="num">23,748,901</td>
+      <td class="trend-cell trend-up">+159%</td>
+      <td>GPU / CUDA</td>
+    </tr>
+    <tr>
+      <td><a href="https://clickpy.clickhouse.com/dashboard/pymilvus" target="_blank">pymilvus</a></td>
+      <td class="num">8,156,695</td>
+      <td class="num">19,071,088</td>
+      <td class="trend-cell trend-up">+134%</td>
+      <td>Vector DB</td>
+    </tr>
+    <tr>
+      <td><a href="https://clickpy.clickhouse.com/dashboard/cyclopts" target="_blank">cyclopts</a></td>
+      <td class="num">17,066,645</td>
+      <td class="num">38,545,423</td>
+      <td class="trend-cell trend-up">+126%</td>
+      <td>CLI tooling</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="pkg-entry">
+  <p class="pkg-title"><a href="https://clickpy.clickhouse.com/dashboard/pymupdf4llm" target="_blank">pymupdf4llm</a> &nbsp;<span class="tag tag-up">+602%</span></p>
+  <p class="pkg-meta">1.56M → 10.98M downloads &nbsp;·&nbsp; LLM document ingestion</p>
+  <p>The month's standout grower. <code>pymupdf4llm</code> converts PDFs and other documents into Markdown optimised for consumption by language models. Its seven-fold growth in February is a direct signal of the expanding Retrieval-Augmented Generation (RAG) ecosystem: developers building knowledge bases and document Q&A systems need a reliable, fast PDF-to-text layer, and this package has become the go-to solution. The multi-month trajectory (1.0M in Nov → 1.2M Dec → 1.6M Jan → 11.0M Feb) shows a genuine adoption inflection point, not a one-off spike.</p>
+</div>
+
+<div class="pkg-entry">
+  <p class="pkg-title"><a href="https://clickpy.clickhouse.com/dashboard/skops" target="_blank">skops</a> &nbsp;<span class="tag tag-up">+494%</span></p>
+  <p class="pkg-meta">1.36M → 8.09M downloads &nbsp;·&nbsp; MLOps / scikit-learn on HuggingFace Hub</p>
+  <p><code>skops</code> is the Hugging Face-backed library for securely serialising, sharing, and loading scikit-learn models on the Hub. Its near-quintupling suggests that MLOps teams are moving beyond custom model registries and adopting Hugging Face Hub as a standard for sklearn-based assets, particularly for tabular ML models where sklearn remains dominant. The growth also reflects tighter integration with Hub's model card and inference APIs.</p>
+</div>
+
+<div class="pkg-entry">
+  <p class="pkg-title"><a href="https://clickpy.clickhouse.com/dashboard/ydb" target="_blank">ydb</a> &nbsp;<span class="tag tag-up">+361%</span></p>
+  <p class="pkg-meta">3.46M → 15.94M downloads &nbsp;·&nbsp; Distributed RDBMS</p>
+  <p>The Python client for <strong>YDB</strong>, Yandex's open-source distributed SQL database, had been relatively flat through Q4 2025 (≈4.3M/month), making February's jump to 15.9M particularly notable. YDB has positioned itself as a scalable alternative to CockroachDB and Spanner for multi-region OLTP workloads. The surge likely reflects broader adoption outside of its Russian origin, particularly in Europe and APAC, where teams are evaluating alternatives to proprietary cloud-native databases.</p>
+</div>
+
+<div class="pkg-entry">
+  <p class="pkg-title"><a href="https://clickpy.clickhouse.com/dashboard/inspect-ai" target="_blank">inspect-ai</a> &nbsp;<span class="tag tag-up">+345%</span></p>
+  <p class="pkg-meta">6.76M → 30.05M downloads &nbsp;·&nbsp; LLM safety evaluation</p>
+  <p>Developed by the UK AI Safety Institute (AISI) and now widely used by teams evaluating language model behaviour, <code>inspect-ai</code> provides a structured framework for writing, running, and scoring LLM evals. After a plateau in December–January, downloads quadrupled in February, crossing 30M for the first time. This likely coincides with growing regulatory and internal compliance pressure on AI teams to document model evaluations systematically before shipping.</p>
+</div>
+
+<div class="pkg-entry">
+  <p class="pkg-title"><a href="https://clickpy.clickhouse.com/dashboard/youtube-transcript-api" target="_blank">youtube-transcript-api</a> &nbsp;<span class="tag tag-up">+292%</span></p>
+  <p class="pkg-meta">4.65M → 18.22M downloads &nbsp;·&nbsp; Video transcript extraction</p>
+  <p>This library fetches auto-generated and manual transcripts from YouTube videos. Its downloads were remarkably stable at roughly 4.3–4.6M/month from November through January, making February's near-quadrupling stand out sharply. The most plausible driver: developers building LLM pipelines and AI agents that ingest multimedia content — YouTube tutorials, conference talks, podcast recordings — as training or retrieval data. It has become an unofficial staple in the "multimodal RAG" stack.</p>
+</div>
+
+<div class="pkg-entry">
+  <p class="pkg-title"><a href="https://clickpy.clickhouse.com/dashboard/cuda-bindings" target="_blank">cuda-bindings</a> &nbsp;<span class="tag tag-up">+159%</span></p>
+  <p class="pkg-meta">9.16M → 23.75M downloads &nbsp;·&nbsp; NVIDIA CUDA Python API</p>
+  <p>NVIDIA's official low-level Python bindings for the CUDA runtime and driver APIs have been on a sustained upward curve: 1.6M (Nov) → 2.5M (Dec) → 9.2M (Jan) → 23.7M (Feb). This is not a flash-in-the-pan growth story — it reflects the maturation of <strong>CUDA Python</strong> as the standard interface for developers writing custom GPU kernels, numerical solvers, and inference engines who need to step below the PyTorch/JAX abstraction layer. The package is becoming a foundational dependency in high-performance ML infrastructure codebases.</p>
+</div>
+
+<div class="pkg-entry">
+  <p class="pkg-title"><a href="https://clickpy.clickhouse.com/dashboard/pymilvus" target="_blank">pymilvus</a> &nbsp;<span class="tag tag-up">+134%</span></p>
+  <p class="pkg-meta">8.16M → 19.07M downloads &nbsp;·&nbsp; Milvus vector database client</p>
+  <p>The Python client for Milvus, one of the most widely deployed open-source vector databases, has been climbing steadily since November (3.6M → 4.4M → 8.2M → 19.1M). The February number confirms that vector search infrastructure is no longer a niche concern: embedding-based semantic search, RAG pipelines, and recommendation systems now commonly deploy Milvus clusters at scale. The jump also correlates with several cloud providers adding managed Milvus offerings in early 2026.</p>
+</div>
+
+<div class="pkg-entry">
+  <p class="pkg-title"><a href="https://clickpy.clickhouse.com/dashboard/cyclopts" target="_blank">cyclopts</a> &nbsp;<span class="tag tag-up">+126%</span></p>
+  <p class="pkg-meta">17.07M → 38.55M downloads &nbsp;·&nbsp; Modern CLI framework</p>
+  <p><code>cyclopts</code> is a modern CLI library built on Python type hints, offering a cleaner ergonomic alternative to Click and argparse. At 38.5M downloads in February, it is no longer a fringe challenger — it is approaching mainstream CLI library status. Its growth is largely organic, driven by developer preference for annotation-driven argument parsing, and it has been appearing as a default dependency in several popular Python project templates and cookiecutters.</p>
+</div>
+
+
+<!-- Footer -->
+<div class="footer">
+  <p>Data sourced from the PyPI public download dataset stored in ClickHouse. Explore individual package trends at <a href="https://clickpy.clickhouse.com" target="_blank">clickpy.clickhouse.com</a>. Download counts include all installers (pip, uv, poetry, etc.) and are not deduplicated across CI reruns. Country attribution is based on IP geolocation at download time and reflects server/runner location rather than developer location.</p>
+</div>
+
+</body>
+</html>
