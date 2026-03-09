@@ -30,8 +30,6 @@ import PlaygroundLink from '@/components/PlaygroundLink';
 import PackageBadge from '@/components/PackageBadge';
 import PackageSchema from '@/components/PackageSchema';
 
-export const revalidate = 3600;
-
 export async function generateMetadata({ params, searchParams }, parent) {
   const package_name = params.package_name;
   const version = searchParams.version;
@@ -88,8 +86,7 @@ export async function generateMetadata({ params, searchParams }, parent) {
   }
 }
 
-// Removed 'force-dynamic' - using revalidate: 3600 instead for better SEO crawlability
-// This ensures Google gets fully-rendered HTML instead of "Loading..." state
+export const revalidate = 3600;
 
 export default async function Dashboard({ params, searchParams }) {
   const version = searchParams.version;
