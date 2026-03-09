@@ -29,8 +29,6 @@ import DependencyTable from '@/components/DependencyTable';
 import PlaygroundLink from '@/components/PlaygroundLink';
 import PackageBadge from '@/components/PackageBadge';
 
-export const revalidate = 3600;
-
 export async function generateMetadata({ params, searchParams }, parent) {
   const package_name = params.package_name;
 
@@ -43,7 +41,7 @@ export async function generateMetadata({ params, searchParams }, parent) {
   }
 }
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
 export default async function Dashboard({ params, searchParams }) {
   const version = searchParams.version;
