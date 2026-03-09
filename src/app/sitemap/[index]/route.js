@@ -23,6 +23,16 @@ OFFSET ${(index - 1) * MAX_PER_PAGE}`,
   });
 
   const entries = []
+
+  if (index === 1) {
+    entries.push(`<url>
+	<loc>https://clickgems.clickhouse.com/</loc>
+	<lastmod>${new Date().toISOString()}</lastmod>
+	<changefreq>daily</changefreq>
+	<priority>1.0</priority>
+</url>`)
+  }
+
   for await (const rows of resultSet.stream()) {
     rows.forEach(row => {
       const packageName = row.json()['name']

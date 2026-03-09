@@ -1,15 +1,10 @@
 import { clickhouse } from '@/utils/clickhouse';
 
-export const MAX_PER_PAGE = 40000
+export const MAX_PER_PAGE = 500
+const SITEMAP_CAP = 500
 
 async function totalSitemaps() {
-  const request = await clickhouse.query({
-    query: `SELECT countDistinct(name) AS total FROM rubygems.gem_downloads_total`,
-  });
-  const response = await request.json()
-  const total = Number(response.data[0]?.total)
-  if (!total || isNaN(total) || !isFinite(total)) return 0
-  return Math.ceil(total / MAX_PER_PAGE)
+  return Math.ceil(SITEMAP_CAP / MAX_PER_PAGE)
 }
 
 export async function GET() {
