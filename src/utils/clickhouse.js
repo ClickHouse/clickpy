@@ -9,6 +9,10 @@ export const clickhouse = createClient({
     password: process.env.CLICKHOUSE_PASSWORD,
     clickhouse_settings: {
         allow_experimental_analyzer: 0,
+        enable_parallel_replicas: 1,
+        max_parallel_replicas: 3,
+        cluster_for_parallel_replicas: 'default',
+        parallel_replicas_for_non_replicated_merge_tree: 1,
     }
 });
 
