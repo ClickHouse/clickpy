@@ -55,7 +55,9 @@ export default async function Dashboard({ params, searchParams }) {
   const key = JSON.stringify({ ...searchParams });
   if (min_date == null || max_date == null) {
     const ranges = await getPackageDateRanges(package_name, version);
-    min_date = version ? ranges.min_date : '2011-01-01';
+    const twoYearsAgo = new Date(ranges.max_date);
+    twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
+    min_date = version ? ranges.min_date : twoYearsAgo.toISOString().split('T')[0];
     max_date = ranges.max_date;
   }
 
@@ -144,7 +146,7 @@ export default async function Dashboard({ params, searchParams }) {
         <div className='pt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 flex flex-row gap-4  justify-between'>
           <PackageDetails name={package_name} {...packageDetails[1][0]} />
 
-          <div className='flex flex-col'>
+          {/* <div className='flex flex-col'>
             <Suspense key={key} fallback={<Loading />}>
               <PackageBadge package_name={package_name}
                 version={version}
@@ -152,7 +154,7 @@ export default async function Dashboard({ params, searchParams }) {
                 max_date={max_date}
                 country_code={country_code} />
             </Suspense>
-          </div>
+          </div> */}
 
         </div>
         <div className='mt-4 flex flex-col w-11/12 lg:w-full xl:w-11/12 lg:px-16 mx-auto items-end'>
@@ -289,7 +291,7 @@ export default async function Dashboard({ params, searchParams }) {
               />
             </Suspense>
           </div>
-          <div className='mt-24 lg:mt-0'>
+          {/* <div className='mt-24 lg:mt-0'>
             <p className='text-2xl font-bold mb-5'>Related packages</p>
             <Suspense key={key} fallback={<Loading />}>
               <DependencyTable params={{
@@ -301,7 +303,7 @@ export default async function Dashboard({ params, searchParams }) {
                 type: file_type
               }} />
             </Suspense>
-          </div>
+          </div> */}
         </div>
 
         <div className='mt-12 lg:mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 h-[480px] gap-6 mb-24 lg:mb-32'>
