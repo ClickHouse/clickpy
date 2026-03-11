@@ -13,7 +13,7 @@ export default function PackageDetails({
   return (
     <div>
       <div className='flex items-center text-center'>
-        <p className='text-4xl font-bold mr-5'>{name}</p>
+        <h1 className='text-4xl font-bold mr-5'>{name}</h1>
         {home_page && (
           <a href={home_page} target='_blank' className='text-center pt-2'>
             <button type='button'>

@@ -28,22 +28,65 @@ import Ping from '@/components/Ping';
 import DependencyTable from '@/components/DependencyTable';
 import PlaygroundLink from '@/components/PlaygroundLink';
 import PackageBadge from '@/components/PackageBadge';
-
-export const revalidate = 3600;
+import PackageSchema from '@/components/PackageSchema';
 
 export async function generateMetadata({ params, searchParams }, parent) {
   const package_name = params.package_name;
+  const version = searchParams.version;
+
+  // Fetch package details for richer metadata
+  let packageDetails;
+  try {
+    packageDetails = await getPackageDetails(package_name, version);
+  } catch (error) {
+    console.error('Error fetching package details for metadata:', error);
+    // Use minimal metadata if query fails
+    return {
+      title: `${package_name} RubyGem - Download Analytics | ClickGems`,
+      description: `Analytics for the ${package_name} RubyGem. View download trends, version statistics, and release insights powered by ClickHouse.`,
+      verification: {
+        google: 'vu8LQ6LSMjSpZE8h8UlLByhNrhrrufGB6dlJ07hGCUA',
+      },
+      alternates: {
+        canonical: `https://clickgems.clickhouse.com/dashboard/${package_name}`,
+      },
+    };
+  }
+
+  const details = packageDetails[1][0] || {};
+
+  const authors = details.authors || '';
+  const license = details.licenses || '';
+  const summary = details.summary || '';
+
+  // Enhanced title with keywords
+  const title = `${package_name} RubyGem - Download Analytics, Stats & Trends | ClickGems`;
+
+  // Enhanced description with package details
+  let description = `Comprehensive analytics for ${package_name} RubyGem. `;
+  if (authors) {
+    const authorList = authors.split(',').slice(0, 2).join(',').trim();
+    description += `By ${authorList}. `;
+  }
+  if (summary) {
+    const shortSummary = summary.split(' ').slice(0, 15).join(' ');
+    description += `${shortSummary}... `;
+  }
+  description += `View download trends, version statistics, release insights${license ? ', license: ' + license.split(' ').slice(0, 3).join(' ') : ''}. Powered by ClickHouse.`;
 
   return {
-    title: `ClickGems - Download analytics for ${package_name}`,
-    description: `Analytics for the gem ${package_name}, powered by ClickHouse`,
+    title,
+    description,
     verification: {
       google: 'vu8LQ6LSMjSpZE8h8UlLByhNrhrrufGB6dlJ07hGCUA',
-    }
+    },
+    alternates: {
+      canonical: `https://clickgems.clickhouse.com/dashboard/${package_name}`,
+    },
   }
 }
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
 export default async function Dashboard({ params, searchParams }) {
   const version = searchParams.version;
@@ -53,19 +96,50 @@ export default async function Dashboard({ params, searchParams }) {
   let max_date = parseDate(searchParams.max_date, null);
   const package_name = params.package_name;
   const key = JSON.stringify({ ...searchParams });
+
+  // Error handling: Ensure date ranges are available
   if (min_date == null || max_date == null) {
-    const ranges = await getPackageDateRanges(package_name, version);
-    const twoYearsAgo = new Date(ranges.max_date);
-    twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
-    min_date = version ? ranges.min_date : twoYearsAgo.toISOString().split('T')[0];
-    max_date = ranges.max_date;
+    try {
+      const ranges = await getPackageDateRanges(package_name, version);
+      min_date = version ? ranges.min_date : '2011-01-01';
+      max_date = ranges.max_date;
+    } catch (error) {
+      console.error('Error fetching date ranges:', error);
+      // Fallback to default dates
+      min_date = '2011-01-01';
+      max_date = new Date().toISOString().split('T')[0];
+    }
   }
 
-  const packageDetails = await getPackageDetails(package_name, version);
+  // Error handling: Ensure package details are available
+  let packageDetails;
+  try {
+    packageDetails = await getPackageDetails(package_name, version);
+  } catch (error) {
+    console.error('Error fetching package details:', error);
+    // Provide minimal fallback data structure
+    packageDetails = [null, [{
+      authors: null,
+      licenses: null,
+      summary: null,
+      home_page: null,
+      max_version: null,
+      repo_name: null
+    }]];
+  }
 
   const repo_name = packageDetails[1][0]?.repo_name;
   return (
     <div>
+      <PackageSchema
+        name={package_name}
+        authors={packageDetails[1][0]?.authors}
+        licenses={packageDetails[1][0]?.licenses}
+        summary={packageDetails[1][0]?.summary}
+        home_page={packageDetails[1][0]?.home_page}
+        max_version={packageDetails[1][0]?.max_version}
+        repo_name={repo_name}
+      />
       <Ping name={`dashboard: ${package_name}`} />
       <header className='bg-neutral-800 shadow-lg border-b-2 border-neutral-725 sticky top-0 z-20 opacity-95 backdrop-filter backdrop-blur-xl bg-opacity-90 2xl:h-[82px]'>
         <div className='mx-auto flex flex-col 2xl:flex-row 2xl:items-center justify-between px-4 sm:px-8 xsm:px-6 lg:px-16 lg:w-full xl:w-11/12 lg:mb-0'>
@@ -190,7 +264,7 @@ export default async function Dashboard({ params, searchParams }) {
 
         <div className='mt-12 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 lg:h-[480px] lg:grid lg:grid-cols-3 gap-6'>
           <div className='h-[480px] lg:col-span-2'>
-            <p className='text-2xl font-bold mb-5'>Downloads over time</p>
+            <h2 className='text-2xl font-bold mb-5'>RubyGem Downloads Over Time</h2>
             <Suspense key={key} fallback={<Loading />}>
               <Chart
                 type='line'
@@ -208,7 +282,7 @@ export default async function Dashboard({ params, searchParams }) {
             </Suspense>
           </div>
           <div className='h-[480px] mt-24 lg:mt-0'>
-            <p className='text-2xl font-bold mb-5'>Top versions</p>
+            <h2 className='text-2xl font-bold mb-5'>Top RubyGem Versions</h2>
             <Suspense key={key} fallback={<Loading />}>
               <Chart
                 type='pie'
@@ -230,9 +304,9 @@ export default async function Dashboard({ params, searchParams }) {
 
         <div className={`mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 lg:h-[480px] ${repo_name ? 'lg:grid lg:grid-cols-3 gap-6' : ''}`}>
           <div className='h-[480px] lg:col-span-2'>
-            <p className='text-2xl font-bold mb-5'>
-              Downloads by Ruby version over time
-            </p>
+            <h2 className='text-2xl font-bold mb-5'>
+              Downloads by Ruby Version Over Time
+            </h2>
             <Suspense key={key} fallback={<Loading />}>
               <Chart
                 type='bar'
@@ -252,7 +326,7 @@ export default async function Dashboard({ params, searchParams }) {
           </div>
           {repo_name && (
             <div className='h-[480px] mt-24 lg:mt-0'>
-              <p className='text-2xl font-bold mb-5'>Top contributors</p>
+              <h2 className='text-2xl font-bold mb-5'>Top Contributors</h2>
               <Suspense key={key} fallback={<Loading />}>
                 <Chart
                   type='horizontal_bar'
@@ -271,9 +345,9 @@ export default async function Dashboard({ params, searchParams }) {
 
         <div className={`mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 lg:h-[480px] lg:grid lg:grid-cols-3 gap-6`}>
           <div className='h-[480px] lg:col-span-2'>
-            <p className='text-2xl font-bold mb-5'>
-              Downloads by system over time
-            </p>
+            <h2 className='text-2xl font-bold mb-5'>
+              Downloads by System Over Time
+            </h2>
             <Suspense key={key} fallback={<Loading />}>
               <Chart
                 type='multiline'
@@ -291,8 +365,8 @@ export default async function Dashboard({ params, searchParams }) {
               />
             </Suspense>
           </div>
-          {/* <div className='mt-24 lg:mt-0'>
-            <p className='text-2xl font-bold mb-5'>Related packages</p>
+          <div className='mt-24 lg:mt-0'>
+            <h2 className='text-2xl font-bold mb-5'>Related RubyGem Packages</h2>
             <Suspense key={key} fallback={<Loading />}>
               <DependencyTable params={{
                 package_name: package_name,
@@ -308,7 +382,7 @@ export default async function Dashboard({ params, searchParams }) {
 
         <div className='mt-12 lg:mt-24 w-11/12 lg:w-full xl:w-11/12 mx-auto lg:px-16 h-[480px] gap-6 mb-24 lg:mb-32'>
           <div className='h-[480px] xl:col-span-2'>
-            <p className='text-2xl font-bold mb-5'>Downloads by country</p>
+            <h2 className='text-2xl font-bold mb-5'>RubyGem Downloads by Country</h2>
             <Suspense key={key} fallback={<Loading />}>
               <Chart
                 type='map'
