@@ -365,7 +365,7 @@ export default async function Dashboard({ params, searchParams }) {
               />
             </Suspense>
           </div>
-          <div className='mt-24 lg:mt-0'>
+          {/* <div className='mt-24 lg:mt-0'>
             <h2 className='text-2xl font-bold mb-5'>Related RubyGem Packages</h2>
             <Suspense key={key} fallback={<Loading />}>
               <DependencyTable params={{
