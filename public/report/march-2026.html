@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RubyGems Downloads Report — March 2026</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #ffffff;
+    color: #1a1a1a;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── Header ── */
+  header {
+    border-bottom: 3px solid #cc0000;
+    padding-bottom: 18px;
+    margin-bottom: 36px;
+  }
+  header .label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #cc0000;
+    margin-bottom: 6px;
+  }
+  header h1 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #111;
+    line-height: 1.2;
+  }
+  header .meta {
+    font-size: 13px;
+    color: #666;
+    margin-top: 6px;
+  }
+
+  /* ── Section headings ── */
+  h2 {
+    font-size: 19px;
+    font-weight: 700;
+    color: #cc0000;
+    margin-top: 44px;
+    margin-bottom: 10px;
+    border-left: 4px solid #cc0000;
+    padding-left: 12px;
+  }
+  h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #222;
+    margin-top: 22px;
+    margin-bottom: 6px;
+  }
+
+  p { margin-bottom: 14px; }
+
+  /* ── Tables ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0 28px;
+    font-size: 13.5px;
+  }
+  thead tr {
+    background: #f4f4f4;
+  }
+  th {
+    text-align: left;
+    padding: 9px 12px;
+    font-weight: 700;
+    color: #333;
+    border-bottom: 2px solid #ddd;
+    white-space: nowrap;
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafafa; }
+
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.rank { color: #999; font-size: 12px; }
+
+  .badge-up   { background: #e6f9ec; color: #1a7a3b; border-radius: 4px; padding: 1px 7px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .badge-down { background: #fef0f0; color: #cc0000; border-radius: 4px; padding: 1px 7px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+
+  .highlight-row td { background: #fffbf0; }
+
+  /* ── Gem links ── */
+  a { color: #cc0000; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── Callout boxes ── */
+  .callout {
+    border: 1px solid #e2d9c8;
+    border-left: 4px solid #e8a000;
+    background: #fffcf5;
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin: 18px 0;
+  }
+  .callout strong { color: #b07000; }
+
+  /* ── Footer ── */
+  footer {
+    margin-top: 60px;
+    padding-top: 18px;
+    border-top: 1px solid #eee;
+    font-size: 12px;
+    color: #999;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="label">Monthly Insights Report</div>
+  <h1>RubyGems Downloads — March 2026</h1>
+  <div class="meta">Published April 6, 2026 &nbsp;·&nbsp; Data source: rubygems.org via ClickHouse &nbsp;·&nbsp; Covering 2026-03-01 → 2026-03-31</div>
+</header>
+
+<!-- ════════════════════════════════ OVERVIEW ════════════════════════════════ -->
+<h2>Overview</h2>
+<p>
+  March 2026 was a strong month for the RubyGems ecosystem. The United States continued its dominant
+  position as the single largest download source, and overall global volume surged compared to
+  February — driven partly by a longer calendar month and partly by real growth in several
+  emerging markets. A handful of gems saw explosive month-over-month increases, headlined by the
+  <strong>mcp</strong> gem whose adoption more than ninefold in a single month as AI tooling
+  integration with Ruby apps accelerates.
+</p>
+
+
+<!-- ════════════════════════════════ GEO ════════════════════════════════ -->
+<h2>Geographic Distribution</h2>
+
+<p>
+  The table below shows the top 20 countries by download volume in March 2026, compared
+  to February. All figures represent raw download request counts recorded by the RubyGems CDN.
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Country</th>
+      <th class="num">Mar 2026</th>
+      <th class="num">Feb 2026</th>
+      <th>MoM</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="highlight-row">
+      <td class="rank">1</td>
+      <td>🇺🇸 United States</td>
+      <td class="num">3,187,113,853</td>
+      <td class="num">2,653,814,580</td>
+      <td><span class="badge-up">+20.1%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">2</td>
+      <td>🇩🇪 Germany</td>
+      <td class="num">266,645,011</td>
+      <td class="num">206,559,665</td>
+      <td><span class="badge-up">+29.1%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">3</td>
+      <td>🇮🇪 Ireland</td>
+      <td class="num">125,279,370</td>
+      <td class="num">159,046,069</td>
+      <td><span class="badge-down">−21.2%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">4</td>
+      <td>🇯🇵 Japan</td>
+      <td class="num">112,620,088</td>
+      <td class="num">110,314,269</td>
+      <td><span class="badge-up">+2.1%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">5</td>
+      <td>🇨🇦 Canada</td>
+      <td class="num">69,059,603</td>
+      <td class="num">54,227,718</td>
+      <td><span class="badge-up">+27.3%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">6</td>
+      <td>🇬🇧 United Kingdom</td>
+      <td class="num">60,300,491</td>
+      <td class="num">49,804,982</td>
+      <td><span class="badge-up">+21.1%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">7</td>
+      <td>🇦🇺 Australia</td>
+      <td class="num">54,943,431</td>
+      <td class="num">55,622,987</td>
+      <td><span class="badge-down">−1.2%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">8</td>
+      <td>🇸🇬 Singapore</td>
+      <td class="num">48,043,740</td>
+      <td class="num">40,895,762</td>
+      <td><span class="badge-up">+17.5%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">9</td>
+      <td>🇫🇷 France</td>
+      <td class="num">45,002,265</td>
+      <td class="num">48,004,126</td>
+      <td><span class="badge-down">−6.3%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">10</td>
+      <td>🇳🇱 Netherlands</td>
+      <td class="num">30,190,921</td>
+      <td class="num">23,960,663</td>
+      <td><span class="badge-up">+26.0%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">11</td>
+      <td>🇮🇳 India</td>
+      <td class="num">28,689,685</td>
+      <td class="num">24,962,232</td>
+      <td><span class="badge-up">+14.9%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">12</td>
+      <td>🇷🇺 Russia</td>
+      <td class="num">26,316,356</td>
+      <td class="num">19,799,666</td>
+      <td><span class="badge-up">+32.9%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">13</td>
+      <td>🇧🇷 Brazil</td>
+      <td class="num">21,426,158</td>
+      <td class="num">15,558,361</td>
+      <td><span class="badge-up">+37.7%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">14</td>
+      <td>🇫🇮 Finland</td>
+      <td class="num">18,956,318</td>
+      <td class="num">14,880,235</td>
+      <td><span class="badge-up">+27.4%</span></td>
+    </tr>
+    <tr class="highlight-row">
+      <td class="rank">15</td>
+      <td>🇭🇰 Hong Kong</td>
+      <td class="num">17,568,721</td>
+      <td class="num">10,617,492</td>
+      <td><span class="badge-up">+65.5%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">16</td>
+      <td>🇧🇪 Belgium</td>
+      <td class="num">11,548,662</td>
+      <td class="num">9,867,790</td>
+      <td><span class="badge-up">+17.0%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">17</td>
+      <td>🇰🇷 South Korea</td>
+      <td class="num">10,904,263</td>
+      <td class="num">13,171,659</td>
+      <td><span class="badge-down">−17.2%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">18</td>
+      <td>🇨🇭 Switzerland</td>
+      <td class="num">10,320,568</td>
+      <td class="num">7,902,529</td>
+      <td><span class="badge-up">+30.6%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">19</td>
+      <td>🇵🇱 Poland</td>
+      <td class="num">9,575,580</td>
+      <td class="num">—</td>
+      <td>New entry</td>
+    </tr>
+    <tr>
+      <td class="rank">20</td>
+      <td>🇸🇪 Sweden</td>
+      <td class="num">9,445,712</td>
+      <td class="num">8,670,263</td>
+      <td><span class="badge-up">+8.9%</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Notable Shifts</h3>
+
+<p>
+  <strong>United States (+20.1%)</strong> remains the clear leader, accounting for roughly 75% of
+  all tracked downloads. The growth largely reflects more CI/CD pipeline activity and cloud-based
+  Ruby workloads running on AWS and GCP infrastructure in US regions.
+</p>
+
+<p>
+  <strong>Ireland (−21.2%)</strong> is the most striking drop in the top 10. Ireland consistently
+  ranks high because many AWS and Fastly edge nodes serving European traffic are registered there.
+  The decline from 159M to 125M suggests a shift in CDN routing or a reduction in specific
+  large-scale automation jobs that previously routed through Dublin data centres. This is a
+  CDN-topology story more than a developer story.
+</p>
+
+<p>
+  <strong>Hong Kong (+65.5%)</strong> posted the strongest growth in the top 20, moving from 16th
+  to 15th and nearly doubling its February volume. This is consistent with growing adoption of
+  Ruby in Southeast Asian fintech and SaaS startups, many of which use Hong Kong as a regional
+  cloud hub.
+</p>
+
+<p>
+  <strong>Brazil (+37.7%)</strong> and <strong>Russia (+32.9%)</strong> both posted strong gains,
+  suggesting expanding local Ruby communities and increased CI automation in those markets.
+  <strong>South Korea (−17.2%)</strong> bucked the trend, sliding back from a strong February —
+  likely a normalisation after an unusually high-volume month rather than a structural retreat.
+</p>
+
+<div class="callout">
+  <strong>CDN note:</strong> Download counts are attributed to the geographic location of the
+  requesting IP address. Cloud provider infrastructure (especially AWS us-east-1 via Ireland and
+  US CDN nodes) means country-level figures reflect both end-developer activity <em>and</em>
+  automated CI/CD pipeline traffic.
+</div>
+
+
+<!-- ════════════════════════════════ TOP GEMS ════════════════════════════════ -->
+<h2>Most Popular Gems</h2>
+
+<p>
+  The top gems are dominated by foundational Ruby infrastructure — dependency management,
+  build tooling, standard library backports, and AWS SDKs. This list is largely stable
+  month-over-month; churn at the top is rare and usually signals a major Rails or Ruby version
+  bump propagating through CI systems worldwide.
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Gem</th>
+      <th class="num">Mar 2026 Downloads</th>
+      <th>Category</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="highlight-row">
+      <td class="rank">1</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/bundler">bundler</a></td>
+      <td class="num">78,189,371</td>
+      <td>Dependency management</td>
+    </tr>
+    <tr>
+      <td class="rank">2</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/rake">rake</a></td>
+      <td class="num">27,743,158</td>
+      <td>Build / task automation</td>
+    </tr>
+    <tr>
+      <td class="rank">3</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/json">json</a></td>
+      <td class="num">26,746,339</td>
+      <td>Stdlib / serialization</td>
+    </tr>
+    <tr>
+      <td class="rank">4</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/concurrent-ruby">concurrent-ruby</a></td>
+      <td class="num">25,095,789</td>
+      <td>Concurrency primitives</td>
+    </tr>
+    <tr>
+      <td class="rank">5</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/activesupport">activesupport</a></td>
+      <td class="num">24,615,738</td>
+      <td>Rails core</td>
+    </tr>
+    <tr>
+      <td class="rank">6</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/addressable">addressable</a></td>
+      <td class="num">23,759,291</td>
+      <td>URI handling</td>
+    </tr>
+    <tr>
+      <td class="rank">7</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/base64">base64</a></td>
+      <td class="num">23,752,353</td>
+      <td>Stdlib backport</td>
+    </tr>
+    <tr>
+      <td class="rank">8</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/public_suffix">public_suffix</a></td>
+      <td class="num">23,635,067</td>
+      <td>Domain parsing</td>
+    </tr>
+    <tr>
+      <td class="rank">9</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/minitest">minitest</a></td>
+      <td class="num">23,173,103</td>
+      <td>Testing</td>
+    </tr>
+    <tr>
+      <td class="rank">10</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/i18n">i18n</a></td>
+      <td class="num">22,414,114</td>
+      <td>Internationalisation</td>
+    </tr>
+    <tr>
+      <td class="rank">11</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/aws-partitions">aws-partitions</a></td>
+      <td class="num">22,395,799</td>
+      <td>AWS SDK</td>
+    </tr>
+    <tr>
+      <td class="rank">12</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/aws-sdk-core">aws-sdk-core</a></td>
+      <td class="num">22,307,203</td>
+      <td>AWS SDK</td>
+    </tr>
+    <tr>
+      <td class="rank">13</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/bigdecimal">bigdecimal</a></td>
+      <td class="num">21,136,066</td>
+      <td>Stdlib backport</td>
+    </tr>
+    <tr>
+      <td class="rank">14</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/logger">logger</a></td>
+      <td class="num">20,825,207</td>
+      <td>Stdlib backport</td>
+    </tr>
+    <tr>
+      <td class="rank">15</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/faraday">faraday</a></td>
+      <td class="num">20,803,438</td>
+      <td>HTTP client</td>
+    </tr>
+    <tr>
+      <td class="rank">16</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/connection_pool">connection_pool</a></td>
+      <td class="num">19,993,618</td>
+      <td>Connection pooling</td>
+    </tr>
+    <tr>
+      <td class="rank">17</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/aws-sigv4">aws-sigv4</a></td>
+      <td class="num">19,955,830</td>
+      <td>AWS SDK</td>
+    </tr>
+    <tr>
+      <td class="rank">18</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/tzinfo">tzinfo</a></td>
+      <td class="num">19,873,137</td>
+      <td>Timezone data</td>
+    </tr>
+    <tr>
+      <td class="rank">19</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/aws-eventstream">aws-eventstream</a></td>
+      <td class="num">19,850,751</td>
+      <td>AWS SDK</td>
+    </tr>
+    <tr>
+      <td class="rank">20</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/unicode-display_width">unicode-display_width</a></td>
+      <td class="num">19,801,912</td>
+      <td>Terminal / CLI</td>
+    </tr>
+    <tr>
+      <td class="rank">21</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/aws-sdk-s3">aws-sdk-s3</a></td>
+      <td class="num">19,053,124</td>
+      <td>AWS SDK</td>
+    </tr>
+    <tr>
+      <td class="rank">22</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/nokogiri">nokogiri</a></td>
+      <td class="num">18,831,185</td>
+      <td>HTML/XML parsing</td>
+    </tr>
+    <tr>
+      <td class="rank">23</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/rack">rack</a></td>
+      <td class="num">18,725,891</td>
+      <td>Web middleware</td>
+    </tr>
+    <tr>
+      <td class="rank">24</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/faraday-net_http">faraday-net_http</a></td>
+      <td class="num">18,443,096</td>
+      <td>HTTP client adapter</td>
+    </tr>
+    <tr>
+      <td class="rank">25</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/rexml">rexml</a></td>
+      <td class="num">17,964,033</td>
+      <td>XML parsing</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+  <strong>bundler</strong> continues to sit far ahead of all other gems with over 78 million
+  downloads — nearly three times the next entry. Its dominance reflects that almost every Ruby
+  project, CI job, and deployment pipeline resolves and installs dependencies through Bundler.
+</p>
+
+<p>
+  The <strong>AWS SDK cluster</strong> (aws-partitions, aws-sdk-core, aws-sigv4, aws-eventstream,
+  aws-sdk-s3) collectively accounts for over 103 million downloads, cementing AWS as the dominant
+  cloud platform for Ruby/Rails workloads. The presence of five AWS gems in the top 25 reflects
+  how deeply cloud infrastructure is woven into the modern Ruby stack.
+</p>
+
+<p>
+  Stdlib <strong>backport gems</strong> — base64, bigdecimal, logger — continue to rank high
+  as the Ruby community migrates projects across Ruby 3.x minor versions, where several
+  previously built-in libraries were moved to bundled gems requiring explicit declaration.
+</p>
+
+
+<!-- ════════════════════════════════ EMERGING ════════════════════════════════ -->
+<h2>Emerging Gems</h2>
+
+<p>
+  The following gems demonstrated significant month-over-month growth from a meaningful baseline
+  (minimum 50,000 downloads in February). These are not newly published gems starting from near
+  zero — each had an established presence before March and then accelerated sharply.
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Gem</th>
+      <th class="num">Feb 2026</th>
+      <th class="num">Mar 2026</th>
+      <th>Growth</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="highlight-row">
+      <td class="rank">1</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/mcp">mcp</a></td>
+      <td class="num">348,307</td>
+      <td class="num">3,186,747</td>
+      <td><span class="badge-up">+814.9%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">2</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/agora_dynamic_key">agora_dynamic_key</a></td>
+      <td class="num">75,834</td>
+      <td class="num">346,020</td>
+      <td><span class="badge-up">+356.3%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">3</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/win32-registry">win32-registry</a></td>
+      <td class="num">60,241</td>
+      <td class="num">254,198</td>
+      <td><span class="badge-up">+322.0%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">4</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/app_profiler">app_profiler</a></td>
+      <td class="num">69,993</td>
+      <td class="num">214,585</td>
+      <td><span class="badge-up">+206.6%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">5</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/rubocop-minitest">rubocop-minitest</a></td>
+      <td class="num">634,520</td>
+      <td class="num">1,546,509</td>
+      <td><span class="badge-up">+143.7%</span></td>
+    </tr>
+    <tr class="highlight-row">
+      <td class="rank">6</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/clickhouse-activerecord">clickhouse-activerecord</a></td>
+      <td class="num">67,334</td>
+      <td class="num">162,356</td>
+      <td><span class="badge-up">+141.1%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">7</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/activerecord-multi-tenant">activerecord-multi-tenant</a></td>
+      <td class="num">63,601</td>
+      <td class="num">157,817</td>
+      <td><span class="badge-up">+148.1%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">8</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/app_profiler">crystalball</a></td>
+      <td class="num">72,843</td>
+      <td class="num">164,285</td>
+      <td><span class="badge-up">+125.5%</span></td>
+    </tr>
+    <tr>
+      <td class="rank">9</td>
+      <td><a href="https://clickgems.clickhouse.com/dashboard/rb_heap">rb_heap</a></td>
+      <td class="num">122,342</td>
+      <td class="num">273,934</td>
+      <td><span class="badge-up">+123.9%</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>🤖 mcp — The AI Protocol Gem Explodes (+814.9%)</h3>
+<p>
+  <a href="https://clickgems.clickhouse.com/dashboard/mcp">mcp</a> is the standout story of March
+  2026. The gem provides a Ruby implementation of the
+  <strong>Model Context Protocol (MCP)</strong> — an open standard introduced by Anthropic for
+  connecting AI agents and LLMs to external data sources and tools. With the broader Ruby and
+  Rails community rapidly integrating LLM-based features into applications, demand for a
+  first-class MCP client/server library has spiked dramatically. Downloads jumped from 348K in
+  February to over 3.1 million in March — a nearly 9× increase. Expect this trajectory to
+  continue as more teams prototype agentic Rails features.
+</p>
+
+<h3>📡 agora_dynamic_key — Real-Time Communication Gains (+356.3%)</h3>
+<p>
+  <a href="https://clickgems.clickhouse.com/dashboard/agora_dynamic_key">agora_dynamic_key</a>
+  provides token generation for the Agora real-time audio/video communication platform. The
+  sharp rise points to a growing number of Ruby backends powering real-time features — live
+  streaming, voice channels, and in-app video — particularly in Asian SaaS products. This
+  aligns with the surge in downloads from Hong Kong and Singapore noted in the geographic section.
+</p>
+
+<h3>🪟 win32-registry — Windows Ruby Seeing Renewed Activity (+322.0%)</h3>
+<p>
+  <a href="https://clickgems.clickhouse.com/dashboard/win32-registry">win32-registry</a> exposes
+  the Windows Registry API to Ruby. A sudden spike is unusual and typically points to a tooling
+  update in a widely-used Windows-centric project — such as a DevKit, RubyInstaller component, or
+  enterprise automation suite — that pulled in this dependency at scale. Worth monitoring in April
+  to see whether it normalises or reflects a sustained shift in Windows-based Ruby tooling usage.
+</p>
+
+<h3>🔬 app_profiler — Shopify's Profiler Goes Wide (+206.6%)</h3>
+<p>
+  <a href="https://clickgems.clickhouse.com/dashboard/app_profiler">app_profiler</a> is
+  Shopify's open-source application profiler gem, designed to sample Rack-based Ruby applications
+  in production. A 2× growth suggests that performance engineering practices pioneered at Shopify
+  scale are spreading to mid-size Rails shops. Combined with the rise of
+  <a href="https://clickgems.clickhouse.com/dashboard/crystalball">crystalball</a> (+125.5%),
+  a predictive test selection gem, March shows a clear uptick in Ruby teams investing in
+  developer productivity and observability tooling.
+</p>
+
+<h3>🔍 rubocop-minitest — Broad Linting Adoption (+143.7%)</h3>
+<p>
+  <a href="https://clickgems.clickhouse.com/dashboard/rubocop-minitest">rubocop-minitest</a>
+  adds Minitest-specific cops to RuboCop. It entered March with an already-healthy 634K
+  downloads and ended with 1.5M — the largest absolute increase among emerging gems. This scale
+  of growth typically indicates a coordinated rollout: major open-source organisations, agencies,
+  or large monorepos enabling the plugin in their shared RuboCop config and propagating it
+  across hundreds of CI jobs. It also reflects the strong showing of
+  <a href="https://clickgems.clickhouse.com/dashboard/minitest">minitest</a> itself in the top
+  gems list (#9 with 23M downloads).
+</p>
+
+<h3>🐘 clickhouse-activerecord — Analytics in the Rails Stack (+141.1%)</h3>
+<p>
+  <a href="https://clickgems.clickhouse.com/dashboard/clickhouse-activerecord">clickhouse-activerecord</a>
+  provides an ActiveRecord adapter for ClickHouse, enabling Rails models to connect directly to
+  ClickHouse databases. Its 141% growth reflects the expanding use of ClickHouse as an analytical
+  backend within Rails applications — teams that previously exported data to a separate analytics
+  system are increasingly querying ClickHouse directly from their Rails app layer. This is one to
+  watch as ClickHouse adoption in the Ruby ecosystem continues.
+</p>
+
+<h3>🏢 activerecord-multi-tenant — SaaS Multi-Tenancy (+148.1%)</h3>
+<p>
+  <a href="https://clickgems.clickhouse.com/dashboard/activerecord-multi-tenant">activerecord-multi-tenant</a>
+  simplifies row-level multi-tenancy in ActiveRecord by scoping queries automatically. Its growth
+  aligns with the continued boom in B2B SaaS built on Rails, where multi-tenancy is a foundational
+  architectural requirement. The gem's adoption is rising broadly rather than being driven by a
+  single large project.
+</p>
+
+
+<!-- ════════════════════════════════ CLOSING ════════════════════════════════ -->
+<h2>Key Takeaways</h2>
+
+<p>
+  March 2026 tells a consistent story: the Ruby ecosystem is healthy, growing in breadth, and
+  actively absorbing new paradigms. Three themes stand out:
+</p>
+
+<ul style="margin: 0 0 18px 20px; line-height: 2;">
+  <li><strong>AI integration is here.</strong> The mcp gem's explosion is not a fluke — it is the leading indicator of LLM tooling becoming mainstream in the Rails world.</li>
+  <li><strong>Observability and quality tooling is expanding.</strong> app_profiler, crystalball, and rubocop-minitest all surged simultaneously, suggesting engineering teams are investing heavily in the inner loop.</li>
+  <li><strong>Geographic growth is diversifying.</strong> Hong Kong, Brazil, and the Netherlands all posted strong gains, pointing to a Ruby developer base that is becoming less concentrated in the US and Western Europe.</li>
+</ul>
+
+<p>
+  Explore individual gem trend dashboards at
+  <a href="https://clickgems.clickhouse.com">clickgems.clickhouse.com</a>.
+</p>
+
+<footer>
+  Data sourced from the rubygems.org download log stream, processed in real time by ClickHouse Cloud.
+  Download counts include all gem resolution requests (installs, bundle updates, CI restores) and
+  are not deduplicated by project or IP. · Report covers 2026-03-01 00:00 UTC through 2026-03-31 23:59 UTC.
+</footer>
+
+</body>
+</html>
