@@ -2,7 +2,6 @@ import { ClickUIProvider } from '@/click-ui';
 import './globals.css';
 import { Inter } from 'next/font/google';
 import Script from 'next/script';
-import HyperDXInit from '@/components/HyperDXInit';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -30,7 +29,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
       <body className={`${inter.className} h-full`}>
         <ClickUIProvider theme="dark">
-          <HyperDXInit>{children}</HyperDXInit>
+          {children}
         </ClickUIProvider>
       </body>
     </html>
