@@ -9,6 +9,7 @@ import {
   ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/20/solid';
 import CopyDropdown from '../CopyDropdown';
+import { escapeHtml } from '@/utils/utils';
 
 export default function HeatMap({ data, title, subtitle, onClick, link, metabaseLink }) {
   const chartRef = useRef();
@@ -88,8 +89,8 @@ export default function HeatMap({ data, title, subtitle, onClick, link, metabase
       formatter: (params) => {
         return `<div class='${styles.tooltip}'>
                       <span class='${styles.tooltiptext}'>${
-          yValues[params.value[1]]
-        } - ${xValues[params.value[0]]} - ${Number(
+          escapeHtml(yValues[params.value[1]])
+        } - ${escapeHtml(xValues[params.value[0]])} - ${Number(
           params.value[2]
         ).toLocaleString('en-US')}</span>
                   </div>`;
