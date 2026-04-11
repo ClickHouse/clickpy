@@ -8,6 +8,7 @@ import {
   ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/20/solid';
 import CopyDropdown from '../CopyDropdown';
+import { escapeHtml } from '@/utils/utils';
 
 export default function PunchCard({
   data,
@@ -81,8 +82,8 @@ export default function PunchCard({
       backgroundColor: '#181818',
       borderWidth: 0,
       formatter: (params) => {
-        return `${yValues[params.value[1]]} - ${
-          xValues[params.value[0]]
+        return `${escapeHtml(yValues[params.value[1]])} - ${
+          escapeHtml(xValues[params.value[0]])
         } - ${Number(params.value[2]).toLocaleString('en-US')}`;
       }
     },

@@ -48,6 +48,15 @@ export function toValidStyleName(str) {
       .join('');
 }
 
+export function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 export function base64Encode(text) {
   const utf8Bytes = new TextEncoder().encode(text);
   const binaryString = String.fromCharCode(...Array.from(utf8Bytes));
