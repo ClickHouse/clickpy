@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 import isEqual from 'lodash/isEqual';
 import ReactECharts from 'echarts-for-react';
 import styles from './styles.module.css';
-import { formatNumber, toValidStyleName } from '@/utils/utils';
+import { formatNumber, toValidStyleName, escapeHtml } from '@/utils/utils';
 import Loading from '../Loading';
 import Link from 'next/link';
 import {
@@ -127,7 +127,7 @@ export default function HorizontalBar({
       formatter: (params) => {
         return `<div class='${styles.tooltip}'>
                     <span class='${styles.tooltiptext}'>${
-          params.name
+          escapeHtml(params.name)
         } - ${Number(params.value).toLocaleString('en-US')}</span>
                 </div>`;
       },

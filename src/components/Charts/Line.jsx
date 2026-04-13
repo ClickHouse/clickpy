@@ -10,6 +10,7 @@ import {
   ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/20/solid';
 import CopyDropdown from '../CopyDropdown';
+import { escapeHtml } from '@/utils/utils';
 
 export default function Line({ data, onSelect, onClear, link, metabaseLink }) {
   const [loading, setLoading] = useState(true);
@@ -104,7 +105,7 @@ export default function Line({ data, onSelect, onClear, link, metabaseLink }) {
       borderWidth: 0,
       formatter: (params) => {
         return `<div class='${styles.tooltip}'>
-                    <span class='${styles.tooltiptext}'>${params[0].axisValue}: ${Number(
+                    <span class='${styles.tooltiptext}'>${escapeHtml(params[0].axisValue)}: ${Number(
           params[0].value
         ).toLocaleString('en-US')}</span>
                 </div>`;
