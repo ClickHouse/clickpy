@@ -3,7 +3,8 @@ import { NextResponse } from 'next/server';
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.has('icon_url') ? searchParams.get('icon_url') : '';
-  const iconUrl = query || 'https://github.com/hugovk.png?size=80';
+  const allowedUrls = ['https://github.com/hugovk.png?size=80'];
+  const iconUrl = allowedUrls.includes(query) ? query : 'https://github.com/hugovk.png?size=80';
 
     // Fetch the image and convert it to a Base64-encoded string. Revalidate cache every 30days.
     const imageResponse = await fetch(iconUrl, { next: { revalidate: 2592000 } });
@@ -32,7 +33,6 @@ export async function GET(request) {
         <image id="image0_170_176310" width="80" height="80" xlink:href="data:${mimeType};base64,${imageBase64}"/>
         </defs>
     </svg>`;
-
 
   const response = new NextResponse(svgContent);
   response.headers.set('Content-Type', 'image/svg+xml');
