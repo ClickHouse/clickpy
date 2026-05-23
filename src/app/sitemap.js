@@ -16,7 +16,7 @@ SELECT
 FROM pypi.pypi_downloads
 GROUP BY project
 ORDER BY c DESC
-LIMIT 49999
+LIMIT 1000
 `;
 
 export default async function sitemap() {
@@ -31,22 +31,18 @@ export default async function sitemap() {
         })
       }
 
-    // Create dynamic sitemap entries based on the rows
     const dynamicEntries = projects.map(project => ({
         url: `https://clickpy.clickhouse.com/dashboard/${encodeURIComponent(project)}`,
-        lastModified: new Date(),
         changeFrequency: 'daily',
         priority: 0.7,
     }));
 
-    // Simplified static entries for your sitemap
     const staticEntries = [
         {
-            url: 'https://clickpy.clickhouse.com/dashboard/',
-            lastModified: new Date(),
+            url: 'https://clickpy.clickhouse.com/',
             changeFrequency: 'yearly',
             priority: 1,
-        }
+        },
     ];
 
     return [...staticEntries, ...dynamicEntries];
