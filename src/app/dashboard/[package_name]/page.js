@@ -124,7 +124,7 @@ export default async function Dashboard({ params, searchParams }) {
               Powered by &nbsp;
               <a
                 className='text-primary-300 hover:underline'
-                href='http://clickhouse.com/'
+                href='https://clickhouse.com/'
                 target='_blank'>
                 ClickHouse
               </a>
