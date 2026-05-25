@@ -1,8 +1,9 @@
- export default function robots(){
+export default function robots() {
   return {
     rules: {
       userAgent: '*',
-      allow: '/',
+      allow: ['/$', '/dashboard/*'],
+      disallow: '/',
     },
     sitemap: 'https://clickpy.clickhouse.com/sitemap.xml',
   }
