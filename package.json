@@ -7,17 +7,18 @@
     "vercel-build": "next build",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "patch-package"
   },
   "dependencies": {
-    "@clickhouse/click-ui": "^0.0.168",
+    "@clickhouse/click-ui": "^0.6.0",
     "@clickhouse/client": "^0.2.1",
     "@clickhouse/client-web": "^0.2.1",
     "@gingerwizard/react-daterange-picker": "github:gingerwizard/react-daterange-picker",
     "@headlessui/react": "^1.7.16",
     "@heroicons/react": "^2.0.18",
     "@hyperdx/browser": "^0.21.2",
-    "@next/third-parties": "^14.2.15",
+    "@next/third-parties": "^15.5.16",
     "@opentelemetry/api": "^1.8.0",
     "@opentelemetry/api-logs": "^0.57.2",
     "@opentelemetry/instrumentation": "^0.57.2",
@@ -29,19 +30,21 @@
     "@tailwindcss/typography": "^0.5.9",
     "@vercel/otel": "^1.13.0",
     "autoprefixer": "10.4.14",
+    "date-fns": "^4.1.0",
     "dayjs": "^1.11.11",
-    "echarts": "^5.4.3",
+    "echarts": "^5.6.0",
     "echarts-countries-js": "^1.0.5",
     "echarts-for-react": "^3.0.2",
     "eslint": "8.46.0",
-    "eslint-config-next": "13.4.13",
-    "lodash": "^4.17.21",
-    "next": "^14.2.3",
+    "eslint-config-next": "15.5.16",
+    "lodash": "^4.18.1",
+    "next": "^15.5.16",
     "numeral": "^2.0.6",
-    "postcss": "8.4.31",
-    "react": "^18.3.0",
-    "react-cookie-consent": "^9.0.0",
-    "react-dom": "18.3.0",
+    "postcss": "8.5.10",
+    "react": "^19.2.0",
+    "react-calendar": "^4.8.0",
+    "react-cookie-consent": "^10.0.1",
+    "react-dom": "^19.2.0",
     "server-only": "^0.0.1",
     "sql-formatter": "^15.3.1",
     "styled-components": ">= 6",
@@ -49,11 +52,20 @@
   },
   "devDependencies": {
     "@types/node": "22.7.5",
-    "@types/react": "^18.3.2",
-    "husky": "^8.0.3"
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "husky": "^8.0.3",
+    "patch-package": "^8.0.0"
   },
   "peerDependencies": {
-    "react": "^18.3.0",
+    "react": "^19.2.0",
     "styled-components": ">= 6"
+  },
+  "overrides": {
+    "protobufjs": "7.5.8",
+    "@babel/runtime": "7.26.10",
+    "js-cookie": "3.0.7",
+    "prismjs": "1.30.0",
+    "postcss": "8.5.10"
   }
 }
