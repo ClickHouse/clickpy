@@ -31,8 +31,8 @@ import PackageBadge from '@/components/PackageBadge';
 import PackageSchema from '@/components/PackageSchema';
 
 export async function generateMetadata({ params, searchParams }, parent) {
-  const package_name = params.package_name;
-  const version = searchParams.version;
+  const { package_name } = await params;
+  const { version } = await searchParams;
 
   // Fetch package details for richer metadata
   let packageDetails;
@@ -89,13 +89,14 @@ export async function generateMetadata({ params, searchParams }, parent) {
 export const revalidate = 3600;
 
 export default async function Dashboard({ params, searchParams }) {
-  const version = searchParams.version;
-  const country_code = searchParams.country_code;
-  const file_type = searchParams.type;
-  let min_date = parseDate(searchParams.min_date, null);
-  let max_date = parseDate(searchParams.max_date, null);
-  const package_name = params.package_name;
-  const key = JSON.stringify({ ...searchParams });
+  const resolvedSearchParams = await searchParams;
+  const version = resolvedSearchParams.version;
+  const country_code = resolvedSearchParams.country_code;
+  const file_type = resolvedSearchParams.type;
+  let min_date = parseDate(resolvedSearchParams.min_date, null);
+  let max_date = parseDate(resolvedSearchParams.max_date, null);
+  const { package_name } = await params;
+  const key = JSON.stringify({ ...resolvedSearchParams });
 
   // Error handling: Ensure date ranges are available
   if (min_date == null || max_date == null) {
