@@ -32,7 +32,7 @@
     "autoprefixer": "10.4.14",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.11",
-    "echarts": "^5.4.3",
+    "echarts": "^5.6.0",
     "echarts-countries-js": "^1.0.5",
     "echarts-for-react": "^3.0.2",
     "eslint": "8.46.0",
