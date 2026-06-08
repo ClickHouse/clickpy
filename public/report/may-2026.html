@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PyPI Downloads: Monthly Insights Report — May 2026</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #ffffff;
+      color: #1a1a2e;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      padding: 40px 24px;
+    }
+
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .report-header {
+      border-left: 5px solid #FFCC00;
+      padding: 24px 28px;
+      background: #fafafa;
+      margin-bottom: 36px;
+    }
+    .report-header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 6px;
+    }
+    .report-header .meta {
+      font-size: 13px;
+      color: #666;
+    }
+    .report-header .meta a {
+      color: #0057b8;
+      text-decoration: none;
+    }
+
+    /* Summary box */
+    .summary-box {
+      background: #f0f6ff;
+      border: 1px solid #c8deff;
+      border-radius: 6px;
+      padding: 20px 24px;
+      margin-bottom: 40px;
+    }
+    .summary-box p { margin: 0; font-size: 15px; }
+    .summary-box strong { color: #0057b8; }
+
+    /* Section headings */
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-top: 48px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #FFCC00;
+    }
+    h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-top: 28px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      margin-bottom: 14px;
+    }
+
+    a {
+      color: #0057b8;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 16px 0 24px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+    thead tr {
+      background: #1a1a2e;
+      color: #ffffff;
+    }
+    thead th {
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    tbody tr:nth-child(even) {
+      background: #f8f8f8;
+    }
+    tbody tr:hover {
+      background: #eef4ff;
+    }
+    tbody td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #e8e8e8;
+      vertical-align: middle;
+    }
+
+    .change-pos { color: #1a7f37; font-weight: 600; }
+    .change-neg { color: #cf1124; font-weight: 600; }
+    .change-high { color: #0057b8; font-weight: 700; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-left: 6px;
+    }
+    .badge-ai    { background: #fff0c0; color: #7a5500; }
+    .badge-infra { background: #e0f0ff; color: #003d99; }
+    .badge-core  { background: #e8f5e9; color: #1a5c2a; }
+
+    /* Theme blocks */
+    .theme-block {
+      border-left: 4px solid #FFCC00;
+      padding: 14px 18px;
+      background: #fffdf0;
+      margin: 20px 0;
+      border-radius: 0 6px 6px 0;
+    }
+    .theme-block h3 {
+      margin-top: 0;
+      font-size: 15px;
+      color: #5a4000;
+    }
+    .theme-block p { margin-bottom: 0; }
+
+    /* Takeaways */
+    .takeaways {
+      background: #f9f9ff;
+      border: 1px solid #dde0f5;
+      border-radius: 6px;
+      padding: 20px 24px;
+    }
+    .takeaways ol {
+      padding-left: 20px;
+    }
+    .takeaways li {
+      margin-bottom: 10px;
+    }
+
+    /* Footer */
+    .report-footer {
+      margin-top: 48px;
+      padding-top: 16px;
+      border-top: 1px solid #e0e0e0;
+      font-size: 12.5px;
+      color: #888;
+    }
+    .report-footer a { color: #0057b8; }
+
+    .stat-highlight {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0057b8;
+    }
+
+    .section-intro {
+      background: #f8f8f8;
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="report-header">
+    <h1>PyPI Downloads: Monthly Insights Report</h1>
+    <div class="meta">
+      May 2026 &nbsp;·&nbsp; Data source: PyPI download logs via ClickHouse &nbsp;·&nbsp;
+      Powered by <a href="https://clickpy.clickhouse.com" target="_blank">ClickPy</a>
+    </div>
+  </div>
+
+  <!-- Executive Summary -->
+  <div class="summary-box">
+    <p>PyPI recorded <strong>163.8 billion total downloads</strong> in May 2026, up from <strong>150.1 billion in April</strong> — a month-over-month increase of <strong>+9.2%</strong>. Downloads have grown <strong>+19.8% over three months</strong> (from 136.7 billion in March), pointing to sustained, broad ecosystem expansion. The most striking signal this month is the accelerating dominance of AI/ML-adjacent packages, with LLM orchestration and agent frameworks collectively accounting for some of the highest growth rates ever observed at meaningful download volumes.</p>
+  </div>
+
+  <!-- Section 1: Geography -->
+  <h2>1. Geographic Distribution</h2>
+
+  <h3>Top Countries by Downloads — May 2026</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Country</th>
+          <th>Downloads (May)</th>
+          <th>Downloads (Apr)</th>
+          <th>MoM Change</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>🇺🇸 United States</td><td>122.5 B</td><td>112.6 B</td><td class="change-pos">+8.7%</td></tr>
+        <tr><td>2</td><td>🇩🇪 Germany</td><td>5.2 B</td><td>4.7 B</td><td class="change-pos">+12.1%</td></tr>
+        <tr><td>3</td><td>🇬🇧 United Kingdom</td><td>5.2 B</td><td>4.1 B</td><td class="change-high">+26.1% ↑</td></tr>
+        <tr><td>4</td><td>🇮🇪 Ireland</td><td>4.6 B</td><td>4.4 B</td><td class="change-pos">+5.7%</td></tr>
+        <tr><td>5</td><td>🇸🇬 Singapore</td><td>3.7 B</td><td>3.9 B</td><td class="change-neg">-4.0%</td></tr>
+        <tr><td>6</td><td>🇳🇱 Netherlands</td><td>3.6 B</td><td>3.2 B</td><td class="change-pos">+12.4%</td></tr>
+        <tr><td>7</td><td>🇮🇳 India</td><td>2.5 B</td><td>2.0 B</td><td class="change-high">+26.2% ↑</td></tr>
+        <tr><td>8</td><td>🇯🇵 Japan</td><td>1.6 B</td><td>1.6 B</td><td class="change-pos">+5.3%</td></tr>
+        <tr><td>9</td><td>🇫🇷 France</td><td>1.4 B</td><td>1.3 B</td><td class="change-pos">+4.2%</td></tr>
+        <tr><td>10</td><td>🇨🇦 Canada</td><td>1.2 B</td><td>1.1 B</td><td class="change-pos">+8.1%</td></tr>
+        <tr><td>11</td><td>🇦🇺 Australia</td><td>1.1 B</td><td>1.1 B</td><td class="change-pos">+8.5%</td></tr>
+        <tr><td>12</td><td>🇨🇳 China</td><td>1.1 B</td><td>970 M</td><td class="change-pos">+14.8%</td></tr>
+        <tr><td>13</td><td>🇭🇰 Hong Kong</td><td>908 M</td><td>850 M</td><td class="change-pos">+6.8%</td></tr>
+        <tr><td>14</td><td>🇧🇷 Brazil</td><td>860 M</td><td>1.0 B</td><td class="change-neg">-15.0% ↓</td></tr>
+        <tr><td>15</td><td>🇧🇪 Belgium</td><td>845 M</td><td>762 M</td><td class="change-pos">+10.9%</td></tr>
+        <tr><td>16</td><td>🇰🇷 South Korea</td><td>836 M</td><td>829 M</td><td class="change-pos">+0.8%</td></tr>
+        <tr><td>17</td><td>🇫🇮 Finland</td><td>713 M</td><td>698 M</td><td class="change-pos">+2.2%</td></tr>
+        <tr><td>18</td><td>🇸🇪 Sweden</td><td>617 M</td><td>581 M</td><td class="change-pos">+6.2%</td></tr>
+        <tr><td>19</td><td>🇪🇸 Spain</td><td>456 M</td><td>375 M</td><td class="change-high">+21.6% ↑</td></tr>
+        <tr><td>20</td><td>🇷🇺 Russia</td><td>434 M</td><td>418 M</td><td class="change-pos">+3.9%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Commentary</h3>
+
+  <p><strong>The United States continues to dominate</strong>, accounting for <strong>74.8%</strong> of all global PyPI downloads — a share that has remained remarkably stable across recent months. At 122.5 billion downloads, US volume alone dwarfs the rest of the world combined. This is consistent with the concentration of large-scale cloud CI/CD infrastructure and hyperscaler mirror traffic in the US.</p>
+
+  <p><strong>The United Kingdom surged +26.1% MoM</strong>, jumping from 4.1 billion in April to 5.2 billion in May. This is a notable acceleration for a historically stable market, pushing the UK into a statistical tie with Germany for the #2 spot globally. The growth appears distributed across infrastructure and AI tooling packages rather than a single project, suggesting genuine broadening of Python adoption in UK-based cloud environments.</p>
+
+  <p><strong>India posted the second-largest percentage gain among top-10 countries at +26.2%</strong>, reaching 2.5 billion downloads. India's rise is consistent with a multi-month trend — downloads have roughly doubled since late 2025. The top packages in India mirror the global list closely (boto3, packaging, certifi, requests), indicating that CI pipeline automation and cloud-native workloads are driving the growth rather than a narrow niche.</p>
+
+  <p><strong>China accelerated to +14.8% MoM</strong>, crossing the 1.1 billion mark. Given the historically conservative growth rate from this region, the uptick is worth monitoring. <strong>Spain was a notable outlier to the upside at +21.6%</strong>, moving from 375 million to 456 million downloads.</p>
+
+  <p><strong>Brazil bucked the trend with a -15.0% decline</strong>, dropping from 1.0 billion to 860 million downloads — the most significant month-over-month contraction among the top-20 countries. Brazil had shown consistent growth in earlier months, so this dip is potentially transient, but it is worth watching in June. <strong>Singapore also dipped -4.0%</strong>, a mild contraction for a key APAC infrastructure hub.</p>
+
+  <!-- Section 2: Top Packages -->
+  <h2>2. Most Popular Packages</h2>
+
+  <h3>Top 25 Packages by Downloads — May 2026</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Package</th>
+          <th>Downloads (May)</th>
+          <th>Category</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td><a href="https://clickpy.clickhouse.com/dashboard/boto3" target="_blank">boto3</a></td><td>3.30 B</td><td><span class="badge badge-infra">AWS SDK</span></td></tr>
+        <tr><td>2</td><td><a href="https://clickpy.clickhouse.com/dashboard/packaging" target="_blank">packaging</a></td><td>1.91 B</td><td><span class="badge badge-core">Build</span></td></tr>
+        <tr><td>3</td><td><a href="https://clickpy.clickhouse.com/dashboard/urllib3" target="_blank">urllib3</a></td><td>1.70 B</td><td><span class="badge badge-core">HTTP</span></td></tr>
+        <tr><td>4</td><td><a href="https://clickpy.clickhouse.com/dashboard/certifi" target="_blank">certifi</a></td><td>1.63 B</td><td><span class="badge badge-infra">TLS</span></td></tr>
+        <tr><td>5</td><td><a href="https://clickpy.clickhouse.com/dashboard/idna" target="_blank">idna</a></td><td>1.63 B</td><td><span class="badge badge-core">Encoding</span></td></tr>
+        <tr><td>6</td><td><a href="https://clickpy.clickhouse.com/dashboard/requests" target="_blank">requests</a></td><td>1.60 B</td><td><span class="badge badge-core">HTTP</span></td></tr>
+        <tr><td>7</td><td><a href="https://clickpy.clickhouse.com/dashboard/typing-extensions" target="_blank">typing-extensions</a></td><td>1.53 B</td><td><span class="badge badge-core">Types</span></td></tr>
+        <tr><td>8</td><td><a href="https://clickpy.clickhouse.com/dashboard/charset-normalizer" target="_blank">charset-normalizer</a></td><td>1.46 B</td><td><span class="badge badge-core">Encoding</span></td></tr>
+        <tr><td>9</td><td><a href="https://clickpy.clickhouse.com/dashboard/botocore" target="_blank">botocore</a></td><td>1.33 B</td><td><span class="badge badge-infra">AWS SDK</span></td></tr>
+        <tr><td>10</td><td><a href="https://clickpy.clickhouse.com/dashboard/setuptools" target="_blank">setuptools</a></td><td>1.32 B</td><td><span class="badge badge-core">Build</span></td></tr>
+        <tr><td>11</td><td><a href="https://clickpy.clickhouse.com/dashboard/cryptography" target="_blank">cryptography</a></td><td>1.24 B</td><td><span class="badge badge-infra">Security</span></td></tr>
+        <tr><td>12</td><td><a href="https://clickpy.clickhouse.com/dashboard/python-dateutil" target="_blank">python-dateutil</a></td><td>1.12 B</td><td><span class="badge badge-core">Utility</span></td></tr>
+        <tr><td>13</td><td><a href="https://clickpy.clickhouse.com/dashboard/aiobotocore" target="_blank">aiobotocore</a></td><td>1.11 B</td><td><span class="badge badge-infra">AWS SDK</span></td></tr>
+        <tr><td>14</td><td><a href="https://clickpy.clickhouse.com/dashboard/six" target="_blank">six</a></td><td>1.09 B</td><td><span class="badge badge-core">Compat</span></td></tr>
+        <tr><td>15</td><td><a href="https://clickpy.clickhouse.com/dashboard/pygments" target="_blank">pygments</a></td><td>1.08 B</td><td><span class="badge badge-core">Syntax</span></td></tr>
+        <tr><td>16</td><td><a href="https://clickpy.clickhouse.com/dashboard/pyyaml" target="_blank">pyyaml</a></td><td>1.07 B</td><td><span class="badge badge-core">Parsing</span></td></tr>
+        <tr><td>17</td><td><a href="https://clickpy.clickhouse.com/dashboard/pydantic" target="_blank">pydantic</a></td><td>1.06 B</td><td><span class="badge badge-ai">Validation</span></td></tr>
+        <tr><td>18</td><td><a href="https://clickpy.clickhouse.com/dashboard/cffi" target="_blank">cffi</a></td><td>1.04 B</td><td><span class="badge badge-core">FFI</span></td></tr>
+        <tr><td>19</td><td><a href="https://clickpy.clickhouse.com/dashboard/pluggy" target="_blank">pluggy</a></td><td>1.01 B</td><td><span class="badge badge-core">Plugins</span></td></tr>
+        <tr><td>20</td><td><a href="https://clickpy.clickhouse.com/dashboard/click" target="_blank">click</a></td><td>990 M</td><td><span class="badge badge-core">CLI</span></td></tr>
+        <tr><td>21</td><td><a href="https://clickpy.clickhouse.com/dashboard/numpy" target="_blank">numpy</a></td><td>982 M</td><td><span class="badge badge-ai">Numeric</span></td></tr>
+        <tr><td>22</td><td><a href="https://clickpy.clickhouse.com/dashboard/pycparser" target="_blank">pycparser</a></td><td>953 M</td><td><span class="badge badge-core">Parsing</span></td></tr>
+        <tr><td>23</td><td><a href="https://clickpy.clickhouse.com/dashboard/pydantic-core" target="_blank">pydantic-core</a></td><td>929 M</td><td><span class="badge badge-ai">Validation</span></td></tr>
+        <tr><td>24</td><td><a href="https://clickpy.clickhouse.com/dashboard/grpcio-status" target="_blank">grpcio-status</a></td><td>875 M</td><td><span class="badge badge-infra">gRPC</span></td></tr>
+        <tr><td>25</td><td><a href="https://clickpy.clickhouse.com/dashboard/anyio" target="_blank">anyio</a></td><td>865 M</td><td><span class="badge badge-core">Async</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Commentary</h3>
+
+  <p><strong><a href="https://clickpy.clickhouse.com/dashboard/boto3" target="_blank">boto3</a> at 3.30 billion downloads is in a class of its own</strong>, nearly double the next package. Its dominance reflects how deeply AWS tooling is embedded in Python CI/CD pipelines globally. Notably, <a href="https://clickpy.clickhouse.com/dashboard/aiobotocore" target="_blank">aiobotocore</a> at rank 13 (1.11 B) has become a permanent fixture in the top 15, reflecting the shift toward async-first architectures.</p>
+
+  <p><strong><a href="https://clickpy.clickhouse.com/dashboard/pydantic" target="_blank">pydantic</a> and <a href="https://clickpy.clickhouse.com/dashboard/pydantic-core" target="_blank">pydantic-core</a> together account for ~2.0 billion downloads</strong> — a combined figure that would place them in the top 5 if treated as a single dependency group. This mirrors pydantic's emergence as the de-facto schema/validation layer for LLM frameworks, FastAPI, and data pipelines alike.</p>
+
+  <p><strong><a href="https://clickpy.clickhouse.com/dashboard/six" target="_blank">six</a>, the Python 2/3 compatibility library, still sits at 1.09 billion monthly downloads</strong> — a figure that continues to surprise. It persists as a transitive dependency of many legacy libraries that have not yet dropped Py2 stubs from their packaging metadata.</p>
+
+  <p><strong><a href="https://clickpy.clickhouse.com/dashboard/anyio" target="_blank">anyio</a> at 865 million</strong> reinforces the async trend: it is a core dependency of FastAPI, httpx, and many of the new-generation agent frameworks appearing in the emerging section below.</p>
+
+  <!-- Section 3: Emerging -->
+  <h2>3. Emerging Packages</h2>
+
+  <div class="section-intro">
+    This section identifies packages with <strong>meaningful baseline volumes</strong> (≥ 5 million downloads in April 2026) that have shown <strong>exceptional month-over-month or three-month growth</strong>. Packages with trivially small baselines are excluded to focus on genuine adoption shifts rather than statistical noise.
+  </div>
+
+  <div class="theme-block">
+    <h3>🤖 Theme 1: The AI Agent Framework Explosion</h3>
+    <p>The single most dominant theme in May 2026 is the explosive adoption of Python-based LLM agent and orchestration frameworks. This is not a niche signal — the numbers are large and the growth rates are extraordinary.</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Package</th>
+          <th>Apr Downloads</th>
+          <th>May Downloads</th>
+          <th>MoM Change</th>
+          <th>3-Month Change</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="https://clickpy.clickhouse.com/dashboard/litellm" target="_blank">litellm</a></td>
+          <td>296.4 M</td><td>513.4 M</td>
+          <td class="change-high">+73.2%</td><td class="change-high">+425.6%</td>
+        </tr>
+        <tr>
+          <td><a href="https://clickpy.clickhouse.com/dashboard/pydantic-ai-slim" target="_blank">pydantic-ai-slim</a></td>
+          <td>144.9 M</td><td>268.3 M</td>
+          <td class="change-high">+85.1%</td><td>—</td>
+        </tr>
+        <tr>
+          <td><a href="https://clickpy.clickhouse.com/dashboard/pydantic-graph" target="_blank">pydantic-graph</a></td>
+          <td>75.5 M</td><td>166.1 M</td>
+          <td class="change-high">+120.0%</td><td>—</td>
+        </tr>
+        <tr>
+          <td><a href="https://clickpy.clickhouse.com/dashboard/llama-cloud-services" target="_blank">llama-cloud-services</a></td>
+          <td>22.6 M</td><td>96.9 M</td>
+          <td class="change-high">+328.3%</td><td>—</td>
+        </tr>
+        <tr>
+          <td><a href="https://clickpy.clickhouse.com/dashboard/llama-parse" target="_blank">llama-parse</a></td>
+          <td>24.7 M</td><td>97.8 M</td>
+          <td class="change-high">+295.3%</td><td>—</td>
+        </tr>
+        <tr>
+          <td><a href="https://clickpy.clickhouse.com/dashboard/google-adk" target="_blank">google-adk</a></td>
+          <td>6.7 M</td><td>19.8 M</td>
+          <td class="change-high">+193.9%</td><td class="change-high">+253.9%</td>
+        </tr>
+        <tr>
+          <td><a href="https://clickpy.clickhouse.com/dashboard/langchain-protocol" target="_blank">langchain-protocol</a></td>
+          <td>6.0 M</td><td>37.4 M</td>
+          <td class="change-high">+524.7%</td><td>—</td>
+        </tr>
+        <tr>
+          <td><a href="https://clickpy.clickhouse.com/dashboard/browser-use" target="_blank">browser-use</a></td>
+          <td>10.2 M</td><td>23.6 M</td>
+          <td class="change-high">+132.1%</td><td class="change-high">+247.5%</td>
+        </tr>
+        <tr>
+          <td><a href="https://clickpy.clickhouse.com/dashboard/agent-client-protocol" target="_blank">agent-client-protocol</a></td>
+          <td>7.8 M</td><td>17.8 M</td>
+          <td class="change-high">+128.3%</td><td class="change-high">+250.3%</td>
+        </tr>
+        <tr>
+          <td><a href="https://clickpy.clickhouse.com/dashboard/crewai" target="_blank">crewai</a></td>
+          <td>7.0 M</td><td>14.5 M</td>
+          <td class="change-high">+108.1%</td><td>—</td>
+        </tr>
+        <tr>
+          <td><a href="https://clickpy.clickhouse.com/dashboard/crewai-tools" target="_blank">crewai-tools</a></td>
+          <td>6.2 M</td><td>13.5 M</td>
+          <td class="change-high">+117.6%</td><td>—</td>
+        </tr>
+        <tr>
+          <td><a href="https://clickpy.clickhouse.com/dashboard/strands-agents" target="_blank">strands-agents</a></td>
+          <td>5.4 M</td><td>9.8 M</td>
+          <td class="change-high">+80.5%</td><td>—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong><a href="https://clickpy.clickhouse.com/dashboard/litellm" target="_blank">litellm</a></strong> is on a multi-month tear — from 97.7 million in March to 513.4 million in May, a +425.6% three-month surge. LiteLLM functions as a universal proxy/translation layer across LLM providers (OpenAI, Anthropic, Gemini, etc.), and its growth is directly correlated with teams wanting provider-agnostic inference without rewriting prompt code.</p>
+
+  <p><strong><a href="https://clickpy.clickhouse.com/dashboard/pydantic-ai-slim" target="_blank">pydantic-ai-slim</a></strong> saw downloads climb from 144.9 million to 268.3 million (+85.1%). Its tight integration with the pydantic ecosystem gives it a structural advantage — teams adding agent capabilities to existing FastAPI or data-validation workflows can adopt it without introducing an alien dependency graph.</p>
+
+  <p><strong><a href="https://clickpy.clickhouse.com/dashboard/langchain-protocol" target="_blank">langchain-protocol</a></strong> exploded +524.7% MoM, from 6.0 million to 37.4 million, signalling that the LangChain ecosystem's modular protocol layer is being widely adopted as teams standardise inter-agent communication interfaces. <strong><a href="https://clickpy.clickhouse.com/dashboard/google-adk" target="_blank">google-adk</a></strong> (Google's Agent Development Kit) grew +193.9% MoM and +253.9% over three months, gaining traction as the canonical SDK for agents interoperating with Google Cloud services and Gemini models.</p>
+
+  <p><strong><a href="https://clickpy.clickhouse.com/dashboard/browser-use" target="_blank">browser-use</a></strong> grew from 10.2 million to 23.6 million (+132.1% MoM). This package, which enables LLM-driven browser automation, represents a fast-growing niche: AI agents that interact with the web as a human would, rather than calling structured APIs. <strong><a href="https://clickpy.clickhouse.com/dashboard/strands-agents" target="_blank">strands-agents</a></strong> (AWS's open-source agent framework) posted +80.5% MoM; its AWS provenance makes its longer-term trajectory one to watch.</p>
+
+  <div class="theme-block">
+    <h3>⚡ Theme 2: LLM Inference Infrastructure</h3>
+    <p><strong><a href="https://clickpy.clickhouse.com/dashboard/sglang" target="_blank">sglang</a></strong> is the standout story of the three-month window: downloads grew from 35.9 million in March to 228 million in April to <strong>303.9 million in May — a +744% three-month surge</strong>. SGLang (Structured Generation Language) is a high-throughput LLM serving framework developed at UC Berkeley/LMSYS. Its growth is driven by ML platform teams deploying open-weight models (LLaMA, Mistral, Qwen) who need a production-grade alternative to vLLM. At 303 million monthly downloads, it is no longer a research curiosity.</p>
+  </div>
+
+  <div class="theme-block">
+    <h3>🖥️ Theme 3: NVIDIA CUDA 13 Ecosystem Rollout</h3>
+    <p>A cluster of NVIDIA packages — including <a href="https://clickpy.clickhouse.com/dashboard/nvidia-cublas" target="_blank">nvidia-cublas</a>, <a href="https://clickpy.clickhouse.com/dashboard/nvidia-cudnn-cu13" target="_blank">nvidia-cudnn-cu13</a>, <a href="https://clickpy.clickhouse.com/dashboard/nvidia-nccl-cu13" target="_blank">nvidia-nccl-cu13</a>, and related <code>cu13</code> variants — each grew <strong>+300–330% over three months</strong> (from ~8 million in March to ~33–36 million in May). The synchronised growth across the entire CUDA 13 package family is characteristic of a major PyTorch CUDA wheel release cycle: when PyTorch ships wheels that depend on a new CUDA toolkit version, all associated NVIDIA library packages get pulled as dependencies en masse.</p>
+  </div>
+
+  <div class="theme-block">
+    <h3>🌳 Theme 4: Code Intelligence Tooling</h3>
+    <p>A family of <code>tree-sitter-*</code> grammar packages — including <a href="https://clickpy.clickhouse.com/dashboard/tree-sitter-bash" target="_blank">tree-sitter-bash</a>, <a href="https://clickpy.clickhouse.com/dashboard/tree-sitter-rust" target="_blank">tree-sitter-rust</a>, <a href="https://clickpy.clickhouse.com/dashboard/tree-sitter-c" target="_blank">tree-sitter-c</a>, <a href="https://clickpy.clickhouse.com/dashboard/tree-sitter-go" target="_blank">tree-sitter-go</a>, and <a href="https://clickpy.clickhouse.com/dashboard/tree-sitter-java" target="_blank">tree-sitter-java</a> — all grew between <strong>+238% and +255% over three months</strong>. The breadth of language grammars seeing concurrent growth points to platform-level adoption in AI code intelligence products that need to parse and understand source code structure — rather than isolated developer tooling.</p>
+  </div>
+
+  <div class="theme-block">
+    <h3>🗄️ Theme 5: Data Infrastructure and Authentication</h3>
+    <p><strong><a href="https://clickpy.clickhouse.com/dashboard/ydb" target="_blank">ydb</a></strong> (Yandex Database Python SDK) grew +96.1% MoM and +337.8% over three months, reaching 155.6 million downloads. <strong><a href="https://clickpy.clickhouse.com/dashboard/joserfc" target="_blank">joserfc</a></strong> more than doubled (+104.1%) to 112 million downloads — its growth tracks the general expansion of OAuth2/OIDC adoption in Python web services, particularly as agent frameworks increasingly require token-based auth flows. <strong><a href="https://clickpy.clickhouse.com/dashboard/databricks-sql-connector" target="_blank">databricks-sql-connector</a></strong> reached 163.4 million downloads (+70.3%), reflecting continued growth of Databricks as a Python-first data platform. <strong><a href="https://clickpy.clickhouse.com/dashboard/backports-zstd" target="_blank">backports-zstd</a></strong> nearly doubled (+96.7%) to 68.6 million, driven by packages targeting Python 3.11–3.13 that want Zstandard compression without waiting for the 3.14 stdlib.</p>
+  </div>
+
+  <!-- Section 4: Takeaways -->
+  <h2>4. Key Takeaways for Python Developers</h2>
+
+  <div class="takeaways">
+    <ol>
+      <li><strong>AI/agent frameworks are no longer "experimental" dependencies.</strong> Packages like <a href="https://clickpy.clickhouse.com/dashboard/litellm" target="_blank">litellm</a>, <a href="https://clickpy.clickhouse.com/dashboard/pydantic-ai-slim" target="_blank">pydantic-ai-slim</a>, and <a href="https://clickpy.clickhouse.com/dashboard/crewai" target="_blank">crewai</a> are being downloaded hundreds of millions of times per month — volumes that suggest production deployments, not just prototyping.</li>
+      <li><strong>The LLM inference tier is maturing.</strong> <a href="https://clickpy.clickhouse.com/dashboard/sglang" target="_blank">sglang</a>'s +744% three-month growth signals that teams running their own open-weight model inference are converging on purpose-built serving stacks rather than general-purpose web servers.</li>
+      <li><strong>Tree-sitter is becoming infrastructure.</strong> Its grammar packages are growing in lockstep across multiple languages, indicating that code-aware AI tooling is being deployed at platform scale.</li>
+      <li><strong>India and the UK are the most dynamic growth markets</strong> among the top-10 countries, both posting +26% MoM. Developers and teams in these regions are clearly ramping up Python-based cloud and AI workloads faster than the global average.</li>
+      <li><strong>The core dependency stack is not going anywhere.</strong> <a href="https://clickpy.clickhouse.com/dashboard/boto3" target="_blank">boto3</a>, <a href="https://clickpy.clickhouse.com/dashboard/requests" target="_blank">requests</a>, <a href="https://clickpy.clickhouse.com/dashboard/packaging" target="_blank">packaging</a>, and <a href="https://clickpy.clickhouse.com/dashboard/urllib3" target="_blank">urllib3</a> sit at 1.6–3.3 billion monthly downloads each. Python's long tail of transitive dependencies continues to be the invisible connective tissue of the global software supply chain.</li>
+    </ol>
+  </div>
+
+  <!-- Footer -->
+  <div class="report-footer">
+    <p>Report generated from PyPI download log data stored in ClickHouse. Interactive package dashboards available at <a href="https://clickpy.clickhouse.com" target="_blank">clickpy.clickhouse.com</a>.</p>
+  </div>
+
+</div>
+</body>
+</html>
