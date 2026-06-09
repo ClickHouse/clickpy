@@ -756,6 +756,14 @@ export async function getPackageRanking(package_name, min_date, max_date, countr
         })
 }
 
+export async function installationsPerInstaller() {
+    return query('installationsPerInstaller', `SELECT toStartOfWeek(date) AS x, installer AS name, sum(count) AS y
+    FROM pypi.pypi_downloads_per_day_by_version_by_installer_by_type
+    WHERE date > toStartOfMonth(now() - toIntervalMonth(18)) and x != toStartOfWeek(now()) AND installer IN ('pip', 'uv', 'poetry')
+    GROUP BY x, name
+    ORDER BY x ASC`)
+}
+
 
 export const revalidate = 3600;
 
