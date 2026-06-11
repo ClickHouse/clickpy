@@ -1,5 +1,7 @@
 import { ClickUIProvider } from '@/click-ui';
 import './globals.css';
+import './banner.css';
+import './securiti.css'
 import { Inter } from 'next/font/google';
 import { GoogleTagManager } from '@next/third-parties/google';
 import HyperDXInit from '@/components/HyperDXInit';
