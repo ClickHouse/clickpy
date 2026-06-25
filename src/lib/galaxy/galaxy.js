@@ -125,30 +125,28 @@ export const galaxyOnLoad = (event) => {
   window.galaxy.track(event, { interaction: "trigger" });
 };
 
-export const galaxyOnFocus = (event, depsArray) => {
-  const listener = () => {
-    window.galaxy?.track(event, { interaction: "trigger" });
-  };
-
+export const useGalaxyOnFocus = (event, depsArray) => {
   useEffect(() => {
+    const listener = () => {
+      window.galaxy?.track(event, { interaction: "trigger" });
+    };
     window.addEventListener("focus", listener);
     return () => {
       window.removeEventListener("focus", listener);
     };
-  }, depsArray);
+  }, [event, ...depsArray]); // eslint-disable-line react-hooks/exhaustive-deps
 };
 
-export const galaxyOnBlur = (event, depsArray) => {
-  const listener = () => {
-    window.galaxy?.track(event, { interaction: "trigger" });
-  };
-
+export const useGalaxyOnBlur = (event, depsArray) => {
   useEffect(() => {
+    const listener = () => {
+      window.galaxy?.track(event, { interaction: "trigger" });
+    };
     window.addEventListener("blur", listener);
     return () => {
       window.removeEventListener("blur", listener);
     };
-  }, depsArray);
+  }, [event, ...depsArray]); // eslint-disable-line react-hooks/exhaustive-deps
 };
 
 export const useGalaxyOnPage = (prefix, depsArray = []) => {
@@ -163,10 +161,10 @@ export const useGalaxyOnPage = (prefix, depsArray = []) => {
 
     window.addEventListener("galaxy:ready", track, { once: true });
     return () => window.removeEventListener("galaxy:ready", track);
-  }, [prefix, ...depsArray]);
+  }, [prefix, ...depsArray]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  galaxyOnBlur(`${prefix}.window.blur`, [prefix, ...depsArray]);
-  galaxyOnFocus(`${prefix}.window.focus`, [prefix, ...depsArray]);
+  useGalaxyOnBlur(`${prefix}.window.blur`, [prefix, ...depsArray]);
+  useGalaxyOnFocus(`${prefix}.window.focus`, [prefix, ...depsArray]);
 };
 
 export const galaxyOnClick = (event) => {

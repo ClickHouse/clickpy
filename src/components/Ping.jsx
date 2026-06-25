@@ -7,7 +7,7 @@ import { useGalaxyOnPage } from '@/lib/galaxy/galaxy';
 const Ping = ({name}) => {
     useEffect(() => {
         ping(name)
-    }, []);
+    }, [name]);
 
     useGalaxyOnPage(name);
 
