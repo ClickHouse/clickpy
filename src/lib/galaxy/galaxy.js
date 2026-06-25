@@ -7,7 +7,7 @@ function getBrowserCookie(name) {
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
     return null;
-  } catch {
+  } catch (_e) {
     return null;
   }
 }
@@ -17,7 +17,7 @@ function setBrowserCookie(name, value, { maxAge } = {}) {
     let cookie = `${name}=${value}; path=/; SameSite=Lax`;
     if (maxAge) cookie += `; max-age=${maxAge}`;
     document.cookie = cookie;
-  } catch {
+  } catch (_e) {
     // ignore
   }
 }
@@ -85,7 +85,7 @@ export const useInitGalaxy = () => {
                 synthetic._queued = true;
                 return synthetic;
               }
-            } catch {
+            } catch (_e) {
               // fall through to fetch
             }
           }
