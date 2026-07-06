@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PyPI Monthly Insights Report — June 2026</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #ffffff;
+      color: #1a1a2e;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      padding: 40px 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    header {
+      border-bottom: 3px solid #FFCC01;
+      padding-bottom: 20px;
+      margin-bottom: 32px;
+    }
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      line-height: 1.2;
+    }
+    header .subtitle {
+      margin-top: 8px;
+      font-size: 0.875rem;
+      color: #666;
+    }
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin: 40px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #333;
+      margin: 24px 0 8px;
+    }
+    p {
+      margin-bottom: 14px;
+      color: #2c2c2c;
+    }
+    a {
+      color: #0066cc;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    a:hover { text-decoration: underline; }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 0.875rem;
+    }
+    thead tr {
+      background: #1a1a2e;
+      color: #fff;
+    }
+    thead th {
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 600;
+    }
+    tbody tr:nth-child(even) { background: #f9f9f9; }
+    tbody tr:hover { background: #fff8e1; }
+    tbody td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #ebebeb;
+    }
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+    /* Badges / tags */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .badge-up   { background: #e6f4ea; color: #1e7e34; }
+    .badge-down { background: #fdecea; color: #c0392b; }
+    .badge-hot  { background: #fff3cd; color: #856404; }
+
+    /* Callout cards */
+    .callout {
+      background: #f5f7ff;
+      border-left: 4px solid #FFCC01;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+    }
+    .callout strong { color: #1a1a2e; }
+
+    /* Emerging package entries */
+    .pkg-card {
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+    .pkg-card h3 {
+      margin-top: 0;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pkg-card h3 .icon { font-size: 1.2rem; }
+    .pkg-stats {
+      display: flex;
+      gap: 24px;
+      font-size: 0.82rem;
+      color: #555;
+      margin: 6px 0 10px;
+      flex-wrap: wrap;
+    }
+    .pkg-stats span strong { color: #1a1a2e; }
+
+    footer {
+      margin-top: 48px;
+      padding-top: 16px;
+      border-top: 1px solid #ddd;
+      font-size: 0.8rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>PyPI Monthly Insights Report<br>June 2026</h1>
+  <p class="subtitle">Data source: PyPI download logs via ClickHouse &nbsp;·&nbsp; Period: 1 June – 30 June 2026</p>
+</header>
+
+<!-- OVERVIEW -->
+<h2>Overview</h2>
+<p>
+  June 2026 saw robust download activity across PyPI, with the top 20 countries alone accounting for approximately
+  <strong>172.5 billion downloads</strong> — a ~9% increase over the 158 billion recorded for the same group in May.
+  AI-adjacent tooling continued to dominate the emerging-package landscape, while the geographic distribution
+  experienced some of the sharpest single-month country-level swings observed in recent quarters.
+</p>
+
+<!-- SECTION 1: GEO -->
+<h2>1. Geographic Distribution of Downloads</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Rank</th>
+      <th>Country</th>
+      <th class="num">June (B)</th>
+      <th class="num">May (B)</th>
+      <th class="num">MoM Change</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>🇺🇸 United States</td><td class="num">133.88</td><td class="num">122.46</td><td class="num"><span class="badge badge-up">+9.3%</span></td></tr>
+    <tr><td>2</td><td>🇩🇪 Germany</td><td class="num">5.40</td><td class="num">5.22</td><td class="num"><span class="badge badge-up">+3.4%</span></td></tr>
+    <tr><td>3</td><td>🇸🇬 Singapore</td><td class="num">5.39</td><td class="num">3.73</td><td class="num"><span class="badge badge-up">+44.6% ↑</span></td></tr>
+    <tr><td>4</td><td>🇮🇪 Ireland</td><td class="num">5.17</td><td class="num">4.61</td><td class="num"><span class="badge badge-up">+12.2%</span></td></tr>
+    <tr><td>5</td><td>🇳🇱 Netherlands</td><td class="num">3.73</td><td class="num">3.56</td><td class="num"><span class="badge badge-up">+4.8%</span></td></tr>
+    <tr><td>6</td><td>🇬🇧 United Kingdom</td><td class="num">3.63</td><td class="num">5.17</td><td class="num"><span class="badge badge-down">−29.9% ↓</span></td></tr>
+    <tr><td>7</td><td>🇮🇳 India</td><td class="num">2.69</td><td class="num">2.53</td><td class="num"><span class="badge badge-up">+6.3%</span></td></tr>
+    <tr><td>8</td><td>🇯🇵 Japan</td><td class="num">1.77</td><td class="num">1.63</td><td class="num"><span class="badge badge-up">+8.6%</span></td></tr>
+    <tr><td>9</td><td>🇫🇷 France</td><td class="num">1.46</td><td class="num">1.36</td><td class="num"><span class="badge badge-up">+7.3%</span></td></tr>
+    <tr><td>10</td><td>🇨🇦 Canada</td><td class="num">1.27</td><td class="num">1.19</td><td class="num"><span class="badge badge-up">+6.5%</span></td></tr>
+    <tr><td>11</td><td>🇭🇰 Hong Kong</td><td class="num">1.10</td><td class="num">0.91</td><td class="num"><span class="badge badge-up">+20.8%</span></td></tr>
+    <tr><td>12</td><td>🇦🇺 Australia</td><td class="num">1.09</td><td class="num">1.15</td><td class="num"><span class="badge badge-down">−5.3%</span></td></tr>
+    <tr><td>13</td><td>🇰🇷 South Korea</td><td class="num">1.07</td><td class="num">0.84</td><td class="num"><span class="badge badge-up">+27.6% ↑</span></td></tr>
+    <tr><td>14</td><td>🇧🇷 Brazil</td><td class="num">0.89</td><td class="num">0.86</td><td class="num"><span class="badge badge-up">+4.0%</span></td></tr>
+    <tr><td>15</td><td>🇨🇳 China</td><td class="num">0.86</td><td class="num">1.11</td><td class="num"><span class="badge badge-down">−22.3% ↓</span></td></tr>
+    <tr><td>16</td><td>🇧🇪 Belgium</td><td class="num">0.80</td><td class="num">0.84</td><td class="num"><span class="badge badge-down">−5.2%</span></td></tr>
+    <tr><td>17</td><td>🇸🇪 Sweden</td><td class="num">0.78</td><td class="num">0.62</td><td class="num"><span class="badge badge-up">+26.3%</span></td></tr>
+    <tr><td>18</td><td>🇫🇮 Finland</td><td class="num">0.62</td><td class="num">0.71</td><td class="num"><span class="badge badge-down">−12.9%</span></td></tr>
+    <tr><td>19</td><td>🇷🇺 Russia</td><td class="num">0.45</td><td class="num">0.43</td><td class="num"><span class="badge badge-up">+4.1%</span></td></tr>
+    <tr><td>20</td><td>🇪🇸 Spain</td><td class="num">0.44</td><td class="num">0.46</td><td class="num"><span class="badge badge-down">−2.8%</span></td></tr>
+  </tbody>
+</table>
+
+<h3>The United States Remains in a League of Its Own</h3>
+<p>
+  The US accounts for roughly <strong>77.6% of all downloads across the top 20 countries</strong> — a figure largely
+  reflecting PyPI traffic routed through US-based cloud infrastructure (AWS <code>us-east-1</code>,
+  GCP <code>us-central1</code>, etc.) rather than pure end-user geography. Month-over-month, the US added over
+  11 billion downloads (+9.3%), consistent with sustained CI/CD pipeline and cloud workload expansion.
+</p>
+
+<h3>Notable Shifts vs. May 2026</h3>
+
+<div class="callout">
+  <strong>🇸🇬 Singapore surges to #3 (+44.6%).</strong> The most dramatic move of the month. Singapore jumped from
+  position #5 in May (3.73B) to #3 in June (5.39B), nearly matching Germany. This likely reflects expanded cloud
+  footprints from hyperscalers in the Southeast Asian hub (AWS <code>ap-southeast-1</code>,
+  GCP <code>asia-southeast1</code>), combined with the region's growing role as an AI inference hub.
+</div>
+
+<div class="callout">
+  <strong>🇬🇧 United Kingdom drops from #3 to #6 (−30%).</strong> The UK fell sharply from 5.17B to 3.63B downloads —
+  a 1.54B reduction. This is an unusually large single-month contraction, likely reflecting a consolidation or
+  migration of cloud workloads away from UK-region endpoints. Worth monitoring in July.
+</div>
+
+<div class="callout">
+  <strong>🇰🇷 South Korea climbs to #13 (+27.6%).</strong> Korea crossed the 1B monthly download threshold for the
+  first time in the trailing months, growing from 835M to 1.07B. The growth aligns with Korea's expanding AI and
+  semiconductor-adjacent development ecosystem.
+</div>
+
+<div class="callout">
+  <strong>🇨🇳 China contracts (−22.3%).</strong> China dropped from 1.11B to 865M, reversing the growth trend seen
+  through Q1 2026. This may indicate increased use of domestic mirror networks rather than direct PyPI traffic.
+</div>
+
+<!-- SECTION 2: TOP PACKAGES -->
+<h2>2. Most Popular Packages — June 2026</h2>
+<p>
+  The top-25 list remains dominated by foundational infrastructure packages: HTTP clients, AWS SDKs, type annotation
+  utilities, and build tooling. AWS-related packages (<code>boto3</code>, <code>botocore</code>,
+  <code>aiobotocore</code>) collectively account for over <strong>6.25 billion downloads</strong>, reinforcing AWS's
+  position as the dominant cloud deployment target for Python workloads.
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Rank</th>
+      <th>Package</th>
+      <th class="num">Downloads (B)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td><a href="https://clickpy.clickhouse.com/dashboard/boto3">boto3</a></td><td class="num">3.58</td></tr>
+    <tr><td>2</td><td><a href="https://clickpy.clickhouse.com/dashboard/packaging">packaging</a></td><td class="num">2.10</td></tr>
+    <tr><td>3</td><td><a href="https://clickpy.clickhouse.com/dashboard/urllib3">urllib3</a></td><td class="num">1.73</td></tr>
+    <tr><td>4</td><td><a href="https://clickpy.clickhouse.com/dashboard/certifi">certifi</a></td><td class="num">1.71</td></tr>
+    <tr><td>5</td><td><a href="https://clickpy.clickhouse.com/dashboard/idna">idna</a></td><td class="num">1.66</td></tr>
+    <tr><td>6</td><td><a href="https://clickpy.clickhouse.com/dashboard/requests">requests</a></td><td class="num">1.65</td></tr>
+    <tr><td>7</td><td><a href="https://clickpy.clickhouse.com/dashboard/typing-extensions">typing-extensions</a></td><td class="num">1.58</td></tr>
+    <tr><td>8</td><td><a href="https://clickpy.clickhouse.com/dashboard/charset-normalizer">charset-normalizer</a></td><td class="num">1.48</td></tr>
+    <tr><td>9</td><td><a href="https://clickpy.clickhouse.com/dashboard/botocore">botocore</a></td><td class="num">1.41</td></tr>
+    <tr><td>10</td><td><a href="https://clickpy.clickhouse.com/dashboard/setuptools">setuptools</a></td><td class="num">1.35</td></tr>
+    <tr><td>11</td><td><a href="https://clickpy.clickhouse.com/dashboard/cryptography">cryptography</a></td><td class="num">1.35</td></tr>
+    <tr><td>12</td><td><a href="https://clickpy.clickhouse.com/dashboard/aiobotocore">aiobotocore</a></td><td class="num">1.26</td></tr>
+    <tr><td>13</td><td><a href="https://clickpy.clickhouse.com/dashboard/pygments">pygments</a></td><td class="num">1.24</td></tr>
+    <tr><td>14</td><td><a href="https://clickpy.clickhouse.com/dashboard/pluggy">pluggy</a></td><td class="num">1.19</td></tr>
+    <tr><td>15</td><td><a href="https://clickpy.clickhouse.com/dashboard/python-dateutil">python-dateutil</a></td><td class="num">1.15</td></tr>
+    <tr><td>16</td><td><a href="https://clickpy.clickhouse.com/dashboard/six">six</a></td><td class="num">1.13</td></tr>
+    <tr><td>17</td><td><a href="https://clickpy.clickhouse.com/dashboard/pyyaml">pyyaml</a></td><td class="num">1.11</td></tr>
+    <tr><td>18</td><td><a href="https://clickpy.clickhouse.com/dashboard/numpy">numpy</a></td><td class="num">1.09</td></tr>
+    <tr><td>19</td><td><a href="https://clickpy.clickhouse.com/dashboard/cffi">cffi</a></td><td class="num">1.08</td></tr>
+    <tr><td>20</td><td><a href="https://clickpy.clickhouse.com/dashboard/pydantic">pydantic</a></td><td class="num">1.06</td></tr>
+    <tr><td>21</td><td><a href="https://clickpy.clickhouse.com/dashboard/pytest">pytest</a></td><td class="num">1.02</td></tr>
+    <tr><td>22</td><td><a href="https://clickpy.clickhouse.com/dashboard/click">click</a></td><td class="num">1.00</td></tr>
+    <tr><td>23</td><td><a href="https://clickpy.clickhouse.com/dashboard/pycparser">pycparser</a></td><td class="num">0.99</td></tr>
+    <tr><td>24</td><td><a href="https://clickpy.clickhouse.com/dashboard/iniconfig">iniconfig</a></td><td class="num">0.96</td></tr>
+    <tr><td>25</td><td><a href="https://clickpy.clickhouse.com/dashboard/grpcio-status">grpcio-status</a></td><td class="num">0.95</td></tr>
+  </tbody>
+</table>
+
+<p>
+  <code>boto3</code> at 3.58B is almost 1.7× the second-ranked package, illustrating how deeply AWS tooling is embedded
+  in Python CI/CD. <code>pydantic</code> and <code>pytest</code> both crossing 1B downloads reflects Pydantic v2's
+  dominance in modern API and LLM stacks, and pytest's maturity as the default test runner.
+  <code>six</code> (1.13B) persists in the top 25 despite Python 2 EOL in 2020, driven almost entirely by transitive
+  dependencies in older libraries — a reminder of how long legacy compatibility layers linger.
+</p>
+
+<!-- SECTION 3: EMERGING -->
+<h2>3. Emerging Packages — Gaining Significant Traction</h2>
+<p>
+  The following packages showed meaningful absolute download growth (May → June 2026) from an already-established base,
+  or exhibited extraordinary proportional gains signalling rapid community adoption. Packages starting from negligible
+  volumes (&lt;1M/month) are excluded.
+</p>
+
+<div class="pkg-card">
+  <h3><span class="icon">🚀</span> <a href="https://clickpy.clickhouse.com/dashboard/browser-use">browser-use</a> <span class="badge badge-hot">+743%</span></h3>
+  <div class="pkg-stats">
+    <span>May: <strong>23.6M</strong></span>
+    <span>June: <strong>199.1M</strong></span>
+    <span>Absolute gain: <strong>+175M</strong></span>
+    <span>Growth ratio: <strong>8.4×</strong></span>
+  </div>
+  <p>
+    The single most explosive move in June. <code>browser-use</code> is an AI agent framework for browser automation,
+    allowing LLMs to control web browsers directly for agent workflows without APIs. Its 8.4× growth in a single month
+    is remarkable — the absolute gain of 175M puts it on par with well-established mid-tier packages. The timing aligns
+    with broader momentum around autonomous AI agents in Q2 2026. If adoption continues, it could crack the top-50
+    overall by Q3 2026.
+  </p>
+</div>
+
+<div class="pkg-card">
+  <h3><span class="icon">🔬</span> <a href="https://clickpy.clickhouse.com/dashboard/sglang">sglang</a> <span class="badge badge-hot">+67%</span></h3>
+  <div class="pkg-stats">
+    <span>May: <strong>303.9M</strong></span>
+    <span>June: <strong>507.4M</strong></span>
+    <span>Absolute gain: <strong>+203M</strong></span>
+    <span>Growth ratio: <strong>1.67×</strong></span>
+  </div>
+  <p>
+    SGLang (Structured Generation Language) is an LLM serving and inference engine from the LMSYS team. It recorded
+    the largest <strong>absolute gain</strong> among emerging packages: +203M downloads. Moving from a research-adjacent
+    tool to a production-grade inference runtime, SGLang is increasingly used alongside vLLM for high-throughput,
+    structured-output LLM serving. Its growth is likely correlated with the Singapore and Korea download spikes —
+    Southeast Asia is rapidly becoming a key region for LLM inference infrastructure.
+  </p>
+</div>
+
+<div class="pkg-card">
+  <h3><span class="icon">📡</span> <a href="https://clickpy.clickhouse.com/dashboard/lmnr">lmnr</a> <span class="badge badge-hot">+522%</span></h3>
+  <div class="pkg-stats">
+    <span>May: <strong>15.1M</strong></span>
+    <span>June: <strong>94.0M</strong></span>
+    <span>Absolute gain: <strong>+79M</strong></span>
+    <span>Growth ratio: <strong>6.2×</strong></span>
+  </div>
+  <p>
+    Laminar is an open-source LLM observability and tracing platform. A 6.2× growth rate from a base of 15M downloads
+    signals real adoption rather than a statistical anomaly. LLM observability is a crowded space, but Laminar's
+    open-source positioning and SDK-first approach appear to be resonating. Its trajectory mirrors what was seen with
+    the OpenTelemetry packages 18 months ago.
+  </p>
+</div>
+
+<div class="pkg-card">
+  <h3><span class="icon">🤗</span> <a href="https://clickpy.clickhouse.com/dashboard/huggingface-hub">huggingface-hub</a> <span class="badge badge-up">+54%</span></h3>
+  <div class="pkg-stats">
+    <span>May: <strong>264.4M</strong></span>
+    <span>June: <strong>407.6M</strong></span>
+    <span>Absolute gain: <strong>+143M</strong></span>
+    <span>Growth ratio: <strong>1.54×</strong></span>
+  </div>
+  <p>
+    The HuggingFace Hub client continues its steady climb, adding 143M downloads in June alone and now firmly in the
+    400M+ monthly tier. The growth reflects expanding use of HuggingFace models in production pipelines — model
+    fetching, dataset access, and space deployments are all funnelled through this client library.
+  </p>
+</div>
+
+<div class="pkg-card">
+  <h3><span class="icon">🧪</span> <a href="https://clickpy.clickhouse.com/dashboard/pytest-json-ctrf">pytest-json-ctrf</a> <span class="badge badge-up">+50%</span></h3>
+  <div class="pkg-stats">
+    <span>May: <strong>187.1M</strong></span>
+    <span>June: <strong>280.9M</strong></span>
+    <span>Absolute gain: <strong>+94M</strong></span>
+    <span>Growth ratio: <strong>1.50×</strong></span>
+  </div>
+  <p>
+    CTRF (Common Test Results Format) standardises test output across frameworks and languages. This plugin's 50%
+    growth suggests rapid uptake in CI/CD pipelines needing unified test reporting — particularly in multi-language
+    or AI-assisted development environments where tooling standardisation is a priority.
+  </p>
+</div>
+
+<div class="pkg-card">
+  <h3><span class="icon">📦</span> <a href="https://clickpy.clickhouse.com/dashboard/hatchling">hatchling</a> <span class="badge badge-up">+30%</span></h3>
+  <div class="pkg-stats">
+    <span>May: <strong>320.6M</strong></span>
+    <span>June: <strong>417.2M</strong></span>
+    <span>Absolute gain: <strong>+97M</strong></span>
+    <span>Growth ratio: <strong>1.30×</strong></span>
+  </div>
+  <p>
+    The build backend for the Hatch project management tool grows steadily at +30% MoM, driven by increasing migration
+    from legacy <code>setuptools</code>-based workflows. Projects adopting <code>pyproject.toml</code>-only
+    configurations are the key adoption vector.
+  </p>
+</div>
+
+<h3>🔭 OpenTelemetry Ecosystem — Broad-Based Growth</h3>
+<p>
+  Four OpenTelemetry packages each posted 20–33% MoM growth — a coordinated signal that OpenTelemetry is becoming
+  the default observability layer for LLM applications, where tracing spans, token counts, latency, and model metadata
+  are increasingly captured in OTLP-compatible pipelines.
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Package</th>
+      <th class="num">May (M)</th>
+      <th class="num">June (M)</th>
+      <th class="num">Growth</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="https://clickpy.clickhouse.com/dashboard/opentelemetry-instrumentation">opentelemetry-instrumentation</a></td>
+      <td class="num">244.5</td><td class="num">324.7</td>
+      <td class="num"><span class="badge badge-up">+32.8%</span></td>
+    </tr>
+    <tr>
+      <td><a href="https://clickpy.clickhouse.com/dashboard/opentelemetry-exporter-otlp-proto-http">opentelemetry-exporter-otlp-proto-http</a></td>
+      <td class="num">302.3</td><td class="num">398.1</td>
+      <td class="num"><span class="badge badge-up">+31.7%</span></td>
+    </tr>
+    <tr>
+      <td><a href="https://clickpy.clickhouse.com/dashboard/opentelemetry-exporter-otlp-proto-common">opentelemetry-exporter-otlp-proto-common</a></td>
+      <td class="num">246.1</td><td class="num">316.9</td>
+      <td class="num"><span class="badge badge-up">+28.8%</span></td>
+    </tr>
+    <tr>
+      <td><a href="https://clickpy.clickhouse.com/dashboard/opentelemetry-semantic-conventions">opentelemetry-semantic-conventions</a></td>
+      <td class="num">405.5</td><td class="num">489.1</td>
+      <td class="num"><span class="badge badge-up">+20.6%</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- SUMMARY -->
+<h2>Summary</h2>
+<p>
+  June 2026 tells a clear story: <strong>AI-native tooling is becoming PyPI's fastest-growing category</strong>, while
+  the foundational infrastructure layer (HTTP, serialisation, AWS SDKs) remains deeply entrenched. Geographically,
+  <strong>Singapore's sharp rise and the UK's steep contraction</strong> are the most significant signals to track in
+  July — both are likely cloud-infrastructure artefacts rather than shifts in developer population, but the direction
+  and magnitude are unusual.
+</p>
+<p>
+  The convergence of <code>browser-use</code>, <code>sglang</code>, <code>lmnr</code>, <code>huggingface-hub</code>,
+  and the OpenTelemetry ecosystem all growing simultaneously in the same month suggests that
+  <strong>agentic AI application development</strong> is entering a new phase of production deployment —
+  not just prototyping.
+</p>
+
+<footer>
+  Report generated from live PyPI download data via <a href="https://clickpy.clickhouse.com">ClickPy</a> / ClickHouse.
+</footer>
+
+</body>
+</html>
