@@ -2,6 +2,7 @@ import { ClickUIProvider } from '@/click-ui';
 import './globals.css';
 import { Inter } from 'next/font/google';
 import { GoogleTagManager } from '@next/third-parties/google';
+import GalaxyInit from '@/components/GalaxyInit';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,6 +17,7 @@ export default function RootLayout({ children }) {
       <GoogleTagManager gtmId="GTM-T55CC768" />
       <body className={`${inter.className} h-full`}>
         <ClickUIProvider theme="dark">
+          <GalaxyInit />
           {children}
         </ClickUIProvider>
       </body>
