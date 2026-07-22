@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "node --import ./test/register.mjs --test \"test/*.test.js\"",
     "postinstall": "patch-package"
   },
   "dependencies": {
