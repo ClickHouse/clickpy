@@ -13,6 +13,8 @@ export const clickhouse = createClient({
         max_parallel_replicas: 3,
         cluster_for_parallel_replicas: 'default',
         parallel_replicas_for_non_replicated_merge_tree: 1,
+        make_distributed_plan: 1,
+        distributed_plan_workers_num: 4,
     }
 });
 
