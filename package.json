@@ -2,6 +2,9 @@
   "name": "clickpy",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "next dev -p 3000",
     "vercel-build": "next build",
