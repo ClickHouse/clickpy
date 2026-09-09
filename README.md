@@ -240,8 +240,8 @@ We cover both options below.
 
 ### Dependencies
 
-- node >= v16.15
-- npm >= 9.1
+- node >= v22
+- npm >= 10
 - ClickHouse >= 23.8
 - Python >= 3.8 (if loading data from GCS)
 
