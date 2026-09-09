@@ -21,7 +21,7 @@
     "@headlessui/react": "^1.7.16",
     "@heroicons/react": "^2.0.18",
     "@hyperdx/browser": "^0.21.2",
-    "@next/third-parties": "^15.5.16",
+    "@next/third-parties": "^15.5.25",
     "@opentelemetry/api": "^1.8.0",
     "@opentelemetry/api-logs": "^0.57.2",
     "@opentelemetry/instrumentation": "^0.57.2",
@@ -39,11 +39,11 @@
     "echarts-countries-js": "^1.0.5",
     "echarts-for-react": "^3.0.2",
     "eslint": "8.46.0",
-    "eslint-config-next": "15.5.16",
+    "eslint-config-next": "15.5.25",
     "lodash": "^4.18.1",
-    "next": "^15.5.16",
+    "next": "^15.5.25",
     "numeral": "^2.0.6",
-    "postcss": "8.5.10",
+    "postcss": "8.5.23",
     "react": "^19.2.0",
     "react-calendar": "^4.8.0",
     "react-cookie-consent": "^10.0.1",
@@ -67,10 +67,18 @@
     "styled-components": ">= 6"
   },
   "overrides": {
-    "protobufjs": "7.5.8",
+    "protobufjs": "7.6.6",
     "@babel/runtime": "7.26.10",
     "js-cookie": "3.0.7",
     "prismjs": "1.30.0",
-    "postcss": "8.5.10"
+    "postcss": "8.5.23",
+    "browserslist": "4.28.8",
+    "nanoid": "3.3.18",
+    "js-yaml": "4.3.2",
+    "sharp": "0.35.4",
+    "brace-expansion@1": "1.1.18",
+    "brace-expansion@5": "5.0.9",
+    "fflate@0.4": "0.4.9",
+    "fflate@0.7": "0.7.5"
   }
 }
