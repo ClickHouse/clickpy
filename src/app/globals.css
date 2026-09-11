@@ -68,6 +68,19 @@ body {
   display: block;
 }
 
+.date-picker-icon-only[data-open] svg,
+.date-picker-icon-only[data-open] svg [stroke] {
+  color: #faff69;
+  stroke: #faff69 !important;
+}
+
+.date-field-active input {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 2px;
+  text-decoration-color: #faff69;
+}
+
 .date-picker-icon-only svg [stroke] {
   stroke: currentColor !important;
 }
@@ -85,6 +98,26 @@ body {
 
 [data-testid="datepicker-calendar-container"] {
   min-width: 272px;
+}
+
+[data-testid="datepicker-calendar-container"],
+[data-testid="datepicker-calendar-container"] * {
+  font-family: inherit !important;
+}
+
+[data-testid="datepicker-calendar-container"][data-bound-label]::before {
+  content: attr(data-bound-label);
+  display: block;
+  width: 100%;
+  margin: 0 0 0.35rem;
+  color: #faff69;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
 }
 
 [data-testid="datepicker-calendar-container"] [role="gridcell"][data-out-of-range] {

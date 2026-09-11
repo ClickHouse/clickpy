@@ -135,7 +135,7 @@ export default async function Dashboard({ params, searchParams }) {
                 ClickHouse
               </a>
             </p>
-            <Link href='https://github.com/ClickHouse/clickpy' target='_blank' className='w-32 ml-4'>
+            <Link href='https://github.com/ClickHouse/clickpy' target='_blank' className='ml-4 shrink-0'>
               <Image
                 className='w-8 h-8'
                 src='/github.svg'

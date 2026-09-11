@@ -50,7 +50,7 @@ function ClearLogo({ clearable }) {
   );
 }
 
-function DateInput({ value, onCommit, ariaLabel, onOpenCalendar }) {
+function DateInput({ value, onCommit, ariaLabel, onOpenCalendar, isActive }) {
   const [draft, setDraft] = useState(value ?? '');
 
   useEffect(() => {
@@ -72,6 +72,7 @@ function DateInput({ value, onCommit, ariaLabel, onOpenCalendar }) {
   return (
     <input
       aria-label={ariaLabel}
+      aria-expanded={isActive}
       value={draft}
       onChange={(e) => {
         const next = e.target.value;
@@ -96,19 +97,28 @@ function DateInput({ value, onCommit, ariaLabel, onOpenCalendar }) {
       size={10}
       maxLength={10}
       spellCheck={false}
-      className='bg-transparent text-neutral-0 text-sm font-normal outline-none w-[6.75rem] p-0 border-0 focus:ring-0 leading-5 cursor-pointer'
+      className={`bg-transparent text-sm font-normal outline-none w-[6.5rem] p-0 border-0 focus:ring-0 leading-5 cursor-pointer ${
+        isActive ? 'text-primary-300' : 'text-neutral-0'
+      }`}
     />
   );
 }
 
-function DateField({ date, value, onSelect, placeholder, title, ariaLabel, allowFrom, allowTo, showIcon = true }) {
+function DateField({ date, value, onSelect, placeholder, title, ariaLabel, allowFrom, allowTo, boundLabel, showIcon = true }) {
   const triggerWrapRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const minTime = startOfDayTime(allowFrom) ?? Number.NEGATIVE_INFINITY;
     const maxTime = startOfDayTime(allowTo) ?? Number.POSITIVE_INFINITY;
 
+    const syncOpen = () => {
+      const trigger = triggerWrapRef.current?.querySelector('button');
+      setIsOpen(trigger?.getAttribute('data-state') === 'open');
+    };
+
     const apply = () => {
+      syncOpen();
       const trigger = triggerWrapRef.current?.querySelector('button');
       if (trigger?.getAttribute('data-state') !== 'open') {
         return;
@@ -117,6 +127,7 @@ function DateField({ date, value, onSelect, placeholder, title, ariaLabel, allow
       if (!root) {
         return;
       }
+      root.dataset.boundLabel = boundLabel;
       root.querySelectorAll('[role="gridcell"]').forEach((cell) => {
         const label = cell.getAttribute('aria-label');
         const time = label ? Date.parse(label) : Number.NaN;
@@ -136,6 +147,13 @@ function DateField({ date, value, onSelect, placeholder, title, ariaLabel, allow
 
     const observer = new MutationObserver(apply);
     observer.observe(document.body, { childList: true, subtree: true });
+    if (triggerWrapRef.current) {
+      observer.observe(triggerWrapRef.current, {
+        attributes: true,
+        subtree: true,
+        attributeFilter: ['data-state', 'aria-expanded']
+      });
+    }
     document.addEventListener('click', blockOutOfRange, true);
     document.addEventListener('keydown', blockOutOfRange, true);
     apply();
@@ -145,7 +163,7 @@ function DateField({ date, value, onSelect, placeholder, title, ariaLabel, allow
       document.removeEventListener('click', blockOutOfRange, true);
       document.removeEventListener('keydown', blockOutOfRange, true);
     };
-  }, [allowFrom, allowTo]);
+  }, [allowFrom, allowTo, boundLabel]);
 
   const openCalendar = () => {
     const trigger = triggerWrapRef.current?.querySelector('button');
@@ -155,16 +173,18 @@ function DateField({ date, value, onSelect, placeholder, title, ariaLabel, allow
     if (trigger.getAttribute('data-state') === 'open' || trigger.getAttribute('aria-expanded') === 'true') {
       return;
     }
+    setIsOpen(true);
     trigger.click();
   };
 
   return (
-    <div className='relative flex items-center min-w-0'>
+    <div className={`relative flex items-center min-w-0 gap-1.5 ${isOpen ? 'date-field-active' : ''}`}>
       <div
         ref={triggerWrapRef}
+        data-open={isOpen ? 'true' : undefined}
         className={
           showIcon
-            ? 'date-picker-icon-only relative w-6 h-6 shrink-0 mr-1'
+            ? 'date-picker-icon-only relative w-6 h-6 shrink-0'
             : 'date-picker-icon-only absolute left-0 top-1/2 -translate-y-1/2 w-px h-px overflow-hidden'
         }
         title={showIcon ? title : undefined}>
@@ -185,6 +205,7 @@ function DateField({ date, value, onSelect, placeholder, title, ariaLabel, allow
         onCommit={onSelect}
         ariaLabel={ariaLabel}
         onOpenCalendar={openCalendar}
+        isActive={isOpen}
       />
     </div>
   );
@@ -295,7 +316,7 @@ export default function DatePicker({ dates }) {
         </span>
       )}
       <div
-        className={`flex items-center bg-neutral-725 leading-5 rounded-md border box-border text-sm font-normal border-slate-700 pl-3 pr-2 w-full h-[50px] overflow-visible ${
+        className={`flex items-center gap-2 bg-neutral-725 leading-5 rounded-md border box-border text-sm font-normal border-slate-700 px-2.5 w-full h-[50px] overflow-visible ${
           clearable ? 'border-primary-300 ring-1 ring-primary-300' : ''
         }`}>
         <DateField
@@ -305,10 +326,11 @@ export default function DatePicker({ dates }) {
           placeholder='Start date'
           title='Open start date calendar'
           ariaLabel='From date'
+          boundLabel='From'
           allowFrom={MIN_CALENDAR_DATE}
           allowTo={toValue}
         />
-        <span className='text-slate-400 font-bold mx-1'>to</span>
+        <span className='text-slate-400 font-bold shrink-0'>to</span>
         <DateField
           date={endDate}
           value={toValue}
@@ -316,6 +338,7 @@ export default function DatePicker({ dates }) {
           placeholder='End date'
           title='Open end date calendar'
           ariaLabel='To date'
+          boundLabel='To'
           allowFrom={fromValue}
           allowTo={todayString()}
           showIcon={false}
@@ -325,7 +348,7 @@ export default function DatePicker({ dates }) {
           onClick={clearDates}
           aria-label='Clear dates'
           disabled={!clearable}
-          className={`ml-2 shrink-0 flex items-center justify-center h-6 w-6 p-0 leading-none overflow-visible ${
+          className={`shrink-0 flex items-center justify-center h-6 w-6 p-0 leading-none overflow-visible ${
             clearable ? 'cursor-pointer' : 'cursor-default'
           }`}>
           <ClearLogo clearable={clearable} />
