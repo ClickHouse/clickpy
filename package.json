@@ -14,7 +14,7 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
-    "@clickhouse/click-ui": "^0.6.0",
+    "@clickhouse/click-ui": "^0.11.0",
     "@clickhouse/client": "^0.2.1",
     "@clickhouse/client-web": "^0.2.1",
     "@headlessui/react": "^1.7.16",
@@ -51,7 +51,6 @@
     "react-dom": "^19.2.0",
     "server-only": "^0.0.1",
     "sql-formatter": "^15.3.1",
-    "styled-components": ">= 6",
     "tailwindcss": "3.3.3",
     "winston": "^3.17.0"
   },
@@ -64,8 +63,7 @@
     "patch-package": "^8.0.0"
   },
   "peerDependencies": {
-    "react": "^19.2.0",
-    "styled-components": ">= 6"
+    "react": "^19.2.0"
   },
   "overrides": {
     "protobufjs": "7.6.6",

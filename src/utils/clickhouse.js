@@ -10,7 +10,10 @@ export const clickhouse = createClient({
     password: process.env.CLICKHOUSE_PASSWORD,
     clickhouse_settings: {
         allow_experimental_analyzer: 0,
-    }
+    },
+    keep_alive: {
+        enabled: false,
+    },
 });
 
 export const web_clickhouse = createWebClient({
@@ -783,6 +786,7 @@ export async function query(query_name, query, query_params) {
     },
   });
 
+  let results;
   try {
     const start = performance.now();
 
@@ -802,7 +806,7 @@ export async function query(query_name, query, query_params) {
     span.setAttribute('clickhouse.query_link', query_link);
 
     // run the query inside the span’s context
-    const results = await context.with(trace.setSpan(context.active(), span), () =>
+    results = await context.with(trace.setSpan(context.active(), span), () =>
       clickhouse.query({
         query,
         query_params,
@@ -826,6 +830,11 @@ export async function query(query_name, query, query_params) {
     span.end();
     return Promise.all([Promise.resolve(query_link), Promise.resolve(data)]);
   } catch (err) {
+    try {
+      results?.close();
+    } catch {
+      // The stream may already be closed after a dropped keep-alive socket.
+    }
     if (span.isRecording()) {
       span.recordException(err);
       span.setStatus({ code: SpanStatusCode.ERROR, message: err?.message });

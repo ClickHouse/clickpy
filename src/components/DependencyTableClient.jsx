@@ -1,5 +1,5 @@
 'use client';
-import { ClickUIProvider, Tabs, Table as ClickTable, Link } from '@clickhouse/click-ui';
+import { Tabs, Table as ClickTable, Link } from '@clickhouse/click-ui';
 import {
     ArrowTopRightOnSquareIcon,
   } from '@heroicons/react/20/solid';
@@ -83,46 +83,44 @@ export default function DependencyTableClient({ dependencies,  dependents}) {
 
     return (
         <div>
-            <ClickUIProvider theme={'dark'}>
-                <Tabs ariaLabel='dependencies and dependents' defaultValue='dependents' className='h-full flex flex-col'>
-                    <div className='flex justify-between'>
-                        <Tabs.TriggersList style={{'border': 0 }} >
-                            <Tabs.Trigger value='dependents' key='dependents' className='py-4' onClick={()=>{setIsDependency(false);}}>
-                                Dependents
-                            </Tabs.Trigger>
-                            <Tabs.Trigger value='dependencies' key='dependencies' onClick={()=>{setIsDependency(true);}}>
-                                Dependencies
-                            </Tabs.Trigger>
-                        </Tabs.TriggersList>
-                        <div className='flex'>
-                            {displayCopyDropdown()}
-                            <Link href={isDependency ? dependencies[0]: dependents[0]} target='_blank' className='w-5'>
-                                <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
-                            </Link>
-                        </div>
+            <Tabs ariaLabel='dependencies and dependents' defaultValue='dependents' className='h-full flex flex-col'>
+                <div className='flex justify-between'>
+                    <Tabs.TriggersList style={{'border': 0 }} >
+                        <Tabs.Trigger value='dependents' key='dependents' className='py-4' onClick={()=>{setIsDependency(false);}}>
+                            Dependents
+                        </Tabs.Trigger>
+                        <Tabs.Trigger value='dependencies' key='dependencies' onClick={()=>{setIsDependency(true);}}>
+                            Dependencies
+                        </Tabs.Trigger>
+                    </Tabs.TriggersList>
+                    <div className='flex'>
+                        {displayCopyDropdown()}
+                        <Link href={isDependency ? dependencies[0]: dependents[0]} target='_blank' className='w-5'>
+                            <ArrowTopRightOnSquareIcon className='h-5 w-5 flex-none icon-hover' aria-hidden='true'/>
+                        </Link>
                     </div>
-                    <Tabs.Content value='dependents' className='h-full'>
-                        <ClickTable
-                            headers={dependents_headers}
-                            onSort={(sortDir, header, index) => { setOrder({column: header.label.toLowerCase(), order: sortDir})}}
-                            rows={dependents_rows}
-                            size='sm'
-                            noDataMessage='No dependents'
-                            rowHeight={rowHeight}
-                        />
-                    </Tabs.Content>
-                    <Tabs.Content value='dependencies' className='h-full'>
-                        <ClickTable
-                            headers={dependency_headers}
-                            onSort={(sortDir, header, index) => { setOrder({column: header.label.toLowerCase(), order: sortDir})}}
-                            rows={dependency_rows}
-                            size='sm'
-                            noDataMessage='No dependencies'
-                            rowHeight={rowHeight}
-                        />
-                    </Tabs.Content>
-                </Tabs>  
-            </ClickUIProvider>
+                </div>
+                <Tabs.Content value='dependents' className='h-full'>
+                    <ClickTable
+                        headers={dependents_headers}
+                        onSort={(sortDir, header, index) => { setOrder({column: header.label.toLowerCase(), order: sortDir})}}
+                        rows={dependents_rows}
+                        size='sm'
+                        noDataMessage='No dependents'
+                        rowHeight={rowHeight}
+                    />
+                </Tabs.Content>
+                <Tabs.Content value='dependencies' className='h-full'>
+                    <ClickTable
+                        headers={dependency_headers}
+                        onSort={(sortDir, header, index) => { setOrder({column: header.label.toLowerCase(), order: sortDir})}}
+                        rows={dependency_rows}
+                        size='sm'
+                        noDataMessage='No dependencies'
+                        rowHeight={rowHeight}
+                    />
+                </Tabs.Content>
+            </Tabs>
         </div>
     );
 }
