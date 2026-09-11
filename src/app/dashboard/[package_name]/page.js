@@ -110,6 +110,10 @@ export default async function Dashboard({ params, searchParams }) {
       min_date = '2011-01-01';
       max_date = new Date().toISOString().split('T')[0];
     }
+  } else if (min_date > max_date) {
+    const swapped = min_date;
+    min_date = max_date;
+    max_date = swapped;
   }
 
   // Error handling: Ensure package details are available
@@ -143,8 +147,8 @@ export default async function Dashboard({ params, searchParams }) {
       />
       <Ping name={`dashboard: ${package_name}`} />
       <header className='bg-neutral-800 shadow-lg border-b-2 border-neutral-725 sticky top-0 z-20 opacity-95 backdrop-filter backdrop-blur-xl bg-opacity-90 2xl:h-[82px]'>
-        <div className='mx-auto flex flex-col 2xl:flex-row 2xl:items-center justify-between px-4 sm:px-8 xsm:px-6 lg:px-16 lg:w-full xl:w-11/12 lg:mb-0'>
-          <div className='md:items-center flex flex-col md:flex-row gap-4 md:gap-8 md:h-[82px] pt-[26px] md:pt-0 ml-0 w-full'>
+        <div className='mx-auto flex flex-col 2xl:flex-row 2xl:items-center 2xl:h-full justify-between px-4 sm:px-8 xsm:px-6 lg:px-16 lg:w-full xl:w-11/12 lg:mb-0'>
+          <div className='flex flex-col md:flex-row md:items-center gap-4 md:gap-8 pt-[26px] md:pt-0 ml-0 w-full 2xl:w-auto'>
             <Link href='/' className='min-w-[96px]'>
               <Image
                 className='w-24'
@@ -158,8 +162,8 @@ export default async function Dashboard({ params, searchParams }) {
               <Search package_name={package_name} />
             </div>
           </div>
-          <div className="flex justify-between">
-            <div className='flex flex-col-reverse sm:flex-row sm:items-center gap-4 2xl:ml-4 mb-4 2xl:mt-4 -ml-[8px] md:ml-0'>
+          <div className="flex justify-end items-center w-full 2xl:w-auto">
+            <div className='flex flex-col-reverse sm:flex-row sm:items-center gap-4 2xl:ml-4 mb-4 2xl:mb-0 -ml-[8px] md:ml-0'>
               <Filter
                 value={country_code}
                 icon={
@@ -191,12 +195,13 @@ export default async function Dashboard({ params, searchParams }) {
                 }
                 name='type'
               />
-              <DatePicker dates={[min_date, max_date]} />
             </div>
-
+            
           </div>
 
-          <div className='hidden 2xl:flex grow width-20 max-w-[122px] md:mt-2 ml-4'>
+          <div className='flex items-center justify-end gap-4 mb-4 2xl:mb-0 2xl:ml-4'>
+            <DatePicker dates={[min_date, max_date]} />
+            <div className='hidden 2xl:flex items-center'>
             <p className='text-sm text-neutral-0'>
               Powered by &nbsp;
               <a
@@ -206,7 +211,7 @@ export default async function Dashboard({ params, searchParams }) {
                 ClickHouse
               </a>
             </p>
-            <Link href='https://github.com/ClickHouse/clickpy/tree/clickgems' target='_blank' className='w-32 ml-4'>
+            <Link href='https://github.com/ClickHouse/clickpy/tree/clickgems' target='_blank' className='ml-4 shrink-0'>
               <Image
                 className='w-8 h-8'
                 src='/github.svg'
@@ -214,6 +219,7 @@ export default async function Dashboard({ params, searchParams }) {
                 width='32'
                 height='32' />
             </Link>
+            </div>
           </div>
         </div>
       </header>
