@@ -9,7 +9,7 @@ import {
 } from '@heroicons/react/20/solid';
 import CopyDropdown from '../CopyDropdown';
 
-export default function MultiLine({ data, stack, fill, onSelect, link, metabaseLink }) {
+export default function MultiLine({ data, stack, fill, onSelect, link, metabaseLink, disableBrush = false, formatYAxis }) {
   const [loading, setLoading] = useState(true);
   const xAxis = Array.from(new Set(data.map((p) => p.x)));
   const values = data.reduce((accumulator, val) => {
@@ -105,10 +105,15 @@ export default function MultiLine({ data, stack, fill, onSelect, link, metabaseL
           color: '#808691',
           opacity: 0.3
         }
+      },
+      axisLabel: {
+        formatter: (value, index) => {
+            return formatYAxis ? formatYAxis(value) : undefined;
+        }
       }
     },
     series: series,
-    brush: {
+    brush: disableBrush ? null : {
       toolbox: ['lineX'],
       brushType: 'lineX',
       brushMode: 'single',
