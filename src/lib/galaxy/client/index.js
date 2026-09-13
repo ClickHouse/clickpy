@@ -41,7 +41,19 @@ export class GalaxyClient {
     const { interaction, ...eventProperties } = properties ?? {
       interaction: 'click'
     };
-    const [namespace, component, eventName] = event.split('.');
+    // `event` is "<namespace>.<component>.<eventName>". `namespace` is free-form
+    // (it can be a package/gem name, which may itself contain dots, e.g.
+    // "dashboard: ruamel.yaml" or "dashboard: llm.rb"), while `component` and
+    // `eventName` are always short fixed literals chosen by the caller (e.g.
+    // "window", "load") and never contain dots. Splitting naively on every "."
+    // and taking the first three parts silently truncates/misaligns
+    // component/eventName whenever namespace has a dot in it. Instead, take the
+    // last two segments as component/eventName and treat everything before
+    // them as namespace, which is safe either way and fixes that case.
+    const parts = event.split('.');
+    const eventName = parts.pop();
+    const component = parts.pop();
+    const namespace = parts.join('.');
     const payloadProperties = this.getPayloadProperties();
     const galaxyEvent = {
       application: this.application,
