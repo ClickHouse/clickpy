@@ -70,9 +70,9 @@ export default async function Dashboard({ params, searchParams }) {
   return (
     <div>
       <Ping name={`dashboard: ${package_name}`} />
-      <header className='bg-neutral-800 shadow-lg border-b-2 border-neutral-725 sticky top-0 z-20 opacity-95 backdrop-filter backdrop-blur-xl bg-opacity-90 2xl:h-[82px]'>
-        <div className='mx-auto flex flex-col 2xl:flex-row 2xl:items-center 2xl:h-full justify-between px-4 sm:px-8 xsm:px-6 lg:px-16 lg:w-full xl:w-11/12 lg:mb-0'>
-          <div className='flex flex-col md:flex-row md:items-center gap-4 md:gap-8 pt-[26px] md:pt-0 ml-0 w-full 2xl:w-auto'>
+      <header className='bg-neutral-800 shadow-lg border-b-2 border-neutral-725 sticky top-0 z-20 opacity-95 backdrop-filter backdrop-blur-xl bg-opacity-90'>
+        <div className='mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between px-4 sm:px-8 xsm:px-6 lg:px-16 lg:w-full xl:w-11/12 min-h-[82px]'>
+          <div className='flex flex-col md:flex-row md:items-center gap-4 md:gap-8 pt-[26px] md:pt-0'>
             <Link href='/' className='min-w-[96px]'>
               <Image
                 className='w-24'
@@ -86,44 +86,38 @@ export default async function Dashboard({ params, searchParams }) {
               <Search package_name={package_name} />
             </div>
           </div>
-          <div className="flex justify-end items-center w-full 2xl:w-auto">
-            <div className='flex flex-col-reverse sm:flex-row sm:items-center gap-4 2xl:ml-4 mb-4 2xl:mb-0 -ml-[8px] md:ml-0'>
-              <Filter
-                value={country_code}
-                icon={
-                  <Image
-                    alt='country code'
-                    src='/country.svg'
-                    width={16}
-                    height={16}
-                  />
-                }
-                name='country_code'
-              />
-              <Filter
-                value={version}
-                icon={
-                  <Image
-                    alt='version'
-                    src='/version.svg'
-                    width={16}
-                    height={16}
-                  />
-                }
-                name='version'
-              />
-              <Filter
-                value={file_type}
-                icon={
-                  <Image alt='type' src='/file_type.svg' width={16} height={16} />
-                }
-                name='type'
-              />
-            </div>
-            
-          </div>
-
-          <div className='flex items-center justify-end gap-4 mb-4 2xl:mb-0 2xl:ml-4'>
+          <div className='flex flex-wrap items-center justify-end gap-4 py-4 lg:py-0'>
+            <Filter
+              value={country_code}
+              icon={
+                <Image
+                  alt='country code'
+                  src='/country.svg'
+                  width={16}
+                  height={16}
+                />
+              }
+              name='country_code'
+            />
+            <Filter
+              value={version}
+              icon={
+                <Image
+                  alt='version'
+                  src='/version.svg'
+                  width={16}
+                  height={16}
+                />
+              }
+              name='version'
+            />
+            <Filter
+              value={file_type}
+              icon={
+                <Image alt='type' src='/file_type.svg' width={16} height={16} />
+              }
+              name='type'
+            />
             <DatePicker dates={[min_date, max_date]} />
             <div className='hidden 2xl:flex items-center'>
             <p className='text-sm text-neutral-0'>
