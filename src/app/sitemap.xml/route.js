@@ -1,10 +1,9 @@
-import { clickhouse } from '@/utils/clickhouse';
+import { CRAWLABLE_PACKAGE_LIMIT } from '@/utils/crawlable-packages';
 
 export const MAX_PER_PAGE = 500
-const SITEMAP_CAP = 500
 
 async function totalSitemaps() {
-  return Math.ceil(SITEMAP_CAP / MAX_PER_PAGE)
+  return Math.ceil(CRAWLABLE_PACKAGE_LIMIT / MAX_PER_PAGE)
 }
 
 export async function GET() {

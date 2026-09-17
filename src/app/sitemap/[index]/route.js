@@ -1,26 +1,20 @@
-import { clickhouse } from '@/utils/clickhouse';
+import { CRAWLABLE_PACKAGE_LIMIT, getCrawlablePackageNames } from '@/utils/crawlable-packages';
 import { MAX_PER_PAGE } from '@/app/sitemap.xml/route';
 
 export async function GET(request, { params }) {
   const paramValues = await params
   const index = Number(paramValues.index)
 
-  // Bail early if index is invalid
-  if (!index || isNaN(index) || !isFinite(index)) {
+  // Bail early if index is invalid or beyond the crawlable cap
+  const offset = (index - 1) * MAX_PER_PAGE
+  if (!index || isNaN(index) || !isFinite(index) || offset >= CRAWLABLE_PACKAGE_LIMIT) {
     return new Response('Not found', { status: 404 });
   }
 
-  const resultSet = await clickhouse.query({
-    query: `SELECT
-    name,
-    sum(count) AS c
-FROM rubygems.gem_downloads_total
-GROUP BY name
-ORDER BY c DESC
-LIMIT ${MAX_PER_PAGE}
-OFFSET ${(index - 1) * MAX_PER_PAGE}`,
-    format: 'JSONEachRow'
-  });
+  const packages = await getCrawlablePackageNames({
+    offset,
+    limit: Math.min(MAX_PER_PAGE, CRAWLABLE_PACKAGE_LIMIT - offset),
+  })
 
   const entries = []
 
@@ -33,16 +27,13 @@ OFFSET ${(index - 1) * MAX_PER_PAGE}`,
 </url>`)
   }
 
-  for await (const rows of resultSet.stream()) {
-    rows.forEach(row => {
-      const packageName = row.json()['name']
-      entries.push(`<url>
-	<loc>https://clickgems.clickhouse.com/dashboard/${packageName}</loc>
-	<lastmod>${new Date().toISOString()}</lastmod>
-	<changefreq>daily</changefreq>
-	<priority>0.7</priority>
+  for (const packageName of packages) {
+    entries.push(`<url>
+    <loc>https://clickgems.clickhouse.com/dashboard/${encodeURIComponent(packageName)}</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
 </url>`)
-    })
   }
 
   if (!entries.length) {
