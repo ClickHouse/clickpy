@@ -53,10 +53,10 @@ export default async function Home() {
             <div className='lg:px-16 flex justify-center mx-auto w-full xl:w-11/12'>
               <div className='text-center flex items-center flex-col justify-center'>
                 <h1 className='text-4xl font-bold font-inter lg:text-5xl px-4 md:px-0'>
-                  ClickGems – Analytics for RubyGems
+                  Analytics for RubyGems
                 </h1>
                 <p className='px-4 mt-6 text-lg leading-8 text-white'>
-                  ClickGems lets you browse through{' '}
+                  Browse through{' '}
                   <a className='text-primary-300 hover:underline' href={`${total_downloads[0]}&run_query=true`} target='_blank'>
                     {Number(total_downloads[1][0].projects).toLocaleString('en-US')}
                   </a>{' '}
