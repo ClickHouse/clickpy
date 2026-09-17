@@ -29,10 +29,45 @@ import DependencyTable from '@/components/DependencyTable';
 import PlaygroundLink from '@/components/PlaygroundLink';
 import PackageBadge from '@/components/PackageBadge';
 import PackageSchema from '@/components/PackageSchema';
+import { isCrawlablePackage } from '@/utils/crawlable-packages';
+
+function packagePageMetadata({ title, description, package_name, index }) {
+  const url = `https://clickgems.clickhouse.com/dashboard/${encodeURIComponent(package_name)}`;
+  return {
+    title,
+    description,
+    robots: index ? { index: true, follow: true } : { index: false, follow: false },
+    verification: {
+      google: 'vu8LQ6LSMjSpZE8h8UlLByhNrhrrufGB6dlJ07hGCUA',
+    },
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: 'ClickGems',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
+  };
+}
 
 export async function generateMetadata({ params, searchParams }, parent) {
   const { package_name } = await params;
   const { version } = await searchParams;
+
+  let index = true;
+  try {
+    index = await isCrawlablePackage(package_name);
+  } catch (error) {
+    console.error('Failed to check crawlable package for metadata:', error);
+  }
 
   // Fetch package details for richer metadata
   let packageDetails;
@@ -40,17 +75,12 @@ export async function generateMetadata({ params, searchParams }, parent) {
     packageDetails = await getPackageDetails(package_name, version);
   } catch (error) {
     console.error('Error fetching package details for metadata:', error);
-    // Use minimal metadata if query fails
-    return {
+    return packagePageMetadata({
       title: `${package_name} RubyGem - Download Analytics | ClickGems`,
       description: `Analytics for the ${package_name} RubyGem. View download trends, version statistics, and release insights powered by ClickHouse.`,
-      verification: {
-        google: 'vu8LQ6LSMjSpZE8h8UlLByhNrhrrufGB6dlJ07hGCUA',
-      },
-      alternates: {
-        canonical: `https://clickgems.clickhouse.com/dashboard/${package_name}`,
-      },
-    };
+      package_name,
+      index,
+    });
   }
 
   const details = packageDetails[1][0] || {};
@@ -74,16 +104,7 @@ export async function generateMetadata({ params, searchParams }, parent) {
   }
   description += `View download trends, version statistics, release insights${license ? ', license: ' + license.split(' ').slice(0, 3).join(' ') : ''}. Powered by ClickHouse.`;
 
-  return {
-    title,
-    description,
-    verification: {
-      google: 'vu8LQ6LSMjSpZE8h8UlLByhNrhrrufGB6dlJ07hGCUA',
-    },
-    alternates: {
-      canonical: `https://clickgems.clickhouse.com/dashboard/${package_name}`,
-    },
-  }
+  return packagePageMetadata({ title, description, package_name, index });
 }
 
 export const revalidate = 3600;
@@ -205,7 +226,7 @@ export default async function Dashboard({ params, searchParams }) {
                 ClickHouse
               </a>
             </p>
-            <Link href='https://github.com/ClickHouse/clickpy/tree/clickgems' target='_blank' className='ml-4 shrink-0'>
+            <Link href='https://github.com/ClickHouse/clickpy/blob/clickgems/CLICKGEMS.md' target='_blank' className='ml-4 shrink-0'>
               <Image
                 className='w-8 h-8'
                 src='/github.svg'
