@@ -13,8 +13,17 @@ export default async function robots() {
   return {
     rules: {
       userAgent: '*',
-      allow: ['/$', ...packages.map(dashboardRobotsPath)],
-      disallow: ['/*?', '/'],
+      allow: [
+        '/$',
+        '/_next/',
+        '/favicon.ico',
+        '/*.svg',
+        '/*.woff2',
+        ...packages.map(dashboardRobotsPath),
+      ],
+      // Do not use /*? — Vercel serves /_next/*?dpl=... and that would
+      // block the JS/CSS Googlebot needs to render the page.
+      disallow: ['/dashboard/*?', '/'],
     },
     sitemap: 'https://clickpy.clickhouse.com/sitemap.xml',
   };
