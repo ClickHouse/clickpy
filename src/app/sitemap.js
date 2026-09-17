@@ -1,35 +1,9 @@
-import { createClient } from '@clickhouse/client';
+import { getCrawlablePackageNames } from '@/utils/crawlable-packages';
 
-export const clickhouse = createClient({
-    host: process.env.CLICKHOUSE_HOST,
-    username: process.env.CLICKHOUSE_USERNAME,
-    password: process.env.CLICKHOUSE_PASSWORD,
-    clickhouse_settings: {
-        allow_experimental_analyzer: 0,
-    }
-});
-
-const topProjectsQuery = `
-SELECT
-    project,
-    sum(count) AS c
-FROM pypi.pypi_downloads
-GROUP BY project
-ORDER BY c DESC
-LIMIT 1000
-`;
+export const revalidate = 3600;
 
 export default async function sitemap() {
-    const resultSet = await clickhouse.query({
-        query: topProjectsQuery,
-        format: 'JSONEachRow'
-    });
-    const projects = []
-    for await (const rows of resultSet.stream()) {
-        rows.forEach(row => {
-            projects.push(row.json()['project'])
-        })
-      }
+    const projects = await getCrawlablePackageNames();
 
     const dynamicEntries = projects.map(project => ({
         url: `https://clickpy.clickhouse.com/dashboard/${encodeURIComponent(project)}`,
