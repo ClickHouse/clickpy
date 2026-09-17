@@ -1,9 +1,21 @@
- export default function robots(){
+import { dashboardRobotsPath, getCrawlablePackageNames } from '@/utils/crawlable-packages';
+
+export const revalidate = 3600;
+
+export default async function robots() {
+  let packages = [];
+  try {
+    packages = await getCrawlablePackageNames();
+  } catch (error) {
+    console.error('Failed to load crawlable packages for robots.txt', error);
+  }
+
   return {
     rules: {
       userAgent: '*',
-      allow: '/',
+      allow: ['/$', ...packages.map(dashboardRobotsPath)],
+      disallow: ['/*?', '/'],
     },
     sitemap: 'https://clickgems.clickhouse.com/sitemap.xml',
-  }
+  };
 }
