@@ -36,3 +36,8 @@ OFFSET {offset:UInt32}
 export function dashboardRobotsPath(packageName) {
   return `/dashboard/${encodeURIComponent(packageName)}$`;
 }
+
+export async function isCrawlablePackage(packageName) {
+  const names = await getCrawlablePackageNames();
+  return names.includes(packageName);
+}

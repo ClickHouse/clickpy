@@ -4,11 +4,15 @@ import { Inter } from 'next/font/google';
 import { GoogleTagManager } from '@next/third-parties/google';
 import GalaxyInit from '@/components/GalaxyInit';
 
+import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL, siteSocialMetadata } from '@/utils/site-metadata';
+
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'ClickGems',
-  description: 'Gems package analytics powered by ClickHouse',
+  metadataBase: new URL(SITE_URL),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  ...siteSocialMetadata,
 };
 
 export default function RootLayout({ children }) {

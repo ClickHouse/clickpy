@@ -3,6 +3,7 @@ import Footer from '@/components/Footer';
 import Search from '@/components/Search';
 import Summary from '@/components/Summary';
 import Ping from '@/components/Ping';
+import SiteSchema from '@/components/SiteSchema';
 import {
   getTotalDownloads,
   getProjectCount,
@@ -12,13 +13,15 @@ import {
   hotPackages
 } from '@/utils/clickhouse';
 import 'server-only';
+import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL, siteSocialMetadata } from '@/utils/site-metadata';
 
 export const metadata = {
-  title: 'ClickGems - RubyGems analytics',
-  description: 'Free Analytics service for Rubygems downloads, powered by ClickHouse',
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
   alternates: {
-    canonical: 'https://clickgems.clickhouse.com',
+    canonical: SITE_URL,
   },
+  ...siteSocialMetadata,
   verification: {
     google: 'vu8LQ6LSMjSpZE8h8UlLByhNrhrrufGB6dlJ07hGCUA',
   }
@@ -40,6 +43,7 @@ export default async function Home() {
 
   return (
     <div>
+      <SiteSchema />
       {/* Header */}
       <Header />
       <Ping name={`landing`}/>
@@ -49,10 +53,10 @@ export default async function Home() {
             <div className='lg:px-16 flex justify-center mx-auto w-full xl:w-11/12'>
               <div className='text-center flex items-center flex-col justify-center'>
                 <h1 className='text-4xl font-bold font-inter lg:text-5xl px-4 md:px-0'>
-                  Analytics for RubyGems
+                  ClickGems – Analytics for RubyGems
                 </h1>
                 <p className='px-4 mt-6 text-lg leading-8 text-white'>
-                  Browse through{' '}
+                  ClickGems lets you browse through{' '}
                   <a className='text-primary-300 hover:underline' href={`${total_downloads[0]}&run_query=true`} target='_blank'>
                     {Number(total_downloads[1][0].projects).toLocaleString('en-US')}
                   </a>{' '}
