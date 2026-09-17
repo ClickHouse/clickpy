@@ -60,7 +60,7 @@ SELECT
 FROM pypi.pypi_downloads
 GROUP BY project
 ORDER BY c DESC
-LIMIT 50000
+LIMIT 1000
 """
 
 result = client.query(query)
