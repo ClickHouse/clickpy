@@ -8,11 +8,12 @@ export const clickhouse = createClient({
     username: process.env.CLICKHOUSE_USERNAME,
     password: process.env.CLICKHOUSE_PASSWORD,
     clickhouse_settings: {
-        allow_experimental_analyzer: 0,
-        enable_parallel_replicas: 1,
-        max_parallel_replicas: 3,
-        cluster_for_parallel_replicas: 'default',
-        parallel_replicas_for_non_replicated_merge_tree: 1,
+        make_distributed_plan: 1,
+        distributed_plan_workers_num: 3,
+        enable_parallel_replicas: 0,
+        automatic_parallel_replicas_mode: 0,
+        // dictGet is not executable on stateless workers. Run those queries on the initiator.
+        distributed_plan_fallback_to_local_execution: 1,
     },
     keep_alive: {
         enabled: false,
@@ -607,7 +608,7 @@ export async function getPopularEmergingRepos() {
         WITH (
             SELECT max(max_date)
             FROM ${GEMS_DATABASE}.gems_downloads_max_min
-        ) AS max_date
+        ) AS latest_date
         SELECT
             gem as name,
             sum(count) AS c
@@ -616,12 +617,11 @@ export async function getPopularEmergingRepos() {
             SELECT name
             FROM ${GEMS_DATABASE}.gems_downloads_max_min
             GROUP BY name
-            HAVING min(min_date) >= (max_date - toIntervalMonth(3))
+            HAVING min(min_date) >= (latest_date - toIntervalMonth(3))
         )
         GROUP BY name
         ORDER BY c DESC
         LIMIT 7
-        SETTINGS allow_experimental_analyzer=0
     `)
 }
 
