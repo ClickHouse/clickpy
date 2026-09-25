@@ -11,6 +11,7 @@ export const clickhouse = createClient({
     clickhouse_settings: {
         make_distributed_plan: 1,
         distributed_plan_workers_num: 10,
+        distributed_plan_default_reader_bucket_count: 10,
         enable_parallel_replicas: 0,
         automatic_parallel_replicas_mode: 0,
         // dictGet is not executable on stateless workers. Run those queries on the initiator.
