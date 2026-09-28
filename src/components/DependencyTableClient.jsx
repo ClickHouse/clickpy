@@ -1,5 +1,5 @@
 'use client';
-import { ClickUIProvider, Tabs, Table as ClickTable, Link } from '@clickhouse/click-ui';
+import { Tabs, Table as ClickTable, Link } from '@clickhouse/click-ui';
 import {
     ArrowTopRightOnSquareIcon,
   } from '@heroicons/react/20/solid';
@@ -83,8 +83,7 @@ export default function DependencyTableClient({ dependencies,  dependents}) {
 
     return (
         <div>
-            <ClickUIProvider theme={'dark'}>
-                <Tabs ariaLabel='dependencies and dependents' defaultValue='dependents' className='h-full flex flex-col'>
+            <Tabs ariaLabel='dependencies and dependents' defaultValue='dependents' className='h-full flex flex-col'>
                     <div className='flex justify-between'>
                         <Tabs.TriggersList style={{'border': 0 }} >
                             <Tabs.Trigger value='dependents' key='dependents' className='py-4' onClick={()=>{setIsDependency(false);}}>
@@ -121,8 +120,7 @@ export default function DependencyTableClient({ dependencies,  dependents}) {
                             rowHeight={rowHeight}
                         />
                     </Tabs.Content>
-                </Tabs>  
-            </ClickUIProvider>
+            </Tabs>
         </div>
     );
 }

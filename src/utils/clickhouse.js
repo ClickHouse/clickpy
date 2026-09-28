@@ -8,10 +8,17 @@ export const clickhouse = createClient({
     username: process.env.CLICKHOUSE_USERNAME,
     password: process.env.CLICKHOUSE_PASSWORD,
     clickhouse_settings: {
-        allow_experimental_analyzer: 0,
         make_distributed_plan: 1,
-        distributed_plan_workers_num: 4,
-    }
+        distributed_plan_workers_num: 10,
+        distributed_plan_default_reader_bucket_count: 10,
+        enable_parallel_replicas: 0,
+        automatic_parallel_replicas_mode: 0,
+        // dictGet is not executable on stateless workers. Run those queries on the initiator.
+        distributed_plan_fallback_to_local_execution: 1,
+    },
+    keep_alive: {
+        enabled: false,
+    },
 });
 
 export const web_clickhouse = createWebClient({
@@ -602,7 +609,7 @@ export async function getPopularEmergingRepos() {
         WITH (
             SELECT max(max_date)
             FROM ${GEMS_DATABASE}.gems_downloads_max_min
-        ) AS max_date
+        ) AS latest_date
         SELECT
             gem as name,
             sum(count) AS c
@@ -611,12 +618,11 @@ export async function getPopularEmergingRepos() {
             SELECT name
             FROM ${GEMS_DATABASE}.gems_downloads_max_min
             GROUP BY name
-            HAVING min(min_date) >= (max_date - toIntervalMonth(3))
+            HAVING min(min_date) >= (latest_date - toIntervalMonth(3))
         )
         GROUP BY name
         ORDER BY c DESC
         LIMIT 7
-        SETTINGS allow_experimental_analyzer=0
     `)
 }
 
@@ -734,6 +740,7 @@ export async function query(query_name, query, query_params) {
         },
     });
 
+    let results;
     try {
         const start = performance.now();
 
@@ -753,7 +760,7 @@ export async function query(query_name, query, query_params) {
         span.setAttribute('clickhouse.query_link', query_link);
 
         // run the query inside the span’s context
-        const results = await context.with(trace.setSpan(context.active(), span), () =>
+        results = await context.with(trace.setSpan(context.active(), span), () =>
             clickhouse.query({
                 query,
                 query_params,
@@ -777,6 +784,11 @@ export async function query(query_name, query, query_params) {
         span.end();
         return Promise.all([Promise.resolve(query_link), Promise.resolve(data)]);
     } catch (err) {
+        try {
+            results?.close();
+        } catch {
+            // The stream may already be closed after a dropped keep-alive socket.
+        }
         if (span.isRecording()) {
             span.recordException(err);
             span.setStatus({ code: SpanStatusCode.ERROR, message: err?.message });

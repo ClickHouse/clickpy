@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ['@clickhouse/click-ui'],
   webpack: (config) => {
     // echarts 5.5+ added an `exports` map with separate `import` (index.js)
     // and `require` (dist/echarts.js) conditions. That lets the bundler pull
@@ -19,10 +20,6 @@ const nextConfig = {
       {
         source: '/dashboard',
         destination: '/'
-      },
-      {
-        source: '/sitemap-:index(\\d{1,}).xml',
-        destination: '/sitemap/:index',
       },
     ]
   },

@@ -4,6 +4,7 @@ export default function Footer() {
   return (
     <div className='flex xl:justify-between w-full flex-col xl:flex-row items-center gap-2 xl:gap-0'>
         <div className="text-center">
+            <p className='text-sm text-neutral-500 text-center'>ClickGems is a free RubyGems analytics project by ClickHouse.</p>
             <span className='text-sm text-neutral-500 text-center'>© {year} ClickHouse, Inc. HQ in the Bay Area, CA and Amsterdam, NL.</span>
         </div>
         <div className='flex gap-2 sm:gap-4 md:gap-8'>

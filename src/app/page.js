@@ -3,6 +3,7 @@ import Footer from '@/components/Footer';
 import Search from '@/components/Search';
 import Summary from '@/components/Summary';
 import Ping from '@/components/Ping';
+import SiteSchema from '@/components/SiteSchema';
 import {
   getTotalDownloads,
   getProjectCount,
@@ -12,13 +13,15 @@ import {
   hotPackages
 } from '@/utils/clickhouse';
 import 'server-only';
+import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL, siteSocialMetadata } from '@/utils/site-metadata';
 
 export const metadata = {
-  title: 'ClickGems - RubyGems analytics',
-  description: 'Free Analytics service for Rubygems downloads, powered by ClickHouse',
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
   alternates: {
-    canonical: 'https://clickgems.clickhouse.com',
+    canonical: SITE_URL,
   },
+  ...siteSocialMetadata,
   verification: {
     google: 'vu8LQ6LSMjSpZE8h8UlLByhNrhrrufGB6dlJ07hGCUA',
   }
@@ -40,6 +43,7 @@ export default async function Home() {
 
   return (
     <div>
+      <SiteSchema />
       {/* Header */}
       <Header />
       <Ping name={`landing`}/>

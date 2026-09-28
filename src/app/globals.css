@@ -13,6 +13,123 @@ body {
   background:  #1d1d1d;
 }
 
+.date-picker-icon-only {
+  overflow: hidden;
+}
+
+.date-picker-icon-only [data-testid="datepicker-calendar-container"],
+.date-picker-icon-only [data-radix-popper-content-wrapper] {
+  overflow: visible;
+}
+
+.date-picker-icon-only button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  line-height: 0 !important;
+  min-height: 0 !important;
+  min-width: 0 !important;
+}
+
+.date-picker-icon-only [aria-haspopup],
+.date-picker-icon-only [class*="form-root"],
+.date-picker-icon-only [class*="form-element-container"],
+.date-picker-icon-only [class*="highlighted-input-wrapper"] {
+  position: relative !important;
+  width: 24px !important;
+  min-width: 24px !important;
+  max-width: 24px !important;
+  height: 24px !important;
+  min-height: 24px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  cursor: pointer;
+}
+
+.date-picker-icon-only [class*="start-content"],
+.date-picker-icon-only [class*="svg-wrapper"] {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.date-picker-icon-only svg {
+  width: 24px !important;
+  height: 24px !important;
+  color: #c0c0c0;
+  display: block;
+}
+
+.date-picker-icon-only[data-open] svg,
+.date-picker-icon-only[data-open] svg [stroke] {
+  color: #faff69;
+  stroke: #faff69 !important;
+}
+
+.date-field-active input {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 2px;
+  text-decoration-color: #faff69;
+}
+
+.date-picker-icon-only svg [stroke] {
+  stroke: currentColor !important;
+}
+
+.date-picker-icon-only [data-testid="datepicker-input"] {
+  position: absolute;
+  inset: 0;
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 0 !important;
+  opacity: 0;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+[data-testid="datepicker-calendar-container"] {
+  min-width: 272px;
+}
+
+[data-testid="datepicker-calendar-container"],
+[data-testid="datepicker-calendar-container"] * {
+  font-family: inherit !important;
+}
+
+[data-testid="datepicker-calendar-container"][data-bound-label]::before {
+  content: attr(data-bound-label);
+  display: block;
+  width: 100%;
+  margin: 0 0 0.35rem;
+  color: #faff69;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+[data-testid="datepicker-calendar-container"] [role="gridcell"][data-out-of-range] {
+  color: var(--click-datePicker-dateOption-color-label-disabled, #656565);
+  pointer-events: none;
+  cursor: default;
+}
+
+[data-radix-popper-content-wrapper]:has([data-testid="datepicker-calendar-container"]) {
+  z-index: 50 !important;
+}
+
 .isolate {
   background-image: url('/dot_grid.svg');
 }

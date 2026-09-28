@@ -69,7 +69,7 @@ SELECT
 FROM rubygems.gem_downloads_total
 GROUP BY name
 ORDER BY c DESC
-LIMIT 50000
+LIMIT 100
 """
 
 result = client.query(query)

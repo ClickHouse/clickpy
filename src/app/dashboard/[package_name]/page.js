@@ -29,10 +29,45 @@ import DependencyTable from '@/components/DependencyTable';
 import PlaygroundLink from '@/components/PlaygroundLink';
 import PackageBadge from '@/components/PackageBadge';
 import PackageSchema from '@/components/PackageSchema';
+import { isCrawlablePackage } from '@/utils/crawlable-packages';
+
+function packagePageMetadata({ title, description, package_name, index }) {
+  const url = `https://clickgems.clickhouse.com/dashboard/${encodeURIComponent(package_name)}`;
+  return {
+    title,
+    description,
+    robots: index ? { index: true, follow: true } : { index: false, follow: false },
+    verification: {
+      google: 'vu8LQ6LSMjSpZE8h8UlLByhNrhrrufGB6dlJ07hGCUA',
+    },
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: 'ClickGems',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
+  };
+}
 
 export async function generateMetadata({ params, searchParams }, parent) {
   const { package_name } = await params;
   const { version } = await searchParams;
+
+  let index = true;
+  try {
+    index = await isCrawlablePackage(package_name);
+  } catch (error) {
+    console.error('Failed to check crawlable package for metadata:', error);
+  }
 
   // Fetch package details for richer metadata
   let packageDetails;
@@ -40,17 +75,12 @@ export async function generateMetadata({ params, searchParams }, parent) {
     packageDetails = await getPackageDetails(package_name, version);
   } catch (error) {
     console.error('Error fetching package details for metadata:', error);
-    // Use minimal metadata if query fails
-    return {
+    return packagePageMetadata({
       title: `${package_name} RubyGem - Download Analytics | ClickGems`,
       description: `Analytics for the ${package_name} RubyGem. View download trends, version statistics, and release insights powered by ClickHouse.`,
-      verification: {
-        google: 'vu8LQ6LSMjSpZE8h8UlLByhNrhrrufGB6dlJ07hGCUA',
-      },
-      alternates: {
-        canonical: `https://clickgems.clickhouse.com/dashboard/${package_name}`,
-      },
-    };
+      package_name,
+      index,
+    });
   }
 
   const details = packageDetails[1][0] || {};
@@ -74,16 +104,7 @@ export async function generateMetadata({ params, searchParams }, parent) {
   }
   description += `View download trends, version statistics, release insights${license ? ', license: ' + license.split(' ').slice(0, 3).join(' ') : ''}. Powered by ClickHouse.`;
 
-  return {
-    title,
-    description,
-    verification: {
-      google: 'vu8LQ6LSMjSpZE8h8UlLByhNrhrrufGB6dlJ07hGCUA',
-    },
-    alternates: {
-      canonical: `https://clickgems.clickhouse.com/dashboard/${package_name}`,
-    },
-  }
+  return packagePageMetadata({ title, description, package_name, index });
 }
 
 export const revalidate = 3600;
@@ -110,6 +131,10 @@ export default async function Dashboard({ params, searchParams }) {
       min_date = '2011-01-01';
       max_date = new Date().toISOString().split('T')[0];
     }
+  } else if (min_date > max_date) {
+    const swapped = min_date;
+    min_date = max_date;
+    max_date = swapped;
   }
 
   // Error handling: Ensure package details are available
@@ -142,9 +167,9 @@ export default async function Dashboard({ params, searchParams }) {
         repo_name={repo_name}
       />
       <Ping name={`dashboard: ${package_name}`} />
-      <header className='bg-neutral-800 shadow-lg border-b-2 border-neutral-725 sticky top-0 z-20 opacity-95 backdrop-filter backdrop-blur-xl bg-opacity-90 2xl:h-[82px]'>
-        <div className='mx-auto flex flex-col 2xl:flex-row 2xl:items-center justify-between px-4 sm:px-8 xsm:px-6 lg:px-16 lg:w-full xl:w-11/12 lg:mb-0'>
-          <div className='md:items-center flex flex-col md:flex-row gap-4 md:gap-8 md:h-[82px] pt-[26px] md:pt-0 ml-0 w-full'>
+      <header className='bg-neutral-800 shadow-lg border-b-2 border-neutral-725 sticky top-0 z-20 opacity-95 backdrop-filter backdrop-blur-xl bg-opacity-90'>
+        <div className='mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between px-4 sm:px-8 xsm:px-6 lg:px-16 lg:w-full xl:w-11/12 min-h-[82px]'>
+          <div className='flex flex-col md:flex-row md:items-center gap-4 md:gap-8 pt-[26px] md:pt-0'>
             <Link href='/' className='min-w-[96px]'>
               <Image
                 className='w-24'
@@ -158,45 +183,40 @@ export default async function Dashboard({ params, searchParams }) {
               <Search package_name={package_name} />
             </div>
           </div>
-          <div className="flex justify-between">
-            <div className='flex flex-col-reverse sm:flex-row sm:items-center gap-4 2xl:ml-4 mb-4 2xl:mt-4 -ml-[8px] md:ml-0'>
-              <Filter
-                value={country_code}
-                icon={
-                  <Image
-                    alt='country code'
-                    src='/country.svg'
-                    width={16}
-                    height={16}
-                  />
-                }
-                name='country_code'
-              />
-              <Filter
-                value={version}
-                icon={
-                  <Image
-                    alt='version'
-                    src='/version.svg'
-                    width={16}
-                    height={16}
-                  />
-                }
-                name='version'
-              />
-              <Filter
-                value={file_type}
-                icon={
-                  <Image alt='type' src='/file_type.svg' width={16} height={16} />
-                }
-                name='type'
-              />
-              <DatePicker dates={[min_date, max_date]} />
-            </div>
-
-          </div>
-
-          <div className='hidden 2xl:flex grow width-20 max-w-[122px] md:mt-2 ml-4'>
+          <div className='flex flex-wrap items-center justify-end gap-4 py-4 lg:py-0'>
+            <Filter
+              value={country_code}
+              icon={
+                <Image
+                  alt='country code'
+                  src='/country.svg'
+                  width={16}
+                  height={16}
+                />
+              }
+              name='country_code'
+            />
+            <Filter
+              value={version}
+              icon={
+                <Image
+                  alt='version'
+                  src='/version.svg'
+                  width={16}
+                  height={16}
+                />
+              }
+              name='version'
+            />
+            <Filter
+              value={file_type}
+              icon={
+                <Image alt='type' src='/file_type.svg' width={16} height={16} />
+              }
+              name='type'
+            />
+            <DatePicker dates={[min_date, max_date]} />
+            <div className='hidden 2xl:flex items-center'>
             <p className='text-sm text-neutral-0'>
               Powered by &nbsp;
               <a
@@ -206,7 +226,7 @@ export default async function Dashboard({ params, searchParams }) {
                 ClickHouse
               </a>
             </p>
-            <Link href='https://github.com/ClickHouse/clickpy/tree/clickgems' target='_blank' className='w-32 ml-4'>
+            <Link href='https://github.com/ClickHouse/clickpy/blob/clickgems/CLICKGEMS.md' target='_blank' className='ml-4 shrink-0'>
               <Image
                 className='w-8 h-8'
                 src='/github.svg'
@@ -214,6 +234,7 @@ export default async function Dashboard({ params, searchParams }) {
                 width='32'
                 height='32' />
             </Link>
+            </div>
           </div>
         </div>
       </header>
