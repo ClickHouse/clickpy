@@ -390,9 +390,9 @@ export async function getPackageDateRanges(package_name, version) {
 
 export async function getPackageDetails(package_name, version) {
     return query('getPackageDetails', `WITH (
-                SELECT number, substring(gem_full_name, 1, (length(gem_full_name) - length(splitByChar('-', gem_full_name)[-1])) - 1) AS gem_name
+                SELECT number
                 FROM ${GEMS_DATABASE}.versions
-                WHERE gem_name = {package_name:String}
+                WHERE substring(gem_full_name, 1, (length(gem_full_name) - length(splitByChar('-', gem_full_name)[-1])) - 1) = {package_name:String}
                 ORDER BY arrayMap(x -> toUInt8OrDefault(x, 0), splitByChar('.', number)) DESC
                 LIMIT 1
             ) AS max_version
