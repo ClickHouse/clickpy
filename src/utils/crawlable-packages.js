@@ -18,6 +18,11 @@ LIMIT {limit:UInt32}
 `,
     query_params: { limit: CRAWLABLE_PACKAGE_LIMIT },
     format: 'JSONEachRow',
+    // Sitemap prerender runs where the stateless-worker client is disabled.
+    clickhouse_settings: {
+      make_distributed_plan: 0,
+      enable_parallel_replicas: 1,
+    },
   });
 
   const projects = [];
