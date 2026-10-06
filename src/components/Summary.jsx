@@ -1,5 +1,6 @@
 'use client';
 import HeatMap from './Charts/HeatMap';
+import MultiLine from './Charts/MultiLine';
 import HorizontalBar from './Charts/HorizontalBar';
 import SimpleList from './Charts/SimpleList';
 import Image from 'next/image';
@@ -11,12 +12,17 @@ import {
   ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/20/solid';
 
+function formatQuantityForInstallationsPerManager(value) {
+    return `${Math.round(value / 1000000)}M`
+};
+
 export default function Summary({
   packages,
   recent_releases,
   emerging_repos,
   needing_refresh,
-  hot_packages
+  hot_packages,
+  installations_per_installer
 }) {
   const router = useRouter();
 
@@ -149,6 +155,17 @@ export default function Summary({
           }}
           scale='log'
           link = {hot_packages[0]}
+        />
+      </div>
+      <div className='xl:col-span-6 h-[360px]'>
+        <p className='text-2xl font-bold mb-5'>
+          Downloads by package manager over time
+        </p>
+        <MultiLine
+          link={installations_per_installer[0]}
+          data={installations_per_installer[1]}
+          disableBrush={true}
+          formatYAxis={formatQuantityForInstallationsPerManager}
         />
       </div>
     </div>
