@@ -13,6 +13,7 @@ import {
   getPackageRanking
 } from '@/utils/clickhouse';
 import { parseDate } from '@/utils/utils';
+import { defaultDownloadRange } from '@/utils/downloads.mjs';
 import Search from '@/components/Search';
 import Image from 'next/image';
 import Chart from '@/components/Chart';
@@ -56,7 +57,7 @@ export default async function Dashboard({ params, searchParams }) {
   const key = JSON.stringify({ ...resolvedSearchParams });
   if (min_date == null || max_date == null) {
     const ranges = await getPackageDateRanges(package_name, version);
-    min_date = version ? ranges.min_date : '2011-01-01';
+    min_date = version ? ranges.min_date : defaultDownloadRange(ranges.max_date).min_date;
     max_date = ranges.max_date;
   } else if (min_date > max_date) {
     const swapped = min_date;

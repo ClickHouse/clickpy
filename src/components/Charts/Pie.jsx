@@ -18,6 +18,7 @@ export default function Pie({ data, onClick, link, metabaseLink }) {
     },
     tooltip: {
       trigger: 'item',
+      valueFormatter: (value) => Number(value).toLocaleString('en'),
       textStyle: {
         color: '#FAFF69',
         fontWeight: 'bold',
@@ -71,13 +72,17 @@ export default function Pie({ data, onClick, link, metabaseLink }) {
           '#FFE074',
           '#CF4B4B'
         ],
-        data: data
+        data: data.map((item) => item.isOther
+          ? { ...item, itemStyle: { color: '#888B98' } }
+          : item)
       }
     ]
   };
 
   const select = (params) => {
-    onClick && onClick(params.name);
+    if (!params.data?.isOther) {
+      onClick && onClick(params.name);
+    }
   };
 
   const onChartReady = (echarts) => {
