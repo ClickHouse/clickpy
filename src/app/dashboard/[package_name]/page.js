@@ -9,8 +9,7 @@ import {
   getDownloadsOverTimeBySystem,
   getDownloadsByCountry,
   getFileTypesByInstaller,
-  getTopContributors,
-  getPackageRanking
+  getTopContributors
 } from '@/utils/clickhouse';
 import { parseDate } from '@/utils/utils';
 import Search from '@/components/Search';
@@ -54,7 +53,8 @@ export default async function Dashboard({ params, searchParams }) {
   let max_date = parseDate(resolvedSearchParams.max_date, null);
   const { package_name } = await params;
   const key = JSON.stringify({ ...resolvedSearchParams });
-  if (min_date == null || max_date == null) {
+  const require_date = min_date != null && max_date != null;
+  if (!require_date) {
     const ranges = await getPackageDateRanges(package_name, version);
     min_date = version ? ranges.min_date : '2011-01-01';
     max_date = ranges.max_date;
@@ -151,7 +151,8 @@ export default async function Dashboard({ params, searchParams }) {
                     version={version}
                     min_date={min_date}
                     max_date={max_date}
-                    country_code={country_code} />
+                    country_code={country_code}
+                    require_date={require_date} />
             </Suspense>
           </div>
           

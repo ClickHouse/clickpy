@@ -102,6 +102,12 @@ function findOptimalTable(required_columns) {
     return table
 }
 
+function viewHasColumn(table, column) {
+    const view = materialized_views.find(candidate => candidate.table === table)
+    if (!view) return table === PYPI_TABLE
+    return view.columns.includes(column)
+}
+
 function getQueryCustomSettings(query_name) {
     const queryCustomSettings = process.env.QUERY_CUSTOM_SETTINGS || '{}'
     const settings = JSON.parse(queryCustomSettings)
@@ -745,27 +751,30 @@ export async function hotPackages() {
     ) ORDER BY month DESC, project`)
 }
 
-export async function getPackageRanking(package_name, min_date, max_date, country_code) {
-
-    const columns = ['project', 'date']
+export async function getPackageRanking(package_name, min_date, max_date, country_code, require_date = true) {
+    const columns = ['project']
+    if (require_date) { columns.push('date') }
     if (country_code) { columns.push('country_code') }
     const table = findOptimalTable(columns)
-    
+    const filter_by_date = viewHasColumn(table, 'date')
+    const date_filter = filter_by_date ? `date >= {min_date:String}::Date32 AND date <= {max_date:String}::Date32` : '1=1'
+    const country_filter = country_code ? `country_code={country_code:String}` : '1=1'
+    const filters = `${date_filter} AND ${country_filter}`
+
     return query('getPackageRanking',`WITH
     (   SELECT
         sum(count) AS total
-        FROM ${PYPI_DATABASE}.${table} WHERE project = {package_name:String} AND 1=1 AND date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}`: '1=1'} 
+        FROM ${PYPI_DATABASE}.${table} WHERE project = {package_name:String} AND ${filters}
     ) AS downloads,
-    (SELECT count() FROM ( SELECT project FROM ${PYPI_DATABASE}.${table} WHERE date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}`: '1=1'} GROUP BY project HAVING sum(count) >= downloads )) as rank,
-    (SELECT uniqExact(project) FROM ${PYPI_DATABASE}.${table} WHERE date > {min_date:String}::Date32 AND date <= {max_date:String}::Date32 AND ${country_code ? `country_code={country_code:String}`: '1=1'}) as total_packages
+    (SELECT count() FROM ( SELECT project FROM ${PYPI_DATABASE}.${table} WHERE ${filters} GROUP BY project HAVING sum(count) >= downloads )) as rank,
+    (SELECT uniqExact(project) FROM ${PYPI_DATABASE}.${table} WHERE ${filters}) as total_packages
         SELECT rank, total_packages, CASE
         WHEN total_packages = 0 THEN NULL
         ELSE (rank / total_packages) * 100
     END AS percentile;`, {
             package_name: package_name,
-            min_date: min_date,
-            max_date: max_date,
-            country_code: country_code,
+            ...(filter_by_date && { min_date, max_date }),
+            ...(country_code && { country_code }),
         })
 }
 

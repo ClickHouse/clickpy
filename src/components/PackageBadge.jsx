@@ -6,8 +6,8 @@ import {
     ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/20/solid';
 
-export default async function PackageBadge({ package_name, min_date, max_date, country_code }) {
-    const [link, data] = await getPackageRanking(package_name, min_date, max_date, country_code)
+export default async function PackageBadge({ package_name, min_date, max_date, country_code, require_date }) {
+    const [link, data] = await getPackageRanking(package_name, min_date, max_date, country_code, require_date)
 
     let badgeImage;
     let label;
